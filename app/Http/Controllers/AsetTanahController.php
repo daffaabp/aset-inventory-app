@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAsetTanahRequest;
 use App\Http\Requests\UpdateAsetTanahRequest;
 use App\Models\AsetTanah;
+use App\Models\RiwayatPeminjamanTanah;
 use App\Models\StatusAset;
+use Illuminate\Support\Facades\DB;
 
 class AsetTanahController extends Controller
 {
@@ -23,7 +25,33 @@ class AsetTanahController extends Controller
     public function create()
     {
         $status_aset = StatusAset::all();
-        return view('aset.tanah.create', compact('status_aset'));
+        $kode_tanah = $this->generateUniqueKode();
+
+        return view('aset.tanah.create', compact('status_aset', 'kode_tanah'));
+    }
+
+    private function generateUniqueKode()
+    {
+        $prefix_kabupaten = '02'; // Kode untuk kabupaten
+        $prefix_tanah = '01'; // Kode untuk aset tanah
+
+        // Ambil nilai terakhir yang digunakan
+        $last_used_number = AsetTanah::where('kode_aset', 'like', $prefix_kabupaten . '.' . $prefix_tanah . '.%')
+            ->max(DB::raw('SUBSTRING(kode_aset, -4)'));
+
+        // Jika tidak ada nilai terakhir, atur ke 0
+        $last_used_number = $last_used_number ? (int) $last_used_number : 0;
+
+        // Iterasi ke angka berikutnya
+        $next_number = $last_used_number + 1;
+
+        // Format angka menjadi 4 digit dengan padding
+        $next_number_padded = str_pad($next_number, 4, '0', STR_PAD_LEFT);
+
+        // Generate kode tanah dengan menggabungkan semua elemen
+        $kode_tanah = $prefix_kabupaten . '.' . $prefix_tanah . '.' . $next_number_padded;
+
+        return $kode_tanah;
     }
 
     public function store(StoreAsetTanahRequest $request)
@@ -39,6 +67,7 @@ class AsetTanahController extends Controller
             $asetTanah->id_status_aset = $validated['id_status_aset'];
             $asetTanah->kode_aset = $validated['kode_aset'];
             $asetTanah->nama = $validated['nama'];
+            $asetTanah->tanggal_inventarisir = $validated['tanggal_inventarisir'];
             $asetTanah->luas = $validated['luas'];
             $asetTanah->letak_tanah = $validated['letak_tanah'];
             $asetTanah->hak = $validated['hak'];
@@ -83,10 +112,17 @@ class AsetTanahController extends Controller
 
     public function destroy($id_aset_tanah)
     {
+        // Cek apakah aset pernah dipinjam
+        $isAsetDipinjam = RiwayatPeminjamanTanah::where('id_aset_tanah', $id_aset_tanah)->exists();
+
+        if ($isAsetDipinjam) {
+            return redirect()->route('tanah.index')
+                ->with('error', 'Data aset inventaris sudah pernah dipinjam, tidak dapat dihapus.');
+        }
+
         AsetTanah::find($id_aset_tanah)->delete();
         return redirect()->route('tanah.index')
             ->with('success', 'Aset Tanah berhasil dihapus.');
     }
-
 
 }

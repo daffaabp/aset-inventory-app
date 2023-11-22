@@ -17,12 +17,13 @@ return new class extends Migration
             $table->foreign('id_status_aset')->references('id_status_aset')->on('status_aset');
             $table->string('kode_aset')->unique();
             $table->string('nama', 50);
+            $table->date('tanggal_inventarisir')->default(now());
             $table->string('kondisi');
             $table->string('bertingkat');
             $table->string('beton');
             $table->decimal('luas_lantai');
             $table->string('lokasi');
-            $table->year('tahun_dok');
+            $table->integer('tahun_dok');
             $table->string('nomor_dok');
             $table->decimal('luas');
             $table->enum('hak', ['HGB', 'Milik']);

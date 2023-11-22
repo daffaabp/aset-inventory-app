@@ -17,15 +17,17 @@ return new class extends Migration
             $table->foreign('id_status_aset')->references('id_status_aset')->on('status_aset');
             $table->string('kode_ruangan');
             $table->foreign('kode_ruangan')->references('kode_ruangan')->on('ruangan');
+            $table->string('grup_id')->nullable();
             $table->string('kode_aset')->unique();
             $table->string('nama');
+            $table->date('tanggal_inventarisir')->default(now());
             $table->string('merk');
             $table->string('volume');
             $table->string('bahan');
-            $table->year('tahun');
+            $table->integer('tahun');
             $table->string('harga');
             $table->string('keterangan');
-            $table->integer('jumlah');
+            $table->integer('jumlah')->nullable();
             $table->timestamps();
         });
     }

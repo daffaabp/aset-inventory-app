@@ -111,7 +111,7 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">No</th>
-                                                <th scope="col">Kode</th>
+                                                <th scope="col">Kode Tanah</th>
                                                 <th scope="col">Nama Tanah</th>
                                                 <th scope="col">Letak Tanah</th>
                                                 @if (auth()->user()->hasRole('Petugas'))
@@ -137,8 +137,8 @@
                                                             <td>
                                                                 <select
                                                                     name="riwayatPeminjamanTanah[status][{{ $aset->id }}]"
-                                                                    class="form-select" id="status_aset"
-                                                                    aria-label="Default select example">
+                                                                    class="form-select" style="height: 35px; width: 160px;"
+                                                                    id="status_aset" aria-label="Default select example">
 
                                                                     @if ($aset->statusAset->id_status_aset == 2)
                                                                         <option value="1"
@@ -166,7 +166,7 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">No</th>
-                                                <th scope="col">Kode</th>
+                                                <th scope="col">Kode Gedung</th>
                                                 <th scope="col">Nama Gedung</th>
                                                 <th scope="col">Lokasi Gedung</th>
                                                 @if (auth()->user()->hasRole('Petugas'))
@@ -186,14 +186,14 @@
                                                     @if (auth()->user()->hasRole('Petugas'))
                                                         @if ($peminjaman->status_verifikasi == 'Dikirim')
                                                             <td>
-                                                                <input type="text" class="form-control"
-                                                                    value="{{ $aset->statusAset->status_aset }}" readonly>
+                                                                {{ $aset->statusAset->status_aset }}
                                                             </td>
                                                         @elseif ($peminjaman->status_verifikasi == 'ACC')
                                                             <td>
                                                                 <select
                                                                     name="riwayatPeminjamanGedung[status][{{ $aset->id }}]"
-                                                                    class="form-select" id="status_aset"
+                                                                    class="form-select"
+                                                                    style="height: 35px; width: 160px;" id="status_aset"
                                                                     aria-label="Default select example">
 
                                                                     @if ($aset->statusAset->id_status_aset == 2)
@@ -221,7 +221,7 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">No</th>
-                                                <th scope="col">Kode</th>
+                                                <th scope="col">Kode Kendaraan</th>
                                                 <th scope="col">Nama Kendaraan</th>
                                                 <th scope="col">Merk</th>
                                                 <th scope="col">Warna</th>
@@ -245,14 +245,14 @@
                                                     @if (auth()->user()->hasRole('Petugas'))
                                                         @if ($peminjaman->status_verifikasi == 'Dikirim')
                                                             <td>
-                                                                <input type="text" class="form-control"
-                                                                    value="{{ $aset->statusAset->status_aset }}" readonly>
+                                                                {{ $aset->statusAset->status_aset }}
                                                             </td>
                                                         @elseif ($peminjaman->status_verifikasi == 'ACC')
                                                             <td>
                                                                 <select
                                                                     name="riwayatPeminjamanKendaraan[status][{{ $aset->id }}]"
-                                                                    class="form-select" id="status_aset"
+                                                                    class="form-select"
+                                                                    style="height: 35px; width: 160px;" id="status_aset"
                                                                     aria-label="Default select example">
 
                                                                     @if ($aset->statusAset->id_status_aset == 2)
@@ -280,7 +280,7 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">No</th>
-                                                <th scope="col">Kode</th>
+                                                <th scope="col">Kode Inventaris</th>
                                                 <th scope="col">Nama Inventaris Ruangan</th>
                                                 <th scope="col">Merk</th>
                                                 <th scope="col">Bahan</th>
@@ -304,14 +304,14 @@
                                                     @if (auth()->user()->hasRole('Petugas'))
                                                         @if ($peminjaman->status_verifikasi == 'Dikirim')
                                                             <td>
-                                                                <input type="text" class="form-control"
-                                                                    value="{{ $aset->statusAset->status_aset }}" readonly>
+                                                                {{ $aset->statusAset->status_aset }}
                                                             </td>
                                                         @elseif ($peminjaman->status_verifikasi == 'ACC')
                                                             <td>
                                                                 <select
                                                                     name="riwayatPeminjamanInventarisRuangan[status][{{ $aset->id }}]"
-                                                                    class="form-select" id="status_aset"
+                                                                    class="form-select"
+                                                                    style="height: 35px; width: 160px;" id="status_aset"
                                                                     aria-label="Default select example">
 
                                                                     @if ($aset->statusAset->id_status_aset == 2)

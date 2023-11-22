@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UpdateAsetTanahRequest extends FormRequest
+class StoreMassalAsetInventarisRuanganRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,19 +22,19 @@ class UpdateAsetTanahRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_aset_tanah' => 'required',
-            'id_status_aset' => 'required',
-            // 'kode_aset' => 'required|unique:aset_tanah',
-            'nama' => 'required',
+            'id_status_aset' => 'required|exists:status_aset,id_status_aset',
+            'kode_ruangan' => 'required|exists:ruangan,kode_ruangan',
+
+            'grup_id' => 'nullable|unique:aset_inventaris_ruangan,grup_id',
             'tanggal_inventarisir' => 'nullable|date',
-            'luas' => 'required',
-            'letak_tanah' => 'required',
-            'hak' => 'required',
-            'tanggal_sertifikat' => 'required',
-            'no_sertifikat' => 'required',
-            'penggunaan' => 'required',
+            'nama' => 'required',
+            'merk' => 'required',
+            'volume' => 'required',
+            'bahan' => 'required',
+            'tahun' => 'required|integer',
             'harga' => 'required',
             'keterangan' => 'required',
+            'jumlah' => 'required|integer|min:1', // Pastikan jumlah minimal 1
         ];
     }
 }

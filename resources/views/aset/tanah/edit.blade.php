@@ -47,6 +47,11 @@
                                         value="{{ $aset_tanah->nama }}">
                                 </div>
                                 <div class="form-group">
+                                    <label>Tanggal Inventarisir</label>
+                                    <input type="date" class="form-control" name="tanggal_inventarisir"
+                                        autocomplete="off" value="{{ $aset_tanah->tanggal_inventarisir }}">
+                                </div>
+                                <div class="form-group">
                                     <label>Luas (m<sup>2</sup>)</label>
                                     <input type="text" class="form-control" name="luas" autocomplete="off"
                                         value="{{ $aset_tanah->luas }}">

@@ -24,15 +24,17 @@ class StoreAsetInventarisRuanganRequest extends FormRequest
         return [
             'id_status_aset' => 'required|exists:status_aset,id_status_aset',
             'kode_ruangan' => 'required|exists:ruangan,kode_ruangan',
-            'kode_aset' => 'required|unique:aset_inventaris_ruangan,kode_aset',
+
+            'grup_id' => 'nullable|unique:aset_inventaris_ruangan,grup_id',
             'nama' => 'required',
+            'tanggal_inventarisir' => 'nullable|date',
             'merk' => 'required',
             'volume' => 'required',
             'bahan' => 'required',
             'tahun' => 'required',
             'harga' => 'required',
             'keterangan' => 'required',
-            'jumlah' => 'required|integer',
+            'jumlah' => 'nullable',
         ];
     }
 }

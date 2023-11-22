@@ -33,14 +33,28 @@ class AsetKendaraanController extends Controller
     public function store(StoreAsetKendaraanRequest $request)
     {
         $validated = $request->validated();
-        // echo '<pre>';
-        // print_r($validated);
-        // die;
+
         try {
+            // Mendapatkan data yang diperlukan dari request
+            $namaKendaraan = $validated['nama'];
+            $thnPembelian = $validated['thn_pembelian'];
+
+            // Menghitung jumlah kendaraan dengan jenis yang sama
+            $countKendaraan = AsetKendaraan::where('nama', $namaKendaraan)->count() + 1;
+
+            // Menentukan kode jenis kendaraan
+            $kodeJenisKendaraan = ($namaKendaraan == 'Sepeda Motor') ? 'MT' : 'MB';
+
+            // Membuat kode urutan dengan format 4 digit (0001 - 9999)
+            $kodeUrutan = str_pad($countKendaraan, 4, '0', STR_PAD_LEFT);
+
+            // Membuat kode kendaraan
+            $kodeKendaraan = '02.03.' . $kodeJenisKendaraan . '.' . $thnPembelian . '.' . $kodeUrutan;
+
             // Simpan data ke dalam tabel aset_gedung
             $asetKendaraan = new AsetKendaraan();
             $asetKendaraan->id_status_aset = $validated['id_status_aset'];
-            $asetKendaraan->kode_aset = $validated['kode_aset'];
+            $asetKendaraan->kode_aset = $kodeKendaraan;
             $asetKendaraan->nama = $validated['nama'];
             $asetKendaraan->merk = $validated['merk'];
             $asetKendaraan->type = $validated['type'];

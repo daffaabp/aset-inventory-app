@@ -19,9 +19,9 @@ use Illuminate\Support\Facades\DB;
 
 class PeminjamanController extends Controller
 {
-    public function create()
+    public function index()
     {
-        return view('peminjaman.create');
+        return view('peminjaman.index');
     }
 
     public function store(Request $request)
@@ -169,6 +169,8 @@ class PeminjamanController extends Controller
                         $riwayatPeminjaman->id_aset_inventaris_ruangan = $asetInventarisRuangan->id_aset_inventaris_ruangan;
                         $riwayatPeminjaman->id_status_aset = $asetInventarisRuangan->id_status_aset;
                         $riwayatPeminjaman->kode_aset = $asetInventarisRuangan->kode_aset;
+                        $riwayatPeminjaman->kode_ruangan = $asetInventarisRuangan->kode_ruangan;
+                        $riwayatPeminjaman->grup_id = $asetInventarisRuangan->grup_id;
                         $riwayatPeminjaman->nama = $asetInventarisRuangan->nama;
                         $riwayatPeminjaman->merk = $asetInventarisRuangan->merk;
                         $riwayatPeminjaman->volume = $asetInventarisRuangan->volume;
@@ -424,6 +426,8 @@ class PeminjamanController extends Controller
                     $newRiwayatPeminjaman->id_peminjaman = $id_peminjaman;
                     $newRiwayatPeminjaman->id_aset_inventaris_ruangan = $aset->id_aset_inventaris_ruangan;
                     $newRiwayatPeminjaman->kode_aset = $aset->kode_aset;
+                    $newRiwayatPeminjaman->kode_ruangan = $aset->kode_ruangan;
+                    $newRiwayatPeminjaman->grup_id = $aset->grup_id;
                     $newRiwayatPeminjaman->nama = $aset->nama;
                     $newRiwayatPeminjaman->merk = $aset->merk;
                     $newRiwayatPeminjaman->volume = $aset->volume;

@@ -38,16 +38,20 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Kode</label>
+                                    <label>Kode Kendaraan</label>
                                     <input type="text" class="form-control" name="kode_aset"
-                                        value="{{ $aset_kendaraan->kode_aset }}">
+                                        value="{{ $aset_kendaraan->kode_aset }}" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label>Nama Kendaraan</label>
                                     <input type="text" class="form-control" name="nama"
                                         value="{{ $aset_kendaraan->nama }}">
                                 </div>
-
+                                <div class="form-group">
+                                    <label>Tanggal Inventarisir</label>
+                                    <input type="date" class="form-control" name="tanggal_inventarisir"
+                                        autocomplete="off" value="{{ $aset_kendaraan->tanggal_inventarisir }}">
+                                </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -110,7 +114,7 @@
                                         <div class="form-group">
                                             <label>Tahun Pembelian</label>
                                             <input type="number" class="form-control" name="thn_pembelian"
-                                                value="{{ $aset_kendaraan->thn_pembelian }}">
+                                                value="{{ $aset_kendaraan->thn_pembelian }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-12">

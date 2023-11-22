@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('id_status_aset')->references('id_status_aset')->on('status_aset');
             $table->string('kode_aset')->unique();
             $table->string('nama');
+            $table->date('tanggal_inventarisir')->default(now());
             $table->string('merk');
             $table->string('type');
             $table->string('cylinder');

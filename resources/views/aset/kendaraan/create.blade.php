@@ -24,22 +24,27 @@
                                 <div class="form-group">
                                     <label>Status Kendaraan</label>
                                     <select name="id_status_aset" class="form-select" id="id_status_aset">
-                                        <option selected disabled> --Pilih Status--</option>
                                         @foreach ($status_aset as $row)
-                                            <option value="{{ $row->id_status_aset }}">{{ $row->status_aset }}</option>
+                                            <option value="{{ $row->id_status_aset }}"
+                                                {{ $row->id_status_aset == 1 ? 'selected' : '' }}>{{ $row->status_aset }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Kode</label>
-                                    <input type="text" class="form-control" name="kode_aset" autocomplete="off"
-                                        autofocus>
-                                </div>
-                                <div class="form-group">
                                     <label>Nama Kendaraan</label>
-                                    <input type="text" class="form-control" name="nama" autocomplete="off" autofocus>
+                                    <select class="form-control form-select" name="nama" id="nama"
+                                        autocomplete="off" autofocus>
+                                        <option selected value="Sepeda Motor">Sepeda Motor</option>
+                                        <option value="Mobil">Mobil</option>
+                                    </select>
                                 </div>
 
+                                <div class="form-group">
+                                    <label>Tanggal Inventarisir</label>
+                                    <input type="date" class="form-control" name="tanggal_inventarisir"
+                                        value="{{ \Carbon\Carbon::now()->toDateString() }}" autofocus>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -102,7 +107,7 @@
                                         <div class="form-group">
                                             <label>Tahun Pembelian</label>
                                             <input type="number" class="form-control" name="thn_pembelian"
-                                                autocomplete="off" autofocus>
+                                                id="thn_pembelian" autocomplete="off" autofocus>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -155,3 +160,6 @@
         </div>
     </div>
 @endsection
+
+@push('js')
+@endpush

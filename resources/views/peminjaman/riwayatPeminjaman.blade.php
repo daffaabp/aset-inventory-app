@@ -26,7 +26,9 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Aksi</th>
+                                        @can('verifikasiPeminjamanDetails')
+                                            <th>Aksi</th>
+                                        @endcan
                                         <th>Peminjam</th>
                                         <th>Status Verifikasi</th>
                                         <th>Tanggal Pengajuan</th>
@@ -39,33 +41,35 @@
                                     @foreach ($peminjamanSelesai as $row)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>
+                                            @can('verifikasiPeminjamanDetails')
+                                                <td>
 
-                                                @if (auth()->user()->hasRole('Petugas'))
-                                                    @if ($row->status_verifikasi === 'Dikirim')
-                                                        <form
-                                                            action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
-                                                            <button type="submit" class="btn btn-warning">Proses</button>
-                                                        </form>
-                                                    @elseif($row->status_verifikasi === 'ACC')
-                                                        <form
-                                                            action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
-                                                            <button type="submit" class="btn btn-success">Proses</button>
-                                                        </form>
+                                                    @if (auth()->user()->hasRole('Petugas'))
+                                                        @if ($row->status_verifikasi === 'Dikirim')
+                                                            <form
+                                                                action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
+                                                                <button type="submit" class="btn btn-warning">Proses</button>
+                                                            </form>
+                                                        @elseif($row->status_verifikasi === 'ACC')
+                                                            <form
+                                                                action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
+                                                                <button type="submit" class="btn btn-success">Proses</button>
+                                                            </form>
+                                                        @else
+                                                            <form
+                                                                action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
+                                                                <button type="submit" class="btn btn-primary">Lihat</button>
+                                                            </form>
+                                                        @endif
                                                     @else
                                                         <form
                                                             action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
                                                             <button type="submit" class="btn btn-primary">Lihat</button>
                                                         </form>
                                                     @endif
-                                                @else
-                                                    <form
-                                                        action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
-                                                        <button type="submit" class="btn btn-primary">Lihat</button>
-                                                    </form>
-                                                @endif
+                                                </td>
+                                            @endcan
 
-                                            </td>
                                             <td>{{ $row->peminjam->name }}</td>
                                             <td>
                                                 @if ($row->status_verifikasi === 'ACC')

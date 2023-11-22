@@ -25,6 +25,7 @@ class StoreAsetGedungRequest extends FormRequest
             'id_status_aset' => 'required',
             'kode_aset' => 'required|unique:aset_gedung,kode_aset',
             'nama' => 'required',
+            'tanggal_inventarisir' => 'nullable|date',
             'kondisi' => 'required',
             'bertingkat' => 'required',
             'beton' => 'required',

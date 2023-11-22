@@ -36,8 +36,9 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Status</th>
-                                    <th>Kode</th>
+                                    <th>Kode Gedung</th>
                                     <th>Nama</th>
+                                    <th>Tanggal Inventarisir</th>
                                     <th>Kondisi</th>
                                     <th>Bertingkat</th>
                                     <th>Beton</th>
@@ -59,6 +60,7 @@
                                         <td>{{ $asetGedung->statusAset->status_aset }}</td>
                                         <td>{{ $asetGedung->kode_aset }}</td>
                                         <td>{{ $asetGedung->nama }}</td>
+                                        <td>{{ $asetGedung->tanggal_inventarisir }}</td>
                                         <td>{{ $asetGedung->kondisi }}</td>
                                         <td>{{ $asetGedung->bertingkat }}</td>
                                         <td>{{ $asetGedung->beton }}</td>

@@ -24,16 +24,22 @@
                                 <div class="form-group">
                                     <label>Status Tanah</label>
                                     <select name="id_status_aset" class="form-select" id="id_status_aset">
-                                        <option selected disabled> --Pilih Status--</option>
                                         @foreach ($status_aset as $row)
-                                            <option value="{{ $row->id_status_aset }}">{{ $row->status_aset }}</option>
+                                            <option value="{{ $row->id_status_aset }}"
+                                                {{ $row->id_status_aset == 1 ? 'selected' : '' }}>{{ $row->status_aset }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label>Kode Tanah</label>
-                                    <input type="text" class="form-control" name="kode_aset" autocomplete="off"
-                                        autofocus>
+                                    <input type="text" class="form-control" name="kode_aset" value="{{ $kode_tanah }}"
+                                        readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tanggal Inventarisir</label>
+                                    <input type="date" class="form-control" name="tanggal_inventarisir"
+                                        value="{{ \Carbon\Carbon::now()->toDateString() }}" autofocus>
                                 </div>
                                 <div class="form-group">
                                     <label>Nama</label>
@@ -55,8 +61,14 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Hak</label>
-                                            <input type="text" name="hak" class="form-control" autocomplete="off"
+                                            <select class="form-control form-select" name="hak" autocomplete="off"
                                                 autofocus>
+                                                <option value="Hak Pakai">Hak Pakai</option>
+                                                <option value="Hak Milik">Hak Milik</option>
+                                                <option value="Hak Guna Usaha">Hak Guna Usaha</option>
+                                                <option value="Hak Guna Bangunan">Hak Guna Bangunan</option>
+                                                <option value="Hak Sewa">Hak Sewa</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6">

@@ -38,6 +38,7 @@
                                     <th>Status</th>
                                     <th>Kode</th>
                                     <th>Nama</th>
+                                    <th>Tanggal Inventarisir</th>
                                     <th>Merk</th>
                                     <th>Type</th>
                                     <th>Cylinder</th>
@@ -61,6 +62,7 @@
                                         <td>{{ $asetKendaraan->statusAset->status_aset }}</td>
                                         <td>{{ $asetKendaraan->kode_aset }}</td>
                                         <td>{{ $asetKendaraan->nama }}</td>
+                                        <td>{{ $asetKendaraan->tanggal_inventarisir }}</td>
                                         <td>{{ $asetKendaraan->merk }}</td>
                                         <td>{{ $asetKendaraan->type }}</td>
                                         <td>{{ $asetKendaraan->cylinder }}</td>

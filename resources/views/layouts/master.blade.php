@@ -42,6 +42,7 @@
 
 
 <body>
+    @stack('css')
     <div class="main-wrapper">
         {{-- <div id="spinner"
             class="top-0 bg-white position-fixed translate-middle w-100 vh-100 start-0 d-flex align-items-center justify-content-center">

@@ -23,8 +23,9 @@ class StoreAsetKendaraanRequest extends FormRequest
     {
         return [
             'id_status_aset' => 'required|exists:status_aset,id_status_aset',
-            'kode_aset' => 'required|unique:aset_kendaraan',
+
             'nama' => 'required',
+            'tanggal_inventarisir' => 'nullable|date',
             'merk' => 'required',
             'type' => 'required',
             'cylinder' => 'required',

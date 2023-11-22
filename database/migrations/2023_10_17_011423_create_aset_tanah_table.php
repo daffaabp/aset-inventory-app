@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('id_status_aset')->references('id_status_aset')->on('status_aset');
             $table->string('kode_aset')->unique();
             $table->string('nama', 50);
+            $table->date('tanggal_inventarisir')->default(now());
             $table->decimal('luas');
             $table->string('letak_tanah');
             $table->string('hak');

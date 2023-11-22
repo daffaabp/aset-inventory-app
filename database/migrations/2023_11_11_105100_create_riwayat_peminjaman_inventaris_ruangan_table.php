@@ -16,7 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('id_peminjaman');
             $table->unsignedBigInteger('id_aset_inventaris_ruangan');
             $table->unsignedBigInteger('id_status_aset');
+            $table->string('kode_aset');
             $table->string('kode_ruangan');
+            $table->string('grup_id')->nullable();
             $table->string('nama');
             $table->string('merk');
             $table->string('volume');
@@ -24,7 +26,7 @@ return new class extends Migration
             $table->string('tahun');
             $table->string('harga');
             $table->string('keterangan');
-            $table->string('jumlah');
+            $table->integer('jumlah')->nullable();
 
             $table->date('tgl_perubahan_status');
             $table->string('status_verifikasi')->nullable();

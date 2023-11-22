@@ -26,6 +26,7 @@ class UpdateAsetInventarisRuanganRequest extends FormRequest
             'kode_ruangan' => 'required|exists:ruangan,kode_ruangan',
             // 'kode_aset' => 'required|unique:aset_inventaris_ruangan,kode_aset',
             'nama' => 'required',
+            'tanggal_inventarisir' => 'nullable|date',
             'merk' => 'required',
             'volume' => 'required',
             'bahan' => 'required',

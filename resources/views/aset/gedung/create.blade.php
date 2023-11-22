@@ -24,16 +24,22 @@
                                 <div class="form-group">
                                     <label>Status Gedung</label>
                                     <select name="id_status_aset" class="form-select" id="id_status_aset">
-                                        <option selected disabled> --Pilih Status--</option>
                                         @foreach ($status_aset as $row)
-                                            <option value="{{ $row->id_status_aset }}">{{ $row->status_aset }}</option>
+                                            <option value="{{ $row->id_status_aset }}"
+                                                {{ $row->id_status_aset == 1 ? 'selected' : '' }}>{{ $row->status_aset }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label>Kode Gedung</label>
-                                    <input type="text" class="form-control" name="kode_aset" autocomplete="off"
-                                        autofocus>
+                                    <input type="text" class="form-control" name="kode_aset" value="{{ $kode_gedung }}"
+                                        readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tanggal Inventarisir</label>
+                                    <input type="date" class="form-control" name="tanggal_inventarisir"
+                                        value="{{ \Carbon\Carbon::now()->toDateString() }}" autofocus>
                                 </div>
                                 <div class="form-group">
                                     <label>Nama Bangunan</label>
@@ -41,22 +47,34 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Kondisi</label>
-                                    <input type="text" class="form-control" name="kondisi" autocomplete="off" autofocus>
+                                    <select name="kondisi" class="form-control form-select">
+                                        <option value="Baik">Baik</option>
+                                        <option value="Rusak">Rusak</option>
+                                        <option value="Korosi">Korosi</option>
+                                        <option value="Baru">Baru</option>
+                                    </select>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Bertingkat</label>
-                                            <input type="text" class="form-control" name="bertingkat" autocomplete="off"
-                                                autofocus>
+                                            <select name="bertingkat" class="form-control form-select">
+                                                <option value="Tidak">Tidak</option>
+                                                <option value="Ya">Ya</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Beton</label>
-                                            <input type="text" class="form-control" name="beton" autocomplete="off"
-                                                autofocus>
+                                            <select name="beton" class="form-control form-select">
+                                                <option value="Beton">Beton</option>
+                                                <option value="Besi Beton">Besi Beton</option>
+                                                <option value="Besi">Besi</option>
+                                                <option value="Aspal">Aspal</option>
+                                                <option value="Kayu">Kayu</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -101,7 +119,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Hak Guna Bangunan</label>
-                                            <select name="hak" class="form-control">
+                                            <select name="hak" class="form-control form-select">
                                                 <option value="HGB">HGB</option>
                                                 <option value="Milik">Milik</option>
                                             </select>
@@ -120,14 +138,15 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Keterangan</label>
-                                            <textarea name="keterangan" rows="4" cols="4" class="form-control" placeholder="Masukkan Keterangan..."></textarea>
+                                            <textarea name="keterangan" rows="4" cols="4" class="form-control"
+                                                placeholder="Masukkan Keterangan..."></textarea>
                                         </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <button type="submit" class="btn btn-primary">Simpan</button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
                         </div>
                     </form>
                 </div>

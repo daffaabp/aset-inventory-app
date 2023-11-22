@@ -38,6 +38,7 @@
                                     <th>Status Tanah</th>
                                     <th>Kode</th>
                                     <th>Nama</th>
+                                    <th>Tanggal Inventarisir</th>
                                     <th>Luas (m<sup>2</sup>)</th>
                                     <th>Letak Tanah</th>
                                     <th>Hak</th>
@@ -56,10 +57,11 @@
                                         <td>{{ $asetTanah->statusAset->status_aset }}</td>
                                         <td>{{ $asetTanah->kode_aset }}</td>
                                         <td>{{ $asetTanah->nama }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($asetTanah->tanggal_inventarisir)->format('d-F-Y') }}
                                         <td>{{ $asetTanah->luas }}</td>
                                         <td>{{ $asetTanah->letak_tanah }}</td>
                                         <td>{{ $asetTanah->hak }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($asetTanah->tanggal_sertifika)->format('d-F-Y') }}
+                                        <td>{{ \Carbon\Carbon::parse($asetTanah->tanggal_sertifikat)->format('d-F-Y') }}
                                         </td>
                                         <td>{{ $asetTanah->no_sertifikat }}</td>
                                         <td>{{ $asetTanah->penggunaan }}</td>
@@ -72,7 +74,7 @@
                                                 <a class="btn btn-primary me-2" style="color: white;"
                                                     href="{{ route('tanah.edit', $asetTanah->id_aset_tanah) }}">Edit</a>
 
-                                                @csrf   
+                                                @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger">Hapus</button>
 

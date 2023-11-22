@@ -12,9 +12,13 @@
                     <a href="{{ route('dashboard') }}"><i class="feather-grid"></i> <span> Dashboard</span></a>
                 </li>
 
+                @can('role.index')
+                    <li class="menu-title">
+                        <span>Fungsional Sistem</span>
+                    </li>
+                @endcan
 
-
-                @can(['user.index', 'role.index'])
+                @canany(['user.index', 'role.index'])
                     <li class="submenu">
                         <a href="#"><i class="fa fa-users"></i> <span> Superadmin</span> <span
                                 class="menu-arrow"></span></a>
@@ -34,16 +38,7 @@
 
                         </ul>
                     </li>
-                @endcan
-
-
-
-                @canany(['role.index', 'bidang.index'])
-                    <li class="menu-title">
-                        <span>Fungsional Sistem</span>
-                    </li>
-                @endcan
-
+                @endcanany
 
                 @can('bidang.index')
                     <li class="{{ Route::current()->getName() == 'bidang.index' ? 'active' : '' }}">
@@ -64,7 +59,6 @@
                         <a href="{{ route('ruangan.index') }}"><i class="fas fa-holly-berry"></i> <span> Ruangan</span></a>
                     </li>
                 @endcan
-
 
                 @can('tanah.index')
                     <li class="{{ Route::current()->getName() == 'tanah.index' ? 'active' : '' }}">
@@ -92,37 +86,33 @@
                     </li>
                 @endcan
 
+                @can('riwayatPeminjaman')
+                    <li class="menu-title">
+                        <span>Peminjaman</span>
+                    </li>
+                @endcan
 
-                @can('peminjaman.create')
+                @canany(['peminjaman.index', 'peminjaman.store'])
                     <li class="{{ Route::current()->getName() == 'peminjaman.index' ? 'active' : '' }}">
-                        <a href="{{ route('peminjaman.create') }}"><i class="fas fa-building"></i> <span> Buat
+                        <a href="{{ route('peminjaman.index') }}"><i class="fas fa-building"></i> <span> Buat
                                 Peminjaman</span>
                         </a>
                     </li>
                 @endcan
 
-                @canany(['peminjaman.create', 'verifikasiPeminjaman'])
-                    <li class="menu-title">
-                        <span>Peminjaman</span>
-                    </li>
-                @endcanany
-
-                @can('verifikasiPeminjaman')
-                    <li class="">
+                @canany('verifikasiPeminjaman')
+                    <li class="{{ Route::current()->getName() == 'verifikasiPeminjaman' ? 'active' : '' }}">
                         <a href="{{ route('verifikasiPeminjaman') }}"><i class="fa fa-check"></i> <span> Verifikasi
                                 Peminjaman</span></a>
                     </li>
                 @endcan
 
-                @can('riwayatPeminjaman')
-                    <li class="">
+                @canany(['riwayatPeminjaman', 'verifikasiPeminjamanDetails'])
+                    <li class="{{ Route::current()->getName() == 'riwayatPeminjaman' ? 'active' : '' }}">
                         <a href="{{ route('riwayatPeminjaman') }}"><i class="fa fa-window-restore"></i> <span> Riwayat
                                 Peminjaman</span></a>
                     </li>
                 @endcan
-
-
-
 
 
                 {{-- <li class="menu-title">
