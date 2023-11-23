@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AsetTanahExport;
+use App\Http\Requests\AsetTanahImportRequest;
 use App\Http\Requests\StoreAsetTanahRequest;
 use App\Http\Requests\UpdateAsetTanahRequest;
+use App\Imports\AsetTanahImport;
 use App\Models\AsetTanah;
 use App\Models\RiwayatPeminjamanTanah;
 use App\Models\StatusAset;
@@ -11,11 +14,6 @@ use Illuminate\Support\Facades\DB;
 
 class AsetTanahController extends Controller
 {
-
-    // public function __construct() {
-    //     $pe
-    // }
-
     public function index()
     {
         $asetTanahs = AsetTanah::with('statusAset')->get();
@@ -123,6 +121,53 @@ class AsetTanahController extends Controller
         AsetTanah::find($id_aset_tanah)->delete();
         return redirect()->route('tanah.index')
             ->with('success', 'Aset Tanah berhasil dihapus.');
+    }
+
+    public function import(AsetTanahImportRequest $request)
+    {
+        $file = $request->file('file');
+
+        try {
+            DB::beginTransaction();
+
+            // Validasi file
+            $file->store('public/import');
+
+            // Lakukan impor
+            $import = new AsetTanahImport;
+            $import->import($file);
+
+            // Periksa kegagalan impor
+            if ($import->failures()->isNotEmpty()) {
+                // Batalkan transaksi jika ada kegagalan
+                DB::rollBack();
+
+                // Berikan umpan balik ke pengguna tentang kegagalan
+                return back()
+                    ->withFailures($import->failures())
+                    ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
+            }
+            // Mendapatkan jumlah baris yang berhasil diimpor
+            $importedRowCount = $import->getRowCount();
+
+            // Commit transaksi jika sukses
+            DB::commit();
+
+            // Berikan umpan balik sukses ke pengguna
+            return redirect()->route('tanah.index')
+                ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
+
+        } catch (\Exception $e) {
+            // Tangani exception jika terjadi kesalahans
+            DB::rollBack();
+
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function export()
+    {
+        return (new AsetTanahExport)->download('aset_tanah.xlsx');
     }
 
 }

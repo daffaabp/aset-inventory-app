@@ -106,6 +106,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/tanah/{id}/edit', [AsetTanahController::class, 'edit'])->name('tanah.edit')->middleware('permission:tanah.edit');
     Route::patch('/tanah/{id}/update', [AsetTanahController::class, 'update'])->name('tanah.update')->middleware('permission:tanah.update');
     Route::delete('/tanah/destroy{id}', [AsetTanahController::class, 'destroy'])->name('tanah.destroy')->middleware('permission:tanah.destroy');
+    Route::post('/tanah-import', [AsetTanahController::class, 'import'])->name('tanah.import')->middleware('permission:tanah.import');
+    Route::get('/tanah-export', [AsetTanahController::class, 'export'])->name('tanah.export')->middleware('permission:tanah.export');
 
 // Kelola Aset Gedung
     Route::get('/gedung', [AsetGedungController::class, 'index'])->name('gedung.index')->middleware('permission:gedung.index');
@@ -114,6 +116,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/gedung/{id}/edit', [AsetGedungController::class, 'edit'])->name('gedung.edit')->middleware('permission:gedung.edit');
     Route::patch('/gedung/{id}/update', [AsetGedungController::class, 'update'])->name('gedung.update')->middleware('permission:gedung.update');
     Route::delete('/gedung/destroy{id}', [AsetGedungController::class, 'destroy'])->name('gedung.destroy')->middleware('permission:gedung.destroy');
+    Route::post('/gedung-import', [AsetGedungController::class, 'import'])->name('gedung.import')->middleware('permission:gedung.import');
+    Route::get('/gedung-export', [AsetGedungController::class, 'export'])->name('gedung.export')->middleware('permission:gedung.export');
 
 // Kelola Aset Kendaraan
     Route::get('/kendaraan', [AsetKendaraanController::class, 'index'])->name('kendaraan.index')->middleware('permission:kendaraan.index');

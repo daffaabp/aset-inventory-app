@@ -34,7 +34,6 @@
                                             class="fas fa-undo"></i></i>
                                         Refresh & Delete Permissions</a>
 
-
                                     <button type="submit" class="btn btn-success btn-outline-success me-2"
                                         style="color: white"><i class="fas fa-save"></i> Simpan</button>
                                 </div>

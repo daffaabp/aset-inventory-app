@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
+use Database\Seeders\StatusAsetSeeder;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -16,7 +17,6 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-
         Permission::create(['name' => 'user.index']);
         Permission::create(['name' => 'user.create']);
         Permission::create(['name' => 'user.store']);
@@ -111,7 +111,7 @@ class DatabaseSeeder extends Seeder
         $roleSuperadmin->givePermissionTo('role.update');
         $roleSuperadmin->givePermissionTo('role.destroy');
         $roleSuperadmin->givePermissionTo('role.getRoutesAllJson');
-        $roleSuperadmin->givePermissionTo('role.getRefreshAndDeleteJson');  
+        $roleSuperadmin->givePermissionTo('role.getRefreshAndDeleteJson');
 
         Role::create(['name' => 'Sekretaris Bidang']);
         $roleSekretarisBidang = Role::findByName('Sekretaris Bidang');
@@ -230,5 +230,9 @@ class DatabaseSeeder extends Seeder
         $petugas->givePermissionTo($permissionsFromRole);
         $sekretaris_bidang_binamuda->givePermissionTo($permissionsFromRole);
         $sekretaris_kwarcab->givePermissionTo($permissionsFromRole);
+
+        $this->call([
+            StatusAsetSeeder::class,
+        ]);
     }
 }
