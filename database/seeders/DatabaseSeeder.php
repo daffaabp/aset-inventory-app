@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
+use Database\Seeders\BidangSeeder;
+use Database\Seeders\RuanganSeeder;
 use Database\Seeders\StatusAsetSeeder;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
@@ -60,6 +62,9 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'tanah.edit']);
         Permission::create(['name' => 'tanah.update']);
         Permission::create(['name' => 'tanah.destroy']);
+        Permission::create(['name' => 'tanah.importExcel']);
+        Permission::create(['name' => 'tanah.exportExcel']);
+        Permission::create(['name' => 'tanah.exportPdf']);
 
         Permission::create(['name' => 'gedung.index']);
         Permission::create(['name' => 'gedung.create']);
@@ -67,6 +72,9 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'gedung.edit']);
         Permission::create(['name' => 'gedung.update']);
         Permission::create(['name' => 'gedung.destroy']);
+        Permission::create(['name' => 'gedung.importExcel']);
+        Permission::create(['name' => 'gedung.exportExcel']);
+        Permission::create(['name' => 'gedung.exportPdf']);
 
         Permission::create(['name' => 'kendaraan.index']);
         Permission::create(['name' => 'kendaraan.create']);
@@ -160,6 +168,9 @@ class DatabaseSeeder extends Seeder
         $rolePetugas->givePermissionTo('tanah.edit');
         $rolePetugas->givePermissionTo('tanah.update');
         $rolePetugas->givePermissionTo('tanah.destroy');
+        $rolePetugas->givePermissionTo('tanah.importExcel');
+        $rolePetugas->givePermissionTo('tanah.exportExcel');
+        $rolePetugas->givePermissionTo('tanah.exportPdf');
 
         $rolePetugas->givePermissionTo('gedung.index');
         $rolePetugas->givePermissionTo('gedung.create');
@@ -167,6 +178,9 @@ class DatabaseSeeder extends Seeder
         $rolePetugas->givePermissionTo('gedung.edit');
         $rolePetugas->givePermissionTo('gedung.update');
         $rolePetugas->givePermissionTo('gedung.destroy');
+        $rolePetugas->givePermissionTo('gedung.importExcel');
+        $rolePetugas->givePermissionTo('gedung.exportExcel');
+        $rolePetugas->givePermissionTo('gedung.exportPdf');
 
         $rolePetugas->givePermissionTo('kendaraan.index');
         $rolePetugas->givePermissionTo('kendaraan.create');
@@ -233,6 +247,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             StatusAsetSeeder::class,
+            RuanganSeeder::class,
+            BidangSeeder::class,
         ]);
     }
 }

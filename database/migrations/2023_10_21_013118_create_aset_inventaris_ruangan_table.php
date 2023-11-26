@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('volume');
             $table->string('bahan');
             $table->integer('tahun');
-            $table->string('harga');
+            $table->integer('harga');
             $table->string('keterangan');
             $table->integer('jumlah')->nullable();
             $table->timestamps();

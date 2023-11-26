@@ -121,7 +121,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Harga</label>
-                                            <input type="text" class="form-control" name="harga" autocomplete="off"
+                                            <input type="number" class="form-control" name="harga" autocomplete="off"
                                                 value="{{ $aset_gedung->harga }}">
                                         </div>
                                     </div>

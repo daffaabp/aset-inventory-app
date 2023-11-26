@@ -37,7 +37,11 @@ class StoreAsetKendaraanRequest extends FormRequest
             'no_polisi' => 'required|unique:aset_kendaraan',
             'tgl_bpkb' => 'required|date',
             'no_bpkb' => 'required|unique:aset_kendaraan',
-            'harga' => 'required',
+            'harga' => [
+                'required',
+                'integer',
+                'min:0',
+            ],
             'keterangan' => 'nullable',
         ];
     }

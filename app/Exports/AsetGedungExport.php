@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\AsetTanah;
+use App\Models\AsetGedung;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -12,35 +12,34 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class AsetTanahExport implements FromCollection, WithMapping, ShouldAutoSize, WithHeadings, WithEvents
+class AsetGedungExport implements FromCollection, WithMapping, ShouldAutoSize, WithHeadings, WithEvents
 {
     use Exportable;
-
+    /**
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
-        return AsetTanah::with('statusAset')->get();
+        return AsetGedung::with('statusAset')->get();
     }
 
-    private $rowCount = 0;
-
-    public function map($tanah): array
+    public function map($gedung): array
     {
-        $this->rowCount++;
-
         return [
-            $this->rowCount,
-            $tanah->statusAset->status_aset,
-            $tanah->kode_aset,
-            $tanah->nama,
-            $tanah->tanggal_inventarisir,
-            $tanah->luas,
-            $tanah->letak_tanah,
-            $tanah->hak,
-            $tanah->tanggal_sertifikat,
-            $tanah->no_sertifikat,
-            $tanah->penggunaan,
-            $tanah->harga,
-            $tanah->keterangan,
+            $gedung->id_aset_gedung,
+            $gedung->statusAset->status_aset,
+            $gedung->kode_aset,
+            $gedung->nama,
+            $gedung->tanggal_inventarisir,
+            $gedung->kondisi,
+            $gedung->bertingkat,
+            $gedung->luas_lantai,
+            $gedung->lokasi,
+            $gedung->tahun_dok,
+            $gedung->nomor_dok,
+            $gedung->hak,
+            $gedung->harga,
+            $gedung->keterangan,
         ];
     }
 
@@ -52,12 +51,15 @@ class AsetTanahExport implements FromCollection, WithMapping, ShouldAutoSize, Wi
             'Kode Aset',
             'Nama Aset',
             'Tanggal Inventarisir',
+            'Kondisi',
+            'Bertingkat',
+            'Beton',
+            'Luas Lantai',
+            'Lokasi',
+            'Tahun Dokumen',
+            'Nomor Dokumen',
             'Luas',
-            'Letak Tanah',
             'Hak',
-            'Tanggal Sertifikat',
-            'No. Sertifikat',
-            'Penggunaan',
             'Harga',
             'Keterangan',
         ];
@@ -67,7 +69,7 @@ class AsetTanahExport implements FromCollection, WithMapping, ShouldAutoSize, Wi
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                $event->sheet->getStyle('A1:M1')->applyFromArray([
+                $event->sheet->getStyle('A1:P1')->applyFromArray([
                     'font' => [
                         'bold' => true,
                     ],
@@ -81,5 +83,4 @@ class AsetTanahExport implements FromCollection, WithMapping, ShouldAutoSize, Wi
             },
         ];
     }
-
 }

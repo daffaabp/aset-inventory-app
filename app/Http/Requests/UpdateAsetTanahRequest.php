@@ -34,7 +34,11 @@ class UpdateAsetTanahRequest extends FormRequest
             'tanggal_sertifikat' => 'required',
             'no_sertifikat' => 'required',
             'penggunaan' => 'required',
-            'harga' => 'required',
+            'harga' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
             'keterangan' => 'required',
         ];
     }

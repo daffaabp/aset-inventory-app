@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('nomor_dok');
             $table->decimal('luas');
             $table->enum('hak', ['HGB', 'Milik']);
-            $table->string('harga');
+            $table->integer('harga');
             $table->string('keterangan');
             $table->timestamps();
         });

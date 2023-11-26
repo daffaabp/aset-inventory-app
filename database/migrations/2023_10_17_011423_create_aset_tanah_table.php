@@ -24,7 +24,7 @@ return new class extends Migration
             $table->date('tanggal_sertifikat');
             $table->string('no_sertifikat');
             $table->string('penggunaan');
-            $table->string('harga');
+            $table->integer('harga');
             $table->string('keterangan');
             $table->timestamps();
         });

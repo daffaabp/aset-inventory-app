@@ -99,7 +99,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Harga</label>
-                                            <input type="text" name="harga" class="form-control" autocomplete="off"
+                                            <input type="number" name="harga" class="form-control" autocomplete="off"
                                                 autofocus>
                                         </div>
                                     </div>
@@ -123,3 +123,8 @@
         </div>
     </div>
 @endsection
+
+@push('js')
+    <script src="{{ URL::to('js/jquery.min.js') }}"></script>
+    <script src="{{ URL::to('js/jquery.mask.min.js') }}"></script>
+@endpush

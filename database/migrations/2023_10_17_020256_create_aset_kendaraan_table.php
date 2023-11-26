@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('no_polisi')->unique();
             $table->date('tgl_bpkb');
             $table->string('no_bpkb');
-            $table->string('harga');
+            $table->integer('harga');
             $table->string('keterangan');
             $table->timestamps();
         });

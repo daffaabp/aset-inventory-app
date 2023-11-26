@@ -137,7 +137,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Harga</label>
-                                            <input type="text" class="form-control" name="harga" autocomplete="off"
+                                            <input type="number" class="form-control" name="harga" autocomplete="off"
                                                 autofocus>
                                         </div>
                                     </div>
@@ -162,4 +162,14 @@
 @endsection
 
 @push('js')
+    <script src="{{ URL::to('js/jquery.min.js') }}"></script>
+    <script src="{{ URL::to('js/jquery.mask.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            // ini kode untuk yang format rupiah
+            $('.rupiah').mask("#.##0", {
+                reverse: true
+            });
+        });
+    </script>
 @endpush

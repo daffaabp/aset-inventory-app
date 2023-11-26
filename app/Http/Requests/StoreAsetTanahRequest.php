@@ -32,7 +32,11 @@ class StoreAsetTanahRequest extends FormRequest
             'tanggal_sertifikat' => 'required',
             'no_sertifikat' => 'nullable',
             'penggunaan' => 'required',
-            'harga' => 'required',
+            'harga' => [
+                'required',
+                'integer',
+                'min:0',
+            ],
             'keterangan' => 'required',
         ];
     }

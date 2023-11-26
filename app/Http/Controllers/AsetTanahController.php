@@ -10,6 +10,7 @@ use App\Imports\AsetTanahImport;
 use App\Models\AsetTanah;
 use App\Models\RiwayatPeminjamanTanah;
 use App\Models\StatusAset;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 
 class AsetTanahController extends Controller
@@ -35,7 +36,7 @@ class AsetTanahController extends Controller
 
         // Ambil nilai terakhir yang digunakan
         $last_used_number = AsetTanah::where('kode_aset', 'like', $prefix_kabupaten . '.' . $prefix_tanah . '.%')
-            ->max(DB::raw('SUBSTRING(kode_aset, -4)'));
+            ->max(DB::raw('CAST(SUBSTRING(kode_aset, -4) AS SIGNED)'));
 
         // Jika tidak ada nilai terakhir, atur ke 0
         $last_used_number = $last_used_number ? (int) $last_used_number : 0;
@@ -123,7 +124,7 @@ class AsetTanahController extends Controller
             ->with('success', 'Aset Tanah berhasil dihapus.');
     }
 
-    public function import(AsetTanahImportRequest $request)
+    public function importExcel(AsetTanahImportRequest $request)
     {
         $file = $request->file('file');
 
@@ -165,9 +166,29 @@ class AsetTanahController extends Controller
         }
     }
 
-    public function export()
+    public function exportExcel()
     {
         return (new AsetTanahExport)->download('aset_tanah.xlsx');
     }
 
+    public function exportPdf()
+    {
+        $aset_tanah = AsetTanah::with('statusAset')->get();
+
+        $data = [
+            'aset_tanah' => $aset_tanah,
+        ];
+
+        $pdf = PDF::loadview('aset.tanah.cetak_pdf', $data);
+        // Set ukuran kertas menjadi F4 dan margin ke nol
+        $pdf->setPaper('f4', 'landscape')
+            ->setOption('page-width', 'F4-width-in-mm') // Ganti dengan lebar F4 dalam milimeter
+            ->setOption('page-height', 'F4-height-in-mm') // Ganti dengan tinggi F4 dalam milimeter
+            ->setOption('margin-top', 0)
+            ->setOption('margin-right', 0)
+            ->setOption('margin-bottom', 0)
+            ->setOption('margin-left', 0);
+
+        return $pdf->stream('aset_tanah.pdf');
+    }
 }

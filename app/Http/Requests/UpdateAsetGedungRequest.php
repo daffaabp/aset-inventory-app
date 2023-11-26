@@ -36,7 +36,11 @@ class UpdateAsetGedungRequest extends FormRequest
             'nomor_dok' => 'required',
             'luas' => 'required',
             'hak' => 'required',
-            'harga' => 'required',
+            'harga' => [
+                'required',
+                'integer',
+                'min:0',
+            ],
             'keterangan' => 'required',
         ];
     }

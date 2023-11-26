@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AsetGedungExport;
+use App\Http\Requests\AsetGedungImportRequest;
 use App\Http\Requests\StoreAsetGedungRequest;
 use App\Http\Requests\UpdateAsetGedungRequest;
+use App\Imports\AsetGedungImport;
 use App\Models\AsetGedung;
 use App\Models\RiwayatPeminjamanGedung;
 use App\Models\StatusAset;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 
 class AsetGedungController extends Controller
@@ -117,5 +121,63 @@ class AsetGedungController extends Controller
         AsetGedung::find($id_aset_gedung)->delete();
         return redirect()->route('gedung.index')
             ->with('success', 'Aset Gedung berhasil dihapus.');
+    }
+
+    public function importExcel(AsetGedungImportRequest $request)
+    {
+        $file = $request->file('file');
+
+        try {
+            DB::beginTransaction();
+
+            // Validasi file
+            $file->store('public/import');
+
+            // Lakukan impor
+            $import = new AsetGedungImport;
+            $import->import($file);
+
+            // Periksa kegagalan impor
+            if ($import->failures()->isNotEmpty()) {
+                // Batalkan transaksi jika ada kegagalan
+                DB::rollBack();
+
+                // Berikan umpan balik ke pengguna tentang kegagalan
+                return back()
+                    ->withFailures($import->failures())
+                    ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
+            }
+            // Mendapatkan jumlah baris yang berhasil diimpor
+            $importedRowCount = $import->getRowCount();
+
+            // Commit transaksi jika sukses
+            DB::commit();
+
+            // Berikan umpan balik sukses ke pengguna
+            return redirect()->route('gedung.index')
+                ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
+
+        } catch (\Exception $e) {
+            // Tangani exception jika terjadi kesalahans
+            DB::rollBack();
+
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function exportExcel()
+    {
+        return (new AsetGedungExport)->download('aset_gedung.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $aset_gedung = AsetGedung::with('statusAset')->get();
+
+        $pdf = PDF::loadview('aset.gedung.cetak_pdf', [
+            'aset_gedung' => $aset_gedung,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->stream('aset_gedung.pdf');
     }
 }
