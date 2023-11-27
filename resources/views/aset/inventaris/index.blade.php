@@ -23,25 +23,85 @@
                                 <h3 class="page-title"></h3>
                             </div>
                             <div class="col-auto text-end float-end ms-auto download-grp">
-                                <a href="{{ route('inventaris.createMassal') }}"
-                                    class="btn btn-warning btn-outline-warning me-2" style="color: white"><i
-                                        class="fas fa-plus"></i></i>
-                                    Tambah Massal Aset Inventaris</a>
-
-                                <a href="{{ route('inventaris.indexMassal') }}"
-                                    class="btn btn-danger btn-outline-danger me-2" style="color: white"><i
-                                        class="fas fa-minus"></i></i>
-                                    Hapus Massal Aset Inventaris</a>
-
                                 <a href="{{ route('inventaris.create') }}" class="btn btn-outline-primary me-2"><i
                                         class="fas fa-plus"></i></i>
                                     Tambah Aset Inventaris</a>
+
+                                <a href="{{ route('inventaris.createMassal') }}" class="btn btn-info btn-outline-info me-2"
+                                    style="color: white"><i class="fas fa-plus"></i></i>
+                                    Tambah Massal Aset Inventaris</a>
+
+                                <a href="{{ route('inventaris.indexMassal') }}"
+                                    class="btn btn-secondary btn-outline-secondary me-2" style="color: white"><i
+                                        class="fas fa-minus"></i></i>
+                                    Hapus Massal Aset Inventaris</a>
+
+                                <a href="{{ route('inventaris.exportExcel') }}" class="btn btn-warning btn-md me-1"><i
+                                        class="fas fa-file-export"></i>
+                                    Export Excel
+                                </a>
+
+                                <a href="{{ route('inventaris.exportPdf') }}" class="btn btn-danger btn-md me-1"
+                                    target="_blank"><i class="fas fa-file-pdf"></i>
+                                    Export PDF
+                                </a>
                             </div>
                         </div>
                     </div>
 
+                    @if (session()->has('success'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if (isset($errors) && $errors->any())
+                        <div class="alert alert-danger" role="alert">
+                            @foreach ($errors->all() as $error)
+                                {{ $error }}
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if (session()->has('failures'))
+                        <div id="failures-alert" class="alert alert-warning" role="alert">
+                            <div class="modal-header">
+                                <h4 class="alert-heading">Gagal mengimpor beberapa data!</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Baris</th>
+                                        <th>Attribute</th>
+                                        <th>Error</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (session()->get('failures') as $failure)
+                                        <tr>
+                                            <td>{{ $failure->row() }}</td>
+                                            <td>{{ $failure->attribute() }}</td>
+                                            <td>
+                                                <ul>
+                                                    @foreach ($failure->errors() as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </td>
+                                            <td>{{ $failure->values()[$failure->attribute()] }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+
                     <div class="table-responsive">
-                        <table class="table mb-0 border-0 table-bordered star-student table-hover table-center">
+                        <table class="table mb-0 border-0 table-bordered star-student table-hover table-center datatable table-stripped">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -67,25 +127,31 @@
                                         <td>{{ $inventaris->kode_aset }}</td>
                                         <td>{{ $inventaris->ruangan->nama }}</td>
                                         <td>{{ $inventaris->nama }}</td>
-                                        <td>{{ $inventaris->tanggal_inventarisir }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($inventaris->tanggal_inventarisir)->isoFormat('D MMMM Y') }}
+                                        </td>
                                         <td>{{ $inventaris->merk }}</td>
                                         <td>{{ $inventaris->volume }}</td>
                                         <td>{{ $inventaris->bahan }}</td>
                                         <td>{{ $inventaris->tahun }}</td>
-                                        <td>{{ $inventaris->harga }}</td>
+                                        <td>{{ formatRupiah($inventaris->harga, true) }}</td>
                                         <td>{{ $inventaris->keterangan }}</td>
-                                        <td>
-                                            <form
-                                                action="{{ route('inventaris.destroy', $inventaris->id_aset_inventaris_ruangan) }}"
-                                                method="POST">
+                                        <td class="text-end">
+                                            <div class="actions">
+                                                <a href="{{ route('inventaris.edit', $inventaris->id_aset_inventaris_ruangan) }}"
+                                                    class="btn btn-sm bg-success-light me-2">
+                                                    <i class="feather-edit"></i>
+                                                </a>
 
-                                                <a class="btn btn-primary me-2" style="color: white;"
-                                                    href="{{ route('inventaris.edit', $inventaris->id_aset_inventaris_ruangan) }}">Edit</a>
+                                                <a href="javascript:;" class="btn btn-sm bg-danger-light"
+                                                    onclick="confirmDelete('{{ route('inventaris.destroy', $inventaris->id_aset_inventaris_ruangan) }}')">
+                                                    <i class="feather-trash"></i>
+                                                </a>
 
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Hapus</button>
-                                            </form>
+                                                <form id="deleteForm" action="" method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -97,3 +163,31 @@
         </div>
     </div>
 @endsection
+
+
+@push('js')
+    <script>
+        // Tunggu 5 detik setelah halaman dimuat
+        setTimeout(function() {
+            // Sembunyikan pesan kesalahan
+            document.getElementById('failures-alert').style.display = 'none';
+        }, 10000);
+
+        // Sembunyikan pesan kesalahan ketika tombol close ditekan
+        document.getElementById('failures-alert').addEventListener('closed.bs.alert', function() {
+            this.style.display = 'none';
+        });
+
+        window.onload = function() {
+            alert("Gagal mengimpor data. Silakan periksa file Anda.");
+        };
+
+        function confirmDelete(url) {
+            if (confirm('Apakah Anda yakin ingin menghapus?')) {
+                var form = document.getElementById('deleteForm');
+                form.action = url;
+                form.submit();
+            }
+        }
+    </script>
+@endpush

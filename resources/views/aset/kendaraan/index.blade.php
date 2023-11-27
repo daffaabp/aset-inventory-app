@@ -102,7 +102,8 @@
                     @endif
 
                     <div class="table-responsive">
-                        <table class="table mb-0 border-0 table-bordered star-student table-hover table-center">
+                        <table
+                            class="table mb-0 border-0 table-bordered star-student table-hover table-center datatable table-stripped">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -133,7 +134,8 @@
                                         <td>{{ $asetKendaraan->statusAset->status_aset }}</td>
                                         <td>{{ $asetKendaraan->kode_aset }}</td>
                                         <td>{{ $asetKendaraan->nama }}</td>
-                                        <td>{{ $asetKendaraan->tanggal_inventarisir }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($asetKendaraan->tanggal_inventarisir)->isoFormat('D MMMM Y') }}
+                                        </td>
                                         <td>{{ $asetKendaraan->merk }}</td>
                                         <td>{{ $asetKendaraan->type }}</td>
                                         <td>{{ $asetKendaraan->cylinder }}</td>
@@ -143,23 +145,28 @@
                                         <td>{{ $asetKendaraan->thn_pembuatan }}</td>
                                         <td>{{ $asetKendaraan->thn_pembelian }}</td>
                                         <td>{{ $asetKendaraan->no_polisi }}</td>
-                                        <td>{{ $asetKendaraan->tgl_bpkb }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($asetKendaraan->tgl_bpkb)->isoFormat('D MMMM Y') }}
+                                        </td>
                                         <td>{{ $asetKendaraan->no_bpkb }}</td>
-                                        <td>{{ $asetKendaraan->harga }}</td>
+                                        <td>{{ formatRupiah($asetKendaraan->harga, true) }}</td>
                                         <td>{{ $asetKendaraan->keterangan }}</td>
-                                        <td>
-                                            <form
-                                                action="{{ route('kendaraan.destroy', $asetKendaraan->id_aset_kendaraan) }}"
-                                                method="POST">
+                                        <td class="text-end">
+                                            <div class="actions">
+                                                <a href="{{ route('kendaraan.edit', $asetKendaraan->id_aset_kendaraan) }}"
+                                                    class="btn btn-sm bg-success-light me-2">
+                                                    <i class="feather-edit"></i>
+                                                </a>
 
-                                                <a class="btn btn-primary me-2" style="color: white;"
-                                                    href="{{ route('kendaraan.edit', $asetKendaraan->id_aset_kendaraan) }}">Edit</a>
+                                                <a href="javascript:;" class="btn btn-sm bg-danger-light"
+                                                    onclick="confirmDelete('{{ route('kendaraan.destroy', $asetKendaraan->id_aset_kendaraan) }}')">
+                                                    <i class="feather-trash"></i>
+                                                </a>
 
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Hapus</button>
-
-                                            </form>
+                                                <form id="deleteForm" action="" method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -175,7 +182,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle" style="padding-left: 105px;">Import File Excel Aset Kendaraan
+                    <h5 class="modal-title" id="modalTitle" style="padding-left: 82px;">Import File Excel Aset Kendaraan
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -196,7 +203,7 @@
                         @csrf
                         <div class="mb-3" style="margin-top: -20px;">
                             <label class="form-label">Pilih File (harus berupa .xlsx)</label>
-                            <input type="file" class="form-control" name="file"
+                            <input type="file" class="form-control" name="file" accept=".xlsx, .xls"
                                 placeholder="Masukkan file excel anda">
 
                             @error('file')
@@ -213,3 +220,31 @@
         </div>
     </div>
 @endsection
+
+
+@push('js')
+    <script>
+        // Tunggu 5 detik setelah halaman dimuat
+        setTimeout(function() {
+            // Sembunyikan pesan kesalahan
+            document.getElementById('failures-alert').style.display = 'none';
+        }, 10000);
+
+        // Sembunyikan pesan kesalahan ketika tombol close ditekan
+        document.getElementById('failures-alert').addEventListener('closed.bs.alert', function() {
+            this.style.display = 'none';
+        });
+
+        window.onload = function() {
+            alert("Gagal mengimpor data. Silakan periksa file Anda.");
+        };
+
+        function confirmDelete(url) {
+            if (confirm('Apakah Anda yakin ingin menghapus?')) {
+                var form = document.getElementById('deleteForm');
+                form.action = url;
+                form.submit();
+            }
+        }
+    </script>
+@endpush

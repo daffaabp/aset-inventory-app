@@ -33,8 +33,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Nama Kendaraan</label>
-                                    <select class="form-control form-select" name="nama" id="nama"
-                                        autocomplete="off" autofocus>
+                                    <select class="form-control form-select" name="nama" autocomplete="off" autofocus>
                                         <option selected value="Sepeda Motor">Sepeda Motor</option>
                                         <option value="Mobil">Mobil</option>
                                     </select>
@@ -65,7 +64,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Cylinder</label>
-                                            <input type="text" class="form-control" name="cylinder" autocomplete="off"
+                                            <input type="number" class="form-control" name="cylinder" autocomplete="off"
                                                 autofocus>
                                         </div>
                                     </div>

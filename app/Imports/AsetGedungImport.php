@@ -2,14 +2,15 @@
 
 namespace App\Imports;
 
-use App\Models\AsetGedung;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Validator;
+use App\Models\AsetGedung;
 use Illuminate\Validation\Rule;
+use App\Imports\AsetGedungImport;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
-use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
@@ -58,7 +59,6 @@ class AsetGedungImport implements ToModel, WithHeadingRow, WithValidation, Skips
             'id_status_aset' => $statusId,
             'kode_aset' => $row['kode_aset'],
             'nama' => $row['nama'],
-            'kode_aset' => $row['kode_aset'],
             'tanggal_inventarisir' => $tanggalInventarisir,
             'kondisi' => $row['kondisi'],
             'bertingkat' => $row['bertingkat'],
@@ -131,7 +131,8 @@ class AsetGedungImport implements ToModel, WithHeadingRow, WithValidation, Skips
             'hak.required' => 'Hak wajib diisi',
             'hak.string' => 'Hak harus bertipe string',
             'harga.required' => 'Harga wajib diisi',
-            'harga.string' => 'Harga harus bertipe string',
+            'harga.numeric' => 'Harga harus bertipe numeric',
+            'harga.min' => 'Harga tidak boleh negatif',
             'keterangan.required' => 'Keterangan wajib diisi',
             'keterangan.string' => 'Keterangan harus bertipe string',
         ];

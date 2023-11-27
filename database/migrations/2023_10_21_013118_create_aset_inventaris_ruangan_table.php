@@ -21,13 +21,13 @@ return new class extends Migration
             $table->string('kode_aset')->unique();
             $table->string('nama');
             $table->date('tanggal_inventarisir')->default(now());
-            $table->string('merk');
-            $table->string('volume');
-            $table->string('bahan');
+            $table->string('merk')->nullable();
+            $table->string('volume')->nullable();
+            $table->string('bahan')->nullable();
             $table->integer('tahun');
             $table->integer('harga');
-            $table->string('keterangan');
             $table->integer('jumlah')->nullable();
+            $table->string('keterangan');
             $table->timestamps();
         });
     }

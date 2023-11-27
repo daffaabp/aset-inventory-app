@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AsetInventarisExport;
 use App\Http\Requests\StoreAsetInventarisRuanganRequest;
 use App\Http\Requests\StoreMassalAsetInventarisRuanganRequest;
 use App\Http\Requests\UpdateAsetInventarisRuanganRequest;
@@ -9,6 +10,7 @@ use App\Models\AsetInventarisRuangan;
 use App\Models\RiwayatPeminjamanInventarisRuangan;
 use App\Models\Ruangan;
 use App\Models\StatusAset;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 
 class AsetInventarisRuanganController extends Controller
@@ -205,6 +207,22 @@ class AsetInventarisRuanganController extends Controller
 
         return redirect()->route('inventaris.indexMassal')
             ->with('success', 'Data aset inventaris berhasil dihapus.');
+    }
+
+    public function exportExcel()
+    {
+        return (new AsetInventarisExport)->download('aset_inventaris_ruangan.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $aset_inventaris = AsetInventarisRuangan::with('statusAset')->get();
+
+        $pdf = PDF::loadview('aset.inventaris.cetak_pdf', [
+            'aset_inventaris' => $aset_inventaris,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->stream('aset_inventaris_ruangan.pdf');
     }
 
 }

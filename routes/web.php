@@ -128,6 +128,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/kendaraan/{id}/edit', [AsetKendaraanController::class, 'edit'])->name('kendaraan.edit')->middleware('permission:kendaraan.edit');
     Route::patch('/kendaraan/{id}/update', [AsetKendaraanController::class, 'update'])->name('kendaraan.update')->middleware('permission:kendaraan.update');
     Route::delete('/kendaraan/destroy{id}', [AsetKendaraanController::class, 'destroy'])->name('kendaraan.destroy')->middleware('permission:kendaraan.destroy');
+    Route::post('/kendaraan-importExcel', [AsetKendaraanController::class, 'importExcel'])->name('kendaraan.importExcel')->middleware('permission:kendaraan.importExcel');
+    Route::get('/kendaraan-exportExcel', [AsetKendaraanController::class, 'exportExcel'])->name('kendaraan.exportExcel')->middleware('permission:kendaraan.exportExcel');
+    Route::get('/kendaraan-exportPdf', [AsetKendaraanController::class, 'exportPdf'])->name('kendaraan.exportPdf')->middleware('permission:kendaraan.exportPdf');
 
 // Kelola Aset Inventaris Ruangan
     Route::get('/inventaris', [AsetInventarisRuanganController::class, 'index'])->name('inventaris.index')->middleware('permission:inventaris.index');
@@ -140,6 +143,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/inventaris/{id}/update', [AsetInventarisRuanganController::class, 'update'])->name('inventaris.update')->middleware('permission:inventaris.update');
     Route::delete('/inventaris/destroy{id}', [AsetInventarisRuanganController::class, 'destroy'])->name('inventaris.destroy')->middleware('permission:inventaris.destroy');
     Route::delete('/inventaris/destroyMassal/{grupId}', [AsetInventarisRuanganController::class, 'destroyMassal'])->name('inventaris.destroyMassal')->middleware('permission:inventaris.destroyMassal');
+    Route::post('/inventaris-importExcel', [AsetInventarisRuanganController::class, 'importExcel'])->name('inventaris.importExcel')->middleware('permission:inventaris.importExcel');
+    Route::get('/inventaris-exportExcel', [AsetInventarisRuanganController::class, 'exportExcel'])->name('inventaris.exportExcel')->middleware('permission:inventaris.exportExcel');
+    Route::get('/inventaris-exportPdf', [AsetInventarisRuanganController::class, 'exportPdf'])->name('inventaris.exportPdf')->middleware('permission:inventaris.exportPdf');
 
 // Kelola Peminjaman
     Route::get('/getAset', [PeminjamanController::class, 'getAset'])->name('getAset')->middleware('permission:getAset');

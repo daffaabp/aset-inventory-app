@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Cetak Aset Gedung PDF</title>
+    <title>Cetak Aset Inventaris Ruangan PDF</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
@@ -53,7 +53,7 @@
 
 <body>
     <div class="page">
-        <h1 style="font-size: 20px; text-align: center;">Data Aset Gedung</h1>
+        <h1 style="font-size: 20px; text-align: center;">Data Aset Inventaris Ruangan</h1>
 
         <table id="table">
             <thead>
@@ -63,37 +63,29 @@
                     <th>Kode Aset</th>
                     <th>Nama</th>
                     <th>Tanggal Inventarisir</th>
-                    <th>Kondisi</th>
-                    <th>Bertingkat</th>
-                    <th>Beton</th>
-                    <th>Luas Lantai (m<sup>2</sup>)</th>
-                    <th>Lokasi</th>
-                    <th>Tahun Dokumen</th>
-                    <th>No. Dokumen</th>
-                    <th>Luas Tanah (m<sup>2</sup>)</th>
-                    <th>Hak</th>
+                    <th>Merk</th>
+                    <th>Volume</th>
+                    <th>Bahan</th>
+                    <th>Tahun</th>
                     <th>Harga</th>
+                    <th>Jumlah</th>
                     <th>Keterangan</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($aset_gedung as $row)
+                @foreach ($aset_inventaris as $row)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $row->statusAset->status_aset }}</td>
                         <td>{{ $row->kode_aset }}</td>
                         <td>{{ $row->nama }}</td>
                         <td>{{ \Carbon\Carbon::parse($row->tanggal_inventarisir)->isoFormat('D MMMM Y') }}</td>
-                        <td>{{ $row->kondisi }}</td>
-                        <td>{{ $row->bertingkat }}</td>
-                        <td>{{ $row->beton }}</td>
-                        <td>{{ $row->luas_lantai }}</td>
-                        <td>{{ $row->lokasi }}</td>
-                        <td>{{ $row->tahun_dok }}</td>
-                        <td>{{ $row->nomor_dok }}</td>
-                        <td>{{ $row->luas }}</td>
-                        <td>{{ $row->hak }}</td>
+                        <td>{{ $row->merk }}</td>
+                        <td>{{ $row->volume }}</td>
+                        <td>{{ $row->bahan }}</td>
+                        <td>{{ $row->tahun }}</td>
                         <td>{{ formatRupiah($row->harga, true) }}</td>
+                        <td>{{ $row->jumlah }}</td>
                         <td>{{ $row->keterangan }}</td>
                     </tr>
                 @endforeach

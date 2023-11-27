@@ -45,9 +45,6 @@
                                     <label>Ruangan</label>
                                     <select name="kode_ruangan" class="form-select" id="kode_ruangan">
                                         <option selected disabled> --Pilih Ruangan-- </option>
-                                        {{-- @foreach ($kode_ruangan as $row)
-                                            <option value="{{ $row->kode_ruangan }}">{{ $row->nama }}</option>
-                                        @endforeach --}}
                                         @foreach ($kode_ruangan as $row)
                                             <option value="{{ $row->kode_ruangan }}"
                                                 {{ $asetInventaris->kode_ruangan == $row->kode_ruangan ? 'selected' : '' }}>
@@ -95,14 +92,14 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Tahun</label>
-                                            <input type="text" class="form-control" name="tahun"
+                                            <input type="number" class="form-control" name="tahun"
                                                 value="{{ $asetInventaris->tahun }}">
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Harga</label>
-                                            <input type="text" class="form-control" name="harga"
+                                            <input type="number" class="form-control" name="harga"
                                                 value="{{ $asetInventaris->harga }}">
                                         </div>
                                     </div>

@@ -32,8 +32,8 @@ class UpdateAsetGedungRequest extends FormRequest
             'beton' => 'required',
             'luas_lantai' => 'required',
             'lokasi' => 'required',
-            'tahun_dok' => 'required',
-            'nomor_dok' => 'required',
+            'tahun_dok' => 'required|digits:4',
+            'nomor_dok' => 'required|string',
             'luas' => 'required',
             'hak' => 'required',
             'harga' => [

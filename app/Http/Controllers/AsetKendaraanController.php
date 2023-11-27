@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AsetKendaraanExport;
+use App\Http\Requests\AsetKendaraanImportRequest;
 use App\Http\Requests\StoreAsetKendaraanRequest;
 use App\Http\Requests\UpdateAsetKendaraanRequest;
+use App\Imports\AsetKendaraanImport;
 use App\Models\AsetKendaraan;
 use App\Models\StatusAset;
+use Barryvdh\DomPDF\PDF;
+use Illuminate\Support\Facades\DB;
 
 class AsetKendaraanController extends Controller
 {
@@ -33,7 +38,9 @@ class AsetKendaraanController extends Controller
     public function store(StoreAsetKendaraanRequest $request)
     {
         $validated = $request->validated();
-
+        // echo '<pre>';
+        // print_r($validated);
+        // die;
         try {
             // Mendapatkan data yang diperlukan dari request
             $namaKendaraan = $validated['nama'];
@@ -113,5 +120,73 @@ class AsetKendaraanController extends Controller
         AsetKendaraan::find($id_aset_kendaraan)->delete();
         return redirect()->route('kendaraan.index')
             ->with('success', 'Aset Kendaraan berhasil dihapus.');
+    }
+
+    public function importExcel(AsetKendaraanImportRequest $request)
+    {
+        $file = $request->file('file');
+
+        try {
+            DB::beginTransaction();
+
+            // Validasi file
+            $file->store('public/import');
+
+            // Lakukan impor
+            $import = new AsetKendaraanImport;
+            $import->import($file);
+
+            // Periksa kegagalan impor
+            if ($import->failures()->isNotEmpty()) {
+                // Batalkan transaksi jika ada kegagalan
+                DB::rollBack();
+
+                // Berikan umpan balik ke pengguna tentang kegagalan
+                return back()
+                    ->withFailures($import->failures())
+                    ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
+            }
+            // Mendapatkan jumlah baris yang berhasil diimpor
+            $importedRowCount = $import->getRowCount();
+
+            // Commit transaksi jika sukses
+            DB::commit();
+
+            // Berikan umpan balik sukses ke pengguna
+            return redirect()->route('kendaraan.index')
+                ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
+
+        } catch (\Exception $e) {
+            // Tangani exception jika terjadi kesalahans
+            DB::rollBack();
+
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function exportExcel()
+    {
+        return (new AsetKendaraanExport)->download('aset_kendaraan.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $aset_kendaraan = AsetKendaraan::with('statusAset')->get();
+
+        $data = [
+            'aset_kendaraan' => $aset_kendaraan,
+        ];
+
+        $pdf = PDF::loadview('aset.kendaraan.cetak_pdf', $data);
+        // Set ukuran kertas menjadi F4 dan margin ke nol
+        $pdf->setPaper('f4', 'landscape')
+            ->setOption('page-width', 'F4-width-in-mm') // Ganti dengan lebar F4 dalam milimeter
+            ->setOption('page-height', 'F4-height-in-mm') // Ganti dengan tinggi F4 dalam milimeter
+            ->setOption('margin-top', 0)
+            ->setOption('margin-right', 0)
+            ->setOption('margin-bottom', 0)
+            ->setOption('margin-left', 0);
+
+        return $pdf->stream('aset_.kendaraan_pdf');
     }
 }

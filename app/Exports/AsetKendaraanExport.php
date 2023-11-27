@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\AsetGedung;
+use App\Models\AsetKendaraan;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class AsetGedungExport implements FromCollection, WithMapping, ShouldAutoSize, WithHeadings, WithEvents
+class AsetKendaraanExport implements FromCollection, WithMapping, ShouldAutoSize, WithHeadings, WithEvents
 {
     use Exportable;
     /**
@@ -20,32 +20,34 @@ class AsetGedungExport implements FromCollection, WithMapping, ShouldAutoSize, W
      */
     public function collection()
     {
-        return AsetGedung::with('statusAset')->get();
+        return AsetKendaraan::with('statusAset')->get();
     }
 
     private $rowCount = 0;
 
-    public function map($gedung): array
+    public function map($kendaraan): array
     {
         $this->rowCount++;
 
         return [
             $this->rowCount,
-            $gedung->statusAset->status_aset,
-            $gedung->kode_aset,
-            $gedung->nama,
-            $gedung->tanggal_inventarisir,
-            $gedung->kondisi,
-            $gedung->bertingkat,
-            $gedung->beton,
-            $gedung->luas_lantai,
-            $gedung->lokasi,
-            $gedung->tahun_dok,
-            $gedung->nomor_dok,
-            $gedung->luas,
-            $gedung->hak,
-            $gedung->harga,
-            $gedung->keterangan,
+            $kendaraan->statusAset->status_aset,
+            $kendaraan->kode_aset,
+            $kendaraan->nama,
+            $kendaraan->tanggal_inventarisir,
+            $kendaraan->merk,
+            $kendaraan->type,
+            $kendaraan->cylinder,
+            $kendaraan->warna,
+            $kendaraan->no_rangka,
+            $kendaraan->no_mesin,
+            $kendaraan->thn_pembuatan,
+            $kendaraan->thn_pembelian,
+            $kendaraan->no_polisi,
+            $kendaraan->tgl_bpkb,
+            $kendaraan->no_bpkb,
+            $kendaraan->harga,
+            $kendaraan->keterangan,
         ];
     }
 
@@ -57,15 +59,17 @@ class AsetGedungExport implements FromCollection, WithMapping, ShouldAutoSize, W
             'Kode Aset',
             'Nama Aset',
             'Tanggal Inventarisir',
-            'Kondisi',
-            'Bertingkat',
-            'Beton',
-            'Luas Lantai',
-            'Lokasi',
-            'Tahun Dokumen',
-            'Nomor Dokumen',
-            'Luas',
-            'Hak',
+            'Merk',
+            'Type',
+            'Cylinder',
+            'Warna',
+            'No. Rangka',
+            'No. Mesin',
+            'Thn Pembuatan',
+            'Thn Pembelian',
+            'No. Polisi',
+            'Tgl. BPKB',
+            'No. BPKB',
             'Harga',
             'Keterangan',
         ];
@@ -75,7 +79,7 @@ class AsetGedungExport implements FromCollection, WithMapping, ShouldAutoSize, W
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                $event->sheet->getStyle('A1:P1')->applyFromArray([
+                $event->sheet->getStyle('A1:Q1')->applyFromArray([
                     'font' => [
                         'bold' => true,
                     ],

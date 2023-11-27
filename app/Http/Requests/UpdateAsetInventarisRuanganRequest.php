@@ -24,16 +24,16 @@ class UpdateAsetInventarisRuanganRequest extends FormRequest
         return [
             'id_status_aset' => 'required|exists:status_aset,id_status_aset',
             'kode_ruangan' => 'required|exists:ruangan,kode_ruangan',
-            // 'kode_aset' => 'required|unique:aset_inventaris_ruangan,kode_aset',
-            'nama' => 'required',
+
+            'nama' => 'required|string',
             'tanggal_inventarisir' => 'nullable|date',
-            'merk' => 'required',
-            'volume' => 'required',
-            'bahan' => 'required',
-            'tahun' => 'required',
-            'harga' => 'required',
-            'keterangan' => 'required',
-            'jumlah' => 'required|integer',
+            'merk' => 'nullable|string',
+            'volume' => 'nullable|string',
+            'bahan' => 'nullable|string',
+            'tahun' => 'required|numeric|digits:4',
+            'harga' => 'required|numeric|min:0',
+            'keterangan' => 'required|string',
+            'jumlah' => 'nullable|numeric|min:1',
         ];
     }
 }

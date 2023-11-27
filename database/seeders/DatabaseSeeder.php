@@ -82,6 +82,9 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'kendaraan.edit']);
         Permission::create(['name' => 'kendaraan.update']);
         Permission::create(['name' => 'kendaraan.destroy']);
+        Permission::create(['name' => 'kendaraan.importExcel']);
+        Permission::create(['name' => 'kendaraan.exportExcel']);
+        Permission::create(['name' => 'kendaraan.exportPdf']);
 
         Permission::create(['name' => 'inventaris.index']);
         Permission::create(['name' => 'inventaris.indexMassal']);
@@ -93,6 +96,9 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'inventaris.update']);
         Permission::create(['name' => 'inventaris.destroy']);
         Permission::create(['name' => 'inventaris.destroyMassal']);
+        Permission::create(['name' => 'inventaris.importExcel']);
+        Permission::create(['name' => 'inventaris.exportExcel']);
+        Permission::create(['name' => 'inventaris.exportPdf']);
 
         Permission::create(['name' => 'getAset']);
         Permission::create(['name' => 'addAset']);
@@ -188,6 +194,9 @@ class DatabaseSeeder extends Seeder
         $rolePetugas->givePermissionTo('kendaraan.edit');
         $rolePetugas->givePermissionTo('kendaraan.update');
         $rolePetugas->givePermissionTo('kendaraan.destroy');
+        $rolePetugas->givePermissionTo('kendaraan.importExcel');
+        $rolePetugas->givePermissionTo('kendaraan.exportExcel');
+        $rolePetugas->givePermissionTo('kendaraan.exportPdf');
 
         $rolePetugas->givePermissionTo('inventaris.index');
         $rolePetugas->givePermissionTo('inventaris.indexMassal');
@@ -199,6 +208,9 @@ class DatabaseSeeder extends Seeder
         $rolePetugas->givePermissionTo('inventaris.update');
         $rolePetugas->givePermissionTo('inventaris.destroy');
         $rolePetugas->givePermissionTo('inventaris.destroyMassal');
+        $rolePetugas->givePermissionTo('inventaris.importExcel');
+        $rolePetugas->givePermissionTo('inventaris.exportExcel');
+        $rolePetugas->givePermissionTo('inventaris.exportPdf');
 
         $rolePetugas->givePermissionTo('verifikasiPeminjaman');
         $rolePetugas->givePermissionTo('verifikasiPeminjamanDetails');

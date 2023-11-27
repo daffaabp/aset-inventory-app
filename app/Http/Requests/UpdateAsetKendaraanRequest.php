@@ -23,26 +23,26 @@ class UpdateAsetKendaraanRequest extends FormRequest
     {
         return [
             'id_status_aset' => 'required|exists:status_aset,id_status_aset',
-            // 'kode_aset' => 'required|unique:aset_kendaraan',
-            'nama' => 'required',
-            'tanggal_inventarisir' => 'nullable|date',
-            'merk' => 'required',
-            'type' => 'required',
-            'cylinder' => 'required',
-            'warna' => 'required',
-            'no_rangka' => 'required',
-            'no_mesin' => 'required',
-            'thn_pembuatan' => 'required|date_format:Y',
-            'thn_pembelian' => 'required|date_format:Y',
-            'no_polisi' => 'required|unique:aset_kendaraan',
-            'tgl_bpkb' => 'required|date',
-            'no_bpkb' => 'required',
+
+            'nama' => 'required|string|max:50',
+            'tanggal_inventarisir' => 'required|date',
+            'merk' => 'required|string',
+            'type' => 'required|string',
+            'cylinder' => 'required|numeric',
+            'warna' => 'required|string',
+            'no_rangka' => 'required|string',
+            'no_mesin' => 'required|string',
+            'thn_pembuatan' => 'required|numeric|digits:4',
+            'thn_pembelian' => 'required|numeric|digits:4',
+            'no_polisi' => 'required|unique|string',
+            'tgl_bpkb' => 'nullable|date',
+            'no_bpkb' => 'nullable|string',
             'harga' => [
                 'required',
-                'integer',
+                'numeric',
                 'min:0',
             ],
-            'keterangan' => 'nullable',
+            'keterangan' => 'required|string',
         ];
     }
 }

@@ -72,7 +72,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Cylinder</label>
-                                            <input type="text" class="form-control" name="cylinder"
+                                            <input type="number" class="form-control" name="cylinder"
                                                 value="{{ $aset_kendaraan->cylinder }}">
                                         </div>
                                     </div>
