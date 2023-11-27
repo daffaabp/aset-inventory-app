@@ -79,7 +79,7 @@ class AsetKendaraanExport implements FromCollection, WithMapping, ShouldAutoSize
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                $event->sheet->getStyle('A1:Q1')->applyFromArray([
+                $event->sheet->getStyle('A1:R1')->applyFromArray([
                     'font' => [
                         'bold' => true,
                     ],

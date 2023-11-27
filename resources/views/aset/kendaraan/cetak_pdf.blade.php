@@ -76,7 +76,6 @@
                     <th>No. BPKB</th>
                     <th>Harga</th>
                     <th>Keterangan</th>
-                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -96,7 +95,7 @@
                         <td>{{ $row->thn_pembuatan }}</td>
                         <td>{{ $row->thn_pembelian }}</td>
                         <td>{{ $row->no_polisi }}</td>
-                        <td>{{ $row->tgl_bpkb }}</td>
+                        <td>{{ \Carbon\Carbon::parse($row->tgl_bpkb)->isoFormat('D MMMM Y') }}</td>
                         <td>{{ $row->no_bpkb }}</td>
                         <td>{{ formatRupiah($row->harga, true) }}</td>
                         <td>{{ $row->keterangan }}</td>

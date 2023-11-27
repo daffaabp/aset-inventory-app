@@ -9,7 +9,7 @@ use App\Http\Requests\UpdateAsetKendaraanRequest;
 use App\Imports\AsetKendaraanImport;
 use App\Models\AsetKendaraan;
 use App\Models\StatusAset;
-use Barryvdh\DomPDF\PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 
 class AsetKendaraanController extends Controller
@@ -38,9 +38,7 @@ class AsetKendaraanController extends Controller
     public function store(StoreAsetKendaraanRequest $request)
     {
         $validated = $request->validated();
-        // echo '<pre>';
-        // print_r($validated);
-        // die;
+
         try {
             // Mendapatkan data yang diperlukan dari request
             $namaKendaraan = $validated['nama'];

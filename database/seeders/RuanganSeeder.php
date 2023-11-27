@@ -92,13 +92,13 @@ class RuanganSeeder extends Seeder
             ],
 
             [
-                'kode_ruangan' => 'O',
+                'kode_ruangan' => 'N',
                 'nama' => 'Gudang Arsip',
                 'lokasi' => 'Kwarcab Banyumas',
             ],
 
             [
-                'kode_ruangan' => 'P',
+                'kode_ruangan' => 'O',
                 'nama' => 'Kamar Penjaga Kwarcab',
                 'lokasi' => 'Kwarcab Banyumas',
             ],

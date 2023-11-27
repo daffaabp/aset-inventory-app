@@ -61,6 +61,7 @@
                     <th>No</th>
                     <th>Status Aset</th>
                     <th>Kode Aset</th>
+                    <th>Nama Ruangan</th>
                     <th>Nama</th>
                     <th>Tanggal Inventarisir</th>
                     <th>Merk</th>
@@ -78,6 +79,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $row->statusAset->status_aset }}</td>
                         <td>{{ $row->kode_aset }}</td>
+                        <td>{{ $row->ruangan->nama }}</td>
                         <td>{{ $row->nama }}</td>
                         <td>{{ \Carbon\Carbon::parse($row->tanggal_inventarisir)->isoFormat('D MMMM Y') }}</td>
                         <td>{{ $row->merk }}</td>

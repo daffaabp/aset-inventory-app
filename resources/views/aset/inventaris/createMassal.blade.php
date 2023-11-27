@@ -57,7 +57,6 @@
                                     <label>Nama</label>
                                     <input type="text" class="form-control" name="nama" autocomplete="off" autofocus>
                                 </div>
-
                             </div>
 
                             <div class="col-md-6">

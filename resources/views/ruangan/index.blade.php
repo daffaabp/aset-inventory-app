@@ -19,9 +19,6 @@
 
                     <div class="page-header">
                         <div class="row align-items-center">
-                            <div class="col">
-                                <h3 class="page-title"></h3>
-                            </div>
                             <div class="col-auto text-end float-end ms-auto download-grp">
                                 <a href="{{ route('ruangan.create') }}" class="btn btn-outline-primary me-2"><i
                                         class="fas fa-plus"></i></i>
@@ -31,7 +28,8 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table mb-0 border-0 star-student table-hover table-center datatable table-striped">
+                        <table
+                            class="table mb-0 border-0 table-bordered star-student table-hover table-center datatable table-stripped">
                             <thead>
                                 <tr>
                                     <th>Kode Ruangan</th>
@@ -42,10 +40,6 @@
                             </thead>
                             <tbody>
                                 @foreach ($ruangan as $ruang)
-                                    <?php
-                                    // print_r($ruang->kode_ruangan);
-                                    // die();
-                                    ?>
                                     <tr>
                                         <td>{{ $ruang->kode_ruangan }}</td>
                                         <td>{{ $ruang->nama }}</td>
@@ -62,6 +56,7 @@
                                                 <button type="submit" class="btn btn-danger">Hapus</button>
                                             </form>
                                         </td>
+
                                     </tr>
                                 @endforeach
                             </tbody>

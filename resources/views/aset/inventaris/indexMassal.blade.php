@@ -35,6 +35,7 @@
                                         <th>No</th>
                                         <th>Grup Id</th>
                                         <th>Nama</th>
+                                        <th>Ruangan</th>
                                         <th>Merk</th>
                                         <th>Jumlah</th>
                                         <th>Aksi</th>
@@ -46,6 +47,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $inventaris->grup_id }}</td>
                                             <td>{{ $inventaris->nama }}</td>
+                                            <td>{{ $inventaris->nama_ruangan }}</td>
                                             <td>{{ $inventaris->merk }}</td>
                                             <td>{{ $inventaris->total_jumlah }}</td>
                                             <td>
@@ -55,7 +57,8 @@
                                                         method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger">Hapus</button>
+                                                        <button type="submit" class="btn btn-danger"
+                                                            onclick="return confirm('Apakah Anda yakin ingin menghapus massal?')">Hapus</button>
                                                     </form>
                                                 @else
                                                     <span>Tidak dapat dihapus</span>

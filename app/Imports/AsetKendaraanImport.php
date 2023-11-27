@@ -6,7 +6,6 @@ use App\Imports\AsetKendaraanImport;
 use App\Models\AsetKendaraan;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
@@ -26,9 +25,24 @@ class AsetKendaraanImport implements ToModel, WithHeadingRow, WithValidation, Sk
      */
     public function model(array $row)
     {
-        if (empty($row['kode_aset'])) {
+        if (empty($row['nama'])) {
             return null;
         }
+
+        $namaKendaraan = $row['nama'];
+        $thnPembelian = $row['thn_pembelian'];
+
+        // Menghitung jumlah kendaraan dengan jenis yang sama
+        $countKendaraan = AsetKendaraan::where('nama', $namaKendaraan)->count() + 1;
+
+        // Menentukan kode jenis kendaraan
+        $kodeJenisKendaraan = ($namaKendaraan == 'Sepeda Motor') ? 'MT' : 'MB';
+
+        // Membuat kode urutan dengan format 4 digit (0001 - 9999)
+        $kodeUrutan = str_pad($countKendaraan, 4, '0', STR_PAD_LEFT);
+
+        // Membuat kode kendaraan
+        $kodeKendaraan = '02.03.' . $kodeJenisKendaraan . '.' . $thnPembelian . '.' . $kodeUrutan;
 
         $validator = Validator::make($row, $this->rules(), $this->customValidationMessages());
 
@@ -58,7 +72,7 @@ class AsetKendaraanImport implements ToModel, WithHeadingRow, WithValidation, Sk
 
         return new AsetKendaraan([
             'id_status_aset' => $statusId,
-            'kode_aset' => $row['kode_aset'],
+            'kode_aset' => $kodeKendaraan,
             'nama' => $row['nama'],
             'tanggal_inventarisir' => $tanggalInventarisir,
             'merk' => $row['merk'],
@@ -81,12 +95,7 @@ class AsetKendaraanImport implements ToModel, WithHeadingRow, WithValidation, Sk
     {
         return [
             'id_status_aset' => 'required|in:Tersedia,Dipinjam,Rusak',
-            'kode_aset' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('aset_kendaraan', 'kode_aset'),
-            ],
+
             'nama' => 'required|string|max:50',
             'tanggal_inventarisir' => 'required|date_format:d/m/Y',
             'merk' => 'required|string|max:255',
@@ -113,9 +122,7 @@ class AsetKendaraanImport implements ToModel, WithHeadingRow, WithValidation, Sk
     {
         return [
             'id_status_aset.required' => 'Status Aset harus diisi dan bernilai Tersedia, Dipinjam, atau Rusak.',
-            'kode_aset.required' => 'Kode Aset harus diisi',
-            'kode_aset.unique' => 'Kode Aset sudah ada di database',
-            'kode_aset.string' => 'Kode Aset harus bertipe string',
+
             'nama.required' => 'Nama Aset harus diisi',
             'nama.string' => 'Nama Aset harus bertipe string',
             'tanggal_inventarisir.required' => 'Tanggal Inventarisir wajib diisi',

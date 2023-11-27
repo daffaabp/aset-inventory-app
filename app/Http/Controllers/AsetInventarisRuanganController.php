@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Exports\AsetInventarisExport;
+use App\Http\Requests\AsetInventarisImportRequest;
 use App\Http\Requests\StoreAsetInventarisRuanganRequest;
 use App\Http\Requests\StoreMassalAsetInventarisRuanganRequest;
 use App\Http\Requests\UpdateAsetInventarisRuanganRequest;
+use App\Imports\AsetInventarisImport;
 use App\Models\AsetInventarisRuangan;
 use App\Models\RiwayatPeminjamanInventarisRuangan;
 use App\Models\Ruangan;
@@ -24,10 +26,11 @@ class AsetInventarisRuanganController extends Controller
 
     public function indexMassal()
     {
-        $asetInventaris = AsetInventarisRuangan::select('grup_id', 'nama', 'merk', DB::raw('SUM(jumlah) as total_jumlah'))
-            ->groupBy('grup_id', 'nama', 'merk')
-            ->whereNotNull('grup_id') // Hanya aset dengan grup_id yang tidak null
-            ->whereNotIn('grup_id', function ($subquery) {
+        $asetInventaris = AsetInventarisRuangan::select('aset_inventaris_ruangan.grup_id', 'aset_inventaris_ruangan.nama', 'aset_inventaris_ruangan.merk', 'ruangan.nama as nama_ruangan', DB::raw('SUM(aset_inventaris_ruangan.jumlah) as total_jumlah'))
+            ->join('ruangan', 'aset_inventaris_ruangan.kode_ruangan', '=', 'ruangan.kode_ruangan')
+            ->groupBy('aset_inventaris_ruangan.grup_id', 'aset_inventaris_ruangan.nama', 'aset_inventaris_ruangan.merk', 'ruangan.nama')
+            ->whereNotNull('aset_inventaris_ruangan.grup_id') // Hanya aset dengan grup_id yang tidak null
+            ->whereNotIn('aset_inventaris_ruangan.grup_id', function ($subquery) {
                 $subquery->select('grup_id')
                     ->from('riwayat_peminjaman_inventaris_ruangan')
                     ->whereColumn('riwayat_peminjaman_inventaris_ruangan.grup_id', 'aset_inventaris_ruangan.grup_id')
@@ -56,9 +59,7 @@ class AsetInventarisRuanganController extends Controller
     {
         // Validasi telah dihandle oleh middleware
         $validated = $request->validated();
-        // echo '<pre>';
-        // print_r($validated);
-        // die;
+
         try {
             $kodeRuangan = $validated['kode_ruangan'];
 
@@ -111,9 +112,7 @@ class AsetInventarisRuanganController extends Controller
     {
         // Validasi telah dihandle oleh middleware
         $validated = $request->validated();
-        // echo '<pre>';
-        // print_r($validated);
-        // die;
+
         try {
 
             $kodeRuangan = $validated['kode_ruangan'];
@@ -209,6 +208,48 @@ class AsetInventarisRuanganController extends Controller
             ->with('success', 'Data aset inventaris berhasil dihapus.');
     }
 
+    public function importExcel(AsetInventarisImportRequest $request)
+    {
+        $file = $request->file('file');
+
+        try {
+            DB::beginTransaction();
+
+            // Validasi file
+            $file->store('public/import');
+
+            // Lakukan impor
+            $import = new AsetInventarisImport;
+            $import->import($file);
+
+            // Periksa kegagalan impor
+            if ($import->failures()->isNotEmpty()) {
+                // Batalkan transaksi jika ada kegagalan
+                DB::rollBack();
+
+                // Berikan umpan balik ke pengguna tentang kegagalan
+                return back()
+                    ->withFailures($import->failures())
+                    ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
+            }
+            // Mendapatkan jumlah baris yang berhasil diimpor
+            $importedRowCount = $import->getRowCount();
+
+            // Commit transaksi jika sukses
+            DB::commit();
+
+            // Berikan umpan balik sukses ke pengguna
+            return redirect()->route('inventaris.index')
+                ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
+
+        } catch (\Exception $e) {
+            // Tangani exception jika terjadi kesalahans
+            DB::rollBack();
+
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
     public function exportExcel()
     {
         return (new AsetInventarisExport)->download('aset_inventaris_ruangan.xlsx');
@@ -216,7 +257,7 @@ class AsetInventarisRuanganController extends Controller
 
     public function exportPdf()
     {
-        $aset_inventaris = AsetInventarisRuangan::with('statusAset')->get();
+        $aset_inventaris = AsetInventarisRuangan::with(['statusAset', 'ruangan'])->get();
 
         $pdf = PDF::loadview('aset.inventaris.cetak_pdf', [
             'aset_inventaris' => $aset_inventaris,

@@ -75,7 +75,7 @@
                             <div class="col-auto text-end float-end ms-auto download-grp">
                                 <a href="{{ route('gedung.create') }}" class="btn btn-outline-primary me-2"><i
                                         class="fas fa-plus"></i></i>
-                                    Tambah Aset Gedung</a>
+                                    Tambah Aset</a>
 
                                 <button type="button" class="btn btn-success btn-md me-1" data-bs-toggle="modal"
                                     data-bs-target="#import-modal" data-class="import-excel"><i

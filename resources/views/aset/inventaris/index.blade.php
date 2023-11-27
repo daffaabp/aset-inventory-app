@@ -19,22 +19,23 @@
 
                     <div class="page-header">
                         <div class="row align-items-center">
-                            <div class="col">
-                                <h3 class="page-title"></h3>
-                            </div>
                             <div class="col-auto text-end float-end ms-auto download-grp">
                                 <a href="{{ route('inventaris.create') }}" class="btn btn-outline-primary me-2"><i
                                         class="fas fa-plus"></i></i>
-                                    Tambah Aset Inventaris</a>
+                                    Tambah Aset</a>
 
                                 <a href="{{ route('inventaris.createMassal') }}" class="btn btn-info btn-outline-info me-2"
                                     style="color: white"><i class="fas fa-plus"></i></i>
-                                    Tambah Massal Aset Inventaris</a>
+                                    Tambah Aset Massal</a>
 
-                                <a href="{{ route('inventaris.indexMassal') }}"
-                                    class="btn btn-secondary btn-outline-secondary me-2" style="color: white"><i
-                                        class="fas fa-minus"></i></i>
-                                    Hapus Massal Aset Inventaris</a>
+                                <a href="{{ route('inventaris.indexMassal') }}" class="btn btn-dark btn-outline-dark me-2"
+                                    style="color: white"><i class="fas fa-minus"></i></i>
+                                    Hapus Massal Aset</a>
+
+                                <button type="button" class="btn btn-success btn-md me-1" data-bs-toggle="modal"
+                                    data-bs-target="#import-modal" data-class="import-excel"><i
+                                        class="fas fa-file-import"></i>
+                                    Import Excel</button>
 
                                 <a href="{{ route('inventaris.exportExcel') }}" class="btn btn-warning btn-md me-1"><i
                                         class="fas fa-file-export"></i>
@@ -44,6 +45,11 @@
                                 <a href="{{ route('inventaris.exportPdf') }}" class="btn btn-danger btn-md me-1"
                                     target="_blank"><i class="fas fa-file-pdf"></i>
                                     Export PDF
+                                </a>
+
+                                <a href="{{ asset('templates/template_aset_inventaris_ruangan.xlsx') }}"
+                                    class="btn btn-secondary me-1" download><i class="fa fa-file-excel"></i>
+                                    Unduh Template Excel
                                 </a>
                             </div>
                         </div>
@@ -101,7 +107,8 @@
                     @endif
 
                     <div class="table-responsive">
-                        <table class="table mb-0 border-0 table-bordered star-student table-hover table-center datatable table-stripped">
+                        <table
+                            class="table mb-0 border-0 table-bordered star-student table-hover table-center datatable table-stripped">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -158,6 +165,49 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="import-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle" style="padding-left: 30px;">Import File Excel Aset Inventaris
+                        Ruangan
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mt-2 mb-4 text-center">
+                        <div class="auth-logo" style="margin-top: -20px;">
+                            <a href="{{ route('dashboard') }}" class="logo logo-dark">
+                                <span class="logo-lg">
+                                    <img src="{{ url('assets/img/logo_lengkap_sip_aset.png') }}" alt=""
+                                        height="60">
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <form action="{{ route('inventaris.importExcel') }}" method="POST" enctype="multipart/form-data"
+                        class="px-3">
+                        @csrf
+                        <div class="mb-3" style="margin-top: -20px;">
+                            <label class="form-label">Pilih File (harus berupa .xlsx)</label>
+                            <input type="file" class="form-control" name="file" accept=".xlsx, .xls"
+                                placeholder="Masukkan file excel anda">
+
+                            @error('file')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-2 text-right">
+                            <button class="btn btn-success" type="submit">Import Excel</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
