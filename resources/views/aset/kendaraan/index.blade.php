@@ -34,12 +34,12 @@
 
                                 <a href="{{ route('kendaraan.exportExcel') }}" class="btn btn-warning btn-md me-1"><i
                                         class="fas fa-file-export"></i>
-                                    Export Excel
+                                    Cetak Excel
                                 </a>
 
                                 <a href="{{ route('kendaraan.exportPdf') }}" class="btn btn-danger btn-md me-1"
                                     target="_blank"><i class="fas fa-file-pdf"></i>
-                                    Export PDF
+                                    Cetak PDF
                                 </a>
 
                                 <a href="{{ asset('templates/template_aset_kendaraan.xlsx') }}"

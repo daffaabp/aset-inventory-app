@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\AsetInventarisExport;
 use App\Http\Requests\AsetInventarisImportRequest;
+use App\Http\Requests\ExportPdfRequest;
 use App\Http\Requests\StoreAsetInventarisRuanganRequest;
 use App\Http\Requests\StoreMassalAsetInventarisRuanganRequest;
 use App\Http\Requests\UpdateAsetInventarisRuanganRequest;
@@ -21,7 +22,10 @@ class AsetInventarisRuanganController extends Controller
     public function index()
     {
         $asetInventaris = AsetInventarisRuangan::with(['statusAset', 'ruangan'])->get();
-        return view('aset.inventaris.index', compact('asetInventaris'));
+        // Ambil daftar ruangan dari model Ruangan atau sumber data lainnya
+        $daftarRuangan = Ruangan::all(); // Gantilah sesuai model atau sumber data yang sesuai
+
+        return view('aset.inventaris.index', compact('asetInventaris', 'daftarRuangan'));
     }
 
     public function indexMassal()
@@ -255,12 +259,39 @@ class AsetInventarisRuanganController extends Controller
         return (new AsetInventarisExport)->download('aset_inventaris_ruangan.xlsx');
     }
 
-    public function exportPdf()
+    public function exportPdf(ExportPdfRequest $request)
     {
-        $aset_inventaris = AsetInventarisRuangan::with(['statusAset', 'ruangan'])->get();
+        $query = AsetInventarisRuangan::with(['statusAset', 'ruangan'])
+            ->orderBy('grup_id'); // Urutkan berdasarkan grup_id agar yang sama berada bersamaan
+
+        // Lakukan pengecekan opsi yang dipilih
+        if ($request->opsi === 'Berdasarkan Ruang') {
+            $ruangan_id = $request->ruangan_id;
+
+            $query->where('kode_ruangan', $ruangan_id);
+            if ($request->filled('tahun_perolehan2')) {
+                $tahun_perolehan2 = $request->tahun_perolehan2;
+                $query->where('tahun', $tahun_perolehan2);
+            }
+        } elseif ($request->opsi === 'Data Tahun Ini') {
+            $query->where('tahun', now()->year);
+        } elseif ($request->opsi === 'Berdasarkan Tahun Perolehan') {
+            $tahun_perolehan = $request->tahun_perolehan;
+            $query->where('tahun', $tahun_perolehan);
+        }
+
+        $aset_inventaris = $query->get();
+
+        // Periksa jika tidak ada hasil
+        if ($aset_inventaris->isEmpty()) {
+            return redirect()->back()->with('error', 'Data yang dicari tidak ditemukan.');
+        }
+
+        // Gunakan koleksi untuk menyusun ulang data dengan logika yang diinginkan
+        $groupedAsets = $aset_inventaris->groupBy('grup_id');
 
         $pdf = PDF::loadview('aset.inventaris.cetak_pdf', [
-            'aset_inventaris' => $aset_inventaris,
+            'groupedAsets' => $groupedAsets,
         ])->setPaper('a4', 'landscape');
 
         return $pdf->stream('aset_inventaris_ruangan.pdf');

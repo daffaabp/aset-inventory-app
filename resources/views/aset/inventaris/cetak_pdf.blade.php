@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Cetak Aset Inventaris Ruangan PDF</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         body {
             margin: 0;
@@ -21,7 +19,7 @@
         * {
             margin: 0;
             padding: 0;
-            font-size: 8.4px;
+            font-size: 8.6px;
         }
 
         .page {
@@ -53,7 +51,33 @@
 
 <body>
     <div class="page">
-        <h1 style="font-size: 20px; text-align: center;">Data Aset Inventaris Ruangan</h1>
+        <p style="text-align: center;"><b><u style="font-size: 12px;">DAFTAR INVENTARIS BARANG</u></b></p>
+        <br>
+        <p style="text-align: center; font-size: 12px; margin-top: -10px;">IV. INVENTARIS RUANGAN</p>
+
+        <table border="0" cellspacing="3" cellpadding="0">
+            <tr>
+                <td>PROVINSI</td>
+                <td> :</td>
+                <td>JAWA TENGAH</td>
+            </tr>
+            <tr>
+                <td>KABUPATEN</td>
+                <td> :</td>
+                <td>BANYUMAS</td>
+            </tr>
+            <tr>
+                <td>UNIT</td>
+                <td> :</td>
+                <td>KWARCAB BANYUMAS</td>
+            </tr>
+            <tr>
+                <td>SATUAN</td>
+                <td> :</td>
+                <td>KWARCAB BANYUMAS</td>
+            </tr>
+        </table>
+        <br>
 
         <table id="table">
             <thead>
@@ -74,36 +98,47 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($aset_inventaris as $row)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $row->statusAset->status_aset }}</td>
-                        <td>{{ $row->kode_aset }}</td>
-                        <td>{{ $row->ruangan->nama }}</td>
-                        <td>{{ $row->nama }}</td>
-                        <td>{{ \Carbon\Carbon::parse($row->tanggal_inventarisir)->isoFormat('D MMMM Y') }}</td>
-                        <td>{{ $row->merk }}</td>
-                        <td>{{ $row->volume }}</td>
-                        <td>{{ $row->bahan }}</td>
-                        <td>{{ $row->tahun }}</td>
-                        <td>{{ formatRupiah($row->harga, true) }}</td>
-                        <td>{{ $row->jumlah }}</td>
-                        <td>{{ $row->keterangan }}</td>
-                    </tr>
+                @foreach ($groupedAsets as $grupId => $asets)
+                    @if ($grupId)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $asets->first()->statusAset->status_aset }}</td>
+                            <td>{{ $asets->first()->kode_aset . ' - ' . $asets->last()->kode_aset }}</td>
+                            <td>{{ $asets->first()->ruangan->nama }}</td>
+                            <td>{{ $asets->first()->nama }}</td>
+                            <td>{{ $asets->first()->tanggal_inventarisir }}</td>
+                            <td>{{ $asets->first()->merk }}</td>
+                            <td>{{ $asets->first()->volume }}</td>
+                            <td>{{ $asets->first()->bahan }}</td>
+                            <td>{{ $asets->first()->tahun }}</td>
+                            <td>{{ $asets->first()->harga }}</td>
+                            <td>{{ $asets->sum('jumlah') }}</td>
+                            <td>{{ $asets->first()->keterangan }}</td>
+                        </tr>
+                    @else
+                        @foreach ($asets as $aset)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $aset->statusAset->status_aset }}</td>
+                                <td>{{ $aset->kode_aset }}</td>
+                                <td>{{ $aset->ruangan->nama }}</td>
+                                <td>{{ $aset->nama }}</td>
+                                <td>{{ $aset->tanggal_inventarisir }}</td>
+                                <td>{{ $aset->merk }}</td>
+                                <td>{{ $aset->volume }}</td>
+                                <td>{{ $aset->bahan }}</td>
+                                <td>{{ $aset->tahun }}</td>
+                                <td>{{ $aset->harga }}</td>
+                                <td>{{ $aset->jumlah }}</td>
+                                <td>{{ $aset->keterangan }}</td>
+                            </tr>
+                        @endforeach
+                    @endif
                 @endforeach
             </tbody>
         </table>
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
 
 </body>
 

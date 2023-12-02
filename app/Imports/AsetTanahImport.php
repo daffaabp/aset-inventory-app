@@ -92,7 +92,7 @@ class AsetTanahImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             'letak_tanah' => 'required|string|max:255',
             'hak' => 'required|string|max:255',
             'tanggal_sertifikat' => 'required|date_format:d/m/Y',
-            'no_sertifikat' => 'required|string|max:255',
+            'no_sertifikat' => 'nullable|string|max:255',
             'penggunaan' => 'required|string|max:255',
             'harga' => [
                 'required',
@@ -118,7 +118,7 @@ class AsetTanahImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             'hak.required' => 'Hak tanah wajib diisi',
             'tanggal_sertifikat.required' => 'Tanggal sertifikat wajib diisi',
             'tanggal_sertifikat.date_format' => 'Format tanggal sertifikat harus dd/mm/yyyy',
-            'no_sertifikat.required' => 'No sertifikat wajib diisi',
+            'no_sertifikat.nullable' => 'No sertifikat tidak wajib diisi',
             'penggunaan.required' => 'Penggunaan wajib diisi',
             'harga.required' => 'Harga wajib diisi',
             'harga.numeric' => 'Harga harus bertipe numeric',

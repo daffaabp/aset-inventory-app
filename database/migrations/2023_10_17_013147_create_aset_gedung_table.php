@@ -24,9 +24,9 @@ return new class extends Migration
             $table->decimal('luas_lantai');
             $table->string('lokasi');
             $table->integer('tahun_dok');
-            $table->string('nomor_dok');
+            $table->string('nomor_dok')->nullable();
             $table->decimal('luas');
-            $table->enum('hak', ['HGB', 'Milik']);
+            $table->string('hak');
             $table->integer('harga');
             $table->string('keterangan');
             $table->timestamps();

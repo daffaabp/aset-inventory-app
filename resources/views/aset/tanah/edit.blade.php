@@ -6,6 +6,7 @@
                 <h3 class="page-title">Ubah Aset Tanah</h3>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Beranda</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('tanah.index') }}">Ubah Aset Tanah</a></li>
                     <li class="breadcrumb-item active">Ubah Aset Tanah</li>
                 </ul>
             </div>
@@ -27,14 +28,18 @@
                                 <input type="hidden" name="id_aset_tanah" value="{{ $aset_tanah->id_aset_tanah }}">
                                 <div class="form-group">
                                     <label>Status Tanah</label>
-                                    <select name="id_status_aset" class="form-select" id="id_status_aset">
+                                    <select name="id_status_aset"
+                                        class="form-select @error('status_aset') is-invalid @enderror">
                                         <option selected disabled> --Pilih Status--</option>
                                         @foreach ($status_aset as $row)
                                             <option value="{{ $row->id_status_aset }}"
-                                                {{ $aset_tanah->id_status_aset == $row->id_status_aset ? 'selected' : '' }}>
+                                                {{ (old('id_status_aset') ? old('id_status_aset') : $aset_tanah->id_status_aset) == $row->id_status_aset ? 'selected' : '' }}>
                                                 {{ $row->status_aset }}</option>
                                         @endforeach
                                     </select>
+                                    @error('status_aset')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="form-group">
                                     <label>Kode Tanah</label>
@@ -43,23 +48,38 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Nama</label>
-                                    <input type="text" class="form-control" name="nama" autocomplete="off"
-                                        value="{{ $aset_tanah->nama }}">
+                                    <input type="text" class="form-control @error('nama') is-invalid @enderror"
+                                        name="nama" autocomplete="off" value="{{ old('nama', $aset_tanah->nama) }}">
+                                    @error('nama')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="form-group">
                                     <label>Tanggal Inventarisir</label>
-                                    <input type="date" class="form-control" name="tanggal_inventarisir"
-                                        autocomplete="off" value="{{ $aset_tanah->tanggal_inventarisir }}">
+                                    <input type="date"
+                                        class="form-control @error('tanggal_inventarisir') is-invalid @enderror"
+                                        name="tanggal_inventarisir" autocomplete="off"
+                                        value="{{ old('tanggal_inventarisir', $aset_tanah->tanggal_inventarisir) }}">
+                                    @error('tanggal_inventarisir')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="form-group">
                                     <label>Luas (m<sup>2</sup>)</label>
-                                    <input type="text" class="form-control" name="luas" autocomplete="off"
-                                        value="{{ $aset_tanah->luas }}">
+                                    <input type="text" class="form-control @error('luas') is-invalid @enderror"
+                                        name="luas" autocomplete="off" value="{{ old('luas', $aset_tanah->luas) }}">
+                                    @error('luas')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="form-group">
                                     <label>Letak Tanah</label>
-                                    <input type="text" class="form-control" name="letak_tanah"
-                                        value="{{ $aset_tanah->letak_tanah }}" autocomplete="off">
+                                    <input type="text" class="form-control @error('letak_tanah') is-invalid @enderror"
+                                        name="letak_tanah" value="{{ old('letak_tanah', $aset_tanah->letak_tanah) }}"
+                                        autocomplete="off">
+                                    @error('letak_tanah')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -68,23 +88,49 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Hak</label>
-                                            <input type="text" name="hak" class="form-control"
-                                                value="{{ $aset_tanah->hak }}" autocomplete="off">
+                                            <select class="form-control form-select @error('hak') is-invalid @enderror"
+                                                name="hak" value="{{ old('hak', $aset_tanah->hak) }}"
+                                                autocomplete="off" autofocus>
+                                                <option value="Hak Pakai" @if (old('hak') == 'Hak Pakai') selected @endif>
+                                                    Hak Pakai</option>
+                                                <option value="Hak Milik" @if (old('hak') == 'Hak Milik') selected @endif>
+                                                    Hak Milik</option>
+                                                <option value="Hak Guna Usaha"
+                                                    @if (old('hak') == 'Hak Guna Usaha') selected @endif>Hak Guna Usaha
+                                                </option>
+                                                <option value="Hak Guna Bangunan"
+                                                    @if (old('hak') == 'Hak Guna Bangunan') selected @endif>Hak Guna Bangunan
+                                                </option>
+                                                <option value="Hak Sewa" @if (old('hak') == 'Hak Sewa') selected @endif>
+                                                    Hak Sewa</option>
+                                            </select>
+                                            @error('hak')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Tanggal Sertifikat</label>
                                             <input type="date" name="tanggal_sertifikat"
-                                                value="{{ $aset_tanah->tanggal_sertifikat }}" class="form-control"
+                                                value="{{ old('tanggal_sertifikat', $aset_tanah->tanggal_sertifikat) }}"
+                                                class="form-control @error('tanggal_sertifikat') is-invalid @enderror"
                                                 autocomplete="off">
+                                            @error('tanggal_inventarisir')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Nomor Sertifikat</label>
-                                            <input type="text" name="no_sertifikat" class="form-control"
-                                                value="{{ $aset_tanah->no_sertifikat }}" autocomplete="off">
+                                            <input type="text" name="no_sertifikat"
+                                                class="form-control @error('no_sertifikat') is-invalid @enderror"
+                                                value="{{ old('no_sertifikat', $aset_tanah->no_sertifikat) }}"
+                                                autocomplete="off">
+                                            @error('no_sertifikat')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -92,8 +138,13 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Penggunaan</label>
-                                            <input type="text" name="penggunaan" class="form-control"
-                                                value="{{ $aset_tanah->penggunaan }}" autocomplete="off">
+                                            <input type="text" name="penggunaan"
+                                                class="form-control @error('penggunaan') is-invalid @enderror"
+                                                value="{{ old('penggunaan', $aset_tanah->penggunaan) }}"
+                                                autocomplete="off">
+                                            @error('penggunaan')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -101,8 +152,12 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Harga</label>
-                                            <input type="number" name="harga" class="form-control"
-                                                value="{{ $aset_tanah->harga }}" autocomplete="off">
+                                            <input type="number" name="harga"
+                                                class="form-control @error('harga') is-invalid @enderror"
+                                                value="{{ old('harga', $aset_tanah->harga) }}" autocomplete="off">
+                                            @error('harga')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -110,14 +165,15 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Keterangan</label>
-                                            <textarea name="keterangan" rows="4" cols="4" class="form-control" placeholder="Masukkan Keterangan...">{{ $aset_tanah->keterangan }}</textarea>
+                                            <textarea name="keterangan" rows="4" cols="4"
+                                                class="form-control @error('keterangan') is-invalid @enderror" placeholder="Masukkan Keterangan...">{{ old('keterangan', $aset_tanah->keterangan) }}</textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
                         </div>
                     </form>
                 </div>

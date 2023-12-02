@@ -22,26 +22,67 @@ class UpdateAsetGedungRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_aset_gedung' => 'required',
             'id_status_aset' => 'required',
-            // 'kode_aset' => 'required|unique:aset_gedung,kode_aset',
-            'nama' => 'required',
+
+            'nama' => 'required|string',
             'tanggal_inventarisir' => 'nullable|date',
-            'kondisi' => 'required',
-            'bertingkat' => 'required',
-            'beton' => 'required',
-            'luas_lantai' => 'required',
-            'lokasi' => 'required',
-            'tahun_dok' => 'required|digits:4',
+            'kondisi' => 'required|string|max:255',
+            'bertingkat' => 'required|string|max:255',
+            'beton' => 'required|string|max:255',
+            'luas_lantai' => 'required|numeric|min:0',
+            'lokasi' => 'required|string|max:255',
+            'tahun_dok' => 'required|numeric|digits:4',
             'nomor_dok' => 'required|string',
-            'luas' => 'required',
-            'hak' => 'required',
+            'luas' => 'required|numeric|min:0',
+            'hak' => 'required|string|max:255',
             'harga' => [
                 'required',
                 'integer',
                 'min:0',
             ],
-            'keterangan' => 'required',
+            'keterangan' => 'required|string|max:255',
         ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'id_status_aset.required' => 'Status Aset wajib diisi',
+
+            'nama.required' => 'Nama Aset harus diisi',
+            'tanggal_inventarisir.required' => 'Tanggal Inventarisir wajib diisi',
+            'kondisi.required' => 'Kondisi Aset harus diisi',
+            'kondisi.string' => 'Kondisi Aset harus bertipe string',
+            'bertingkat.required' => 'Bertingkat harus diisi',
+            'bertingkat.string' => 'Bertingkat harus bertipe string',
+            'beton.required' => 'Beton harus diisi',
+            'beton.string' => 'Beton harus bertipe string',
+            'luas_lantai.required' => 'Luas lantai wajib diisi',
+            'luas_lantai.numeric' => 'Luas lantai harus bertipe numerik',
+            'luas_lantai.min' => 'Luas lantai tidak boleh bernilai negatif',
+            'lokasi.required' => 'Lokasi wajib diisi',
+            'lokasi.string' => 'Lokasi harus bertipe string',
+            'tahun_dok.required' => 'Tahun Dokumen wajib diisi',
+            'tahun_dok.numeric' => 'Tahun Dokumen harus bertipe numerik',
+            'tahun_dok.digits' => 'Tahun Dokumen harus minimal 4 digit',
+            'nomor_dok.required' => 'Nomor dokumen wajib diisi',
+            'nomor_dok.string' => 'Nomor dokumen harus bertipe string',
+            'luas.required' => 'Luas wajib diisi',
+            'luas.numeric' => 'Luas harus bertipe numerik',
+            'luas.min' => 'Luas tidak boleh bernilai negatif',
+            'hak.required' => 'Hak wajib diisi',
+            'hak.string' => 'Hak harus bertipe string',
+            'harga.required' => 'Harga wajib diisi, jika tidak ada masukkan angka 0',
+            'harga.numeric' => 'Harga harus bertipe numerik',
+            'harga.min' => 'Harga tidak boleh bernilai negatif',
+            'keterangan.required' => 'Keterangan wajib diisi, jika kosong maka tuliskan (-)',
+            'keterangan.string' => 'Keterangan harus bertipe string',
+        ];
+
     }
 }

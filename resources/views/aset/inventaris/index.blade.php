@@ -39,13 +39,12 @@
 
                                 <a href="{{ route('inventaris.exportExcel') }}" class="btn btn-warning btn-md me-1"><i
                                         class="fas fa-file-export"></i>
-                                    Export Excel
+                                    Cetak Excel
                                 </a>
 
-                                <a href="{{ route('inventaris.exportPdf') }}" class="btn btn-danger btn-md me-1"
-                                    target="_blank"><i class="fas fa-file-pdf"></i>
-                                    Export PDF
-                                </a>
+                                <button type="button" class="btn btn-danger btn-md me-1" data-bs-toggle="modal"
+                                    data-bs-target="#export-pdf" data-class="export-pdf"><i class="fas fa-file-import"></i>
+                                    Cetak PDF</button>
 
                                 <a href="{{ asset('templates/template_aset_inventaris_ruangan.xlsx') }}"
                                     class="btn btn-secondary me-1" download><i class="fa fa-file-excel"></i>
@@ -55,10 +54,10 @@
                         </div>
                     </div>
 
-                    @if (session()->has('success'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('success') }}
-                        </div>
+                    @if (session()->has('error'))
+                        <script>
+                            toastr.error("{{ session('error') }}");
+                        </script>
                     @endif
 
                     @if (isset($errors) && $errors->any())
@@ -212,11 +211,78 @@
             </div>
         </div>
     </div>
+
+    <div id="export-pdf" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Cetak Laporan Aset Inventaris
+                        Ruangan
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('inventaris.exportPdf') }}" method="GET" enctype="multipart/form-data"
+                        class="px-3" id="export-pdf-form">
+                        @csrf
+                        <div class="form-group">
+                            <label>Pilih Opsi</label>
+                            <select id="opsi" class="form-control form-select" name="opsi" autocomplete="off"
+                                autofocus>
+                                <option value="Semua Data">Semua Data</option>
+                                <option value="Data Tahun Ini">Data Tahun Ini</option>
+                                <option value="Berdasarkan Ruang">Berdasarkan Ruangan</option>
+                                <option value="Berdasarkan Tahun Perolehan">Berdasarkan Tahun Perolehan</option>
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown ruangan -->
+                        <div id="ruanganDropdown" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Ruangan</label>
+                            <select class="form-control" name="ruangan_id">
+                                @foreach ($daftarRuangan as $ruangan)
+                                    <option value="{{ $ruangan->kode_ruangan }}">{{ $ruangan->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan input tahun -->
+                        <div id="tahunDropdown" class="form-group  @error('tahun_perolehan') is-invalid @enderror"
+                            style="display: none;">
+                            <label class="form-label">Tahun Perolehan</label>
+                            <input type="number" class="form-control" name="tahun_perolehan"
+                                placeholder="Masukkan Tahun Perolehan">
+                            @error('tahun_perolehan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan input tahun -->
+                        <div id="tahunDropdown2" class="form-group  @error('tahun_perolehan2') is-invalid @enderror"
+                            style="display: none;">
+                            <label class="form-label">Tahun Perolehan (opsional jika diperlukan<span
+                                    style="color: red;">*</span> )</label>
+                            <input type="number" class="form-control" name="tahun_perolehan2"
+                                placeholder="Masukkan Tahun Perolehan">
+                            @error('tahun_perolehan2')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-2 text-right">
+                            <button class="btn btn-success" type="submit">Export PDF</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 
 @push('js')
-    <script>
+    <script type="text/javascript">
         // Tunggu 5 detik setelah halaman dimuat
         setTimeout(function() {
             // Sembunyikan pesan kesalahan
@@ -239,5 +305,75 @@
                 form.submit();
             }
         }
+
+        @if (Session::has('error'))
+            toastr.options = {
+                "progressBar": true,
+                "closeButton": true,
+            }
+            toastr.error("{{ Session::get('error') }}", 'Gagal!', {
+                timeOut: 5000,
+            });
+        @endif
+    </script>
+
+    <script>
+        // Tampilkan atau sembunyikan dropdown berdasarkan opsi yang dipilih
+        document.getElementById('opsi').addEventListener('change', function() {
+            var ruanganDropdown = document.getElementById('ruanganDropdown');
+            var tahunDropdown = document.getElementById('tahunDropdown');
+            var tahunDropdown2 = document.getElementById('tahunDropdown2');
+
+            if (this.value === 'Berdasarkan Ruang') {
+                ruanganDropdown.style.display = 'block';
+                tahunDropdown.style.display = 'none';
+                tahunDropdown2.style.display = 'block';
+            } else if (this.value === 'Berdasarkan Tahun Perolehan') {
+                ruanganDropdown.style.display = 'none';
+                tahunDropdown.style.display = 'block';
+                tahunDropdown2.style.display = 'none';
+            } else {
+                ruanganDropdown.style.display = 'none';
+                tahunDropdown.style.display = 'none';
+                tahunDropdown2.style.display = 'none';
+            }
+        });
+    </script>
+
+    <script>
+        document.getElementById('export-pdf-form').addEventListener('submit', function(event) {
+            var opsi = document.getElementById('opsi').value;
+            var tahunPerolehan = document.getElementById('tahun_perolehan');
+            var tahunPerolehan2 = document.getElementById('tahun_perolehan2');
+            var ruanganDropdown = document.getElementById('ruanganDropdown');
+
+            // Lakukan validasi sesuai kebutuhan
+            var isValid = true;
+
+            if (opsi === 'Berdasarkan Tahun Perolehan' && !tahunPerolehan.value.trim()) {
+                isValid = false;
+            }
+
+            if (opsi === 'Berdasarkan Ruang') {
+                if (!ruanganDropdown.value.trim()) {
+                    isValid = false;
+                }
+
+                if (tahunPerolehan2.value.trim()) {
+                    // Jika tahunPerolehan2 diisi, pastikan juga tahunPerolehan diisi
+                    isValid = isValid && !ruangan_id.value.trim();
+                }
+            }
+
+            // Set atau hapus atribut target berdasarkan validasi
+            if (isValid) {
+                this.setAttribute('target', '_blank');
+            } else {
+                this.removeAttribute('target');
+                // Tampilkan pesan kesalahan jika diperlukan
+                alert('Harap isi semua kolom dengan benar');
+                event.preventDefault(); // Hentikan pengiriman formulir
+            }
+        });
     </script>
 @endpush

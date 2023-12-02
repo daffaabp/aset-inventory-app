@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{{ URL::to('assets/plugins/fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ URL::to('assets/plugins/datatables/datatables.min.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('assets/plugins//toastr/toatr.css') }}">
 
 </head>
 
@@ -66,7 +67,36 @@
     <script src="{{ URL::to('assets/js/sweetalert2.js') }}"></script>
     <script src="{{ URL::to('assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ URL::to('assets/plugins/datatables/datatables.min.js') }}"></script>
+    <script src="{{ URL::to('assets/plugins/toastr/toastr.min.js') }}"></script>
+    <script src="{{ URL::to('assets/plugins/toastr/toastr.js') }}"></script>
     <script src="{{ URL::to('assets/js/script.js') }}"></script>
+    <script type="text/javascript">
+        $('.confirm-buttons').click(function(e) {
+            var form = $(this).closest("form");
+            var gambarId = $(this).attr('gambar-caption')
+            e.preventDefault();
+
+            Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Are you sure to delete title " + '"' + gambarId + '"' + " ?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        )
+                    }
+                })
+        });
+    </script>
     @stack('js')
 </body>
 

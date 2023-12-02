@@ -22,41 +22,63 @@
                             <div class="col-md-6">
                                 <h5 class="justify-center card-title">Data Kendaraan</h5>
                                 <div class="form-group">
-                                    <label>Status Kendaraan</label>
-                                    <select name="id_status_aset" class="form-select" id="id_status_aset">
+                                    <label>Status Gedung</label>
+                                    @php
+                                        // Simpan nilai status aset sebelumnya
+                                        $oldStatusAset = old('id_status_aset', $status_aset[0]->id_status_aset);
+                                    @endphp
+                                    <select name="id_status_aset"
+                                        class="form-select @error('status_aset') is-invalid @enderror" id="id_status_aset">
                                         @foreach ($status_aset as $row)
                                             <option value="{{ $row->id_status_aset }}"
-                                                {{ $row->id_status_aset == 1 ? 'selected' : '' }}>{{ $row->status_aset }}
+                                                {{ $row->id_status_aset == $oldStatusAset ? 'selected' : '' }}>
+                                                {{ $row->status_aset }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    @error('status_aset')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label>Tanggal Inventarisir</label>
+                                    <input type="date"
+                                        class="form-control @error('tanggal_inventarisir') is-invalid @enderror"
+                                        name="tanggal_inventarisir" value="{{ \Carbon\Carbon::now()->toDateString() }}"
+                                        value="{{ old('tanggal_inventarisir') }}" autofocus>
                                 </div>
                                 <div class="form-group">
                                     <label>Nama Kendaraan</label>
-                                    <select class="form-control form-select" name="nama" autocomplete="off" autofocus>
-                                        <option selected value="Sepeda Motor">Sepeda Motor</option>
-                                        <option value="Mobil">Mobil</option>
+                                    <select class="form-control form-select @error('nama') is-invalid @enderror"
+                                        name="nama" autocomplete="off" autofocus>
+                                        <option value="Sepeda Motor" @if (old('nama') == 'Sepeda Motor') selected @endif>
+                                            Sepeda Motor</option>
+                                        <option value="Mobil" @if (old('nama') == 'Mobil') selected @endif>Mobil
+                                        </option>
                                     </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Tanggal Inventarisir</label>
-                                    <input type="date" class="form-control" name="tanggal_inventarisir"
-                                        value="{{ \Carbon\Carbon::now()->toDateString() }}" autofocus>
+                                    @error('nama')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Merk</label>
-                                            <input type="text" class="form-control" name="merk" autocomplete="off"
-                                                autofocus>
+                                            <input type="text" class="form-control @error('merk') is-invalid @enderror"
+                                                name="merk" value="{{ old('merk') }}" autocomplete="off" autofocus>
+                                            @error('merk')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Type</label>
-                                            <input type="text" class="form-control" name="type" autocomplete="off"
-                                                autofocus>
+                                            <input type="text" class="form-control @error('type') is-invalid @enderror"
+                                                name="type" value="{{ old('type') }}" autocomplete="off" autofocus>
+                                            @error('type')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -64,29 +86,45 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Cylinder</label>
-                                            <input type="number" class="form-control" name="cylinder" autocomplete="off"
-                                                autofocus>
+                                            <input type="number"
+                                                class="form-control @error('cylinder') is-invalid @enderror" name="cylinder"
+                                                value="{{ old('cylinder') }}" autocomplete="off" autofocus>
+                                            @error('cylinder')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Warna</label>
-                                            <input type="text" class="form-control" name="warna" autocomplete="off"
-                                                autofocus>
+                                            <input type="text" class="form-control @error('warna') is-invalid @enderror"
+                                                name="warna" value="{{ old('warna') }}" autocomplete="off" autofocus>
+                                            @error('warna')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>No. Rangka</label>
-                                            <input type="text" class="form-control" name="no_rangka" autocomplete="off"
+                                            <input type="text"
+                                                class="form-control @error('no_rangka') is-invalid @enderror"
+                                                name="no_rangka" value="{{ old('no_rangka') }}" autocomplete="off"
                                                 autofocus>
+                                            @error('no_rangka')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>No. Mesin</label>
-                                            <input type="text" class="form-control" name="no_mesin" autocomplete="off"
-                                                autofocus>
+                                            <input type="text"
+                                                class="form-control @error('no_mesin') is-invalid @enderror"
+                                                name="no_mesin" value="{{ old('no_mesin') }}" autocomplete="off" autofocus>
+                                            @error('no_mesin')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -98,22 +136,37 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Tahun Pembuatan</label>
-                                            <input type="number" class="form-control" name="thn_pembuatan"
-                                                autocomplete="off" autofocus>
+                                            <input type="number"
+                                                class="form-control @error('thn_pembuatan') is-invalid @enderror"
+                                                name="thn_pembuatan" value="{{ old('thn_pembuatan') }}" autocomplete="off"
+                                                autofocus>
+                                            @error('thn_pembuatan')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Tahun Pembelian</label>
-                                            <input type="number" class="form-control" name="thn_pembelian"
-                                                id="thn_pembelian" autocomplete="off" autofocus>
+                                            <input type="number"
+                                                class="form-control @error('thn_pembelian') is-invalid @enderror"
+                                                name="thn_pembelian" value="{{ old('thn_pembelian') }}"
+                                                autocomplete="off" autofocus>
+                                            @error('thn_pembelian')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Nomor Polisi</label>
-                                            <input type="text" class="form-control" name="no_polisi" autocomplete="off"
+                                            <input type="text"
+                                                class="form-control @error('no_polisi') is-invalid @enderror"
+                                                name="no_polisi" value="{{ old('no_polisi') }}" autocomplete="off"
                                                 autofocus>
+                                            @error('no_polisi')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -122,29 +175,46 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>TgL. BPKB</label>
-                                            <input type="date" class="form-control" name="tgl_bpkb" autocomplete="off"
+                                            <input type="date"
+                                                class="form-control @error('tgl_bpkb') is-invalid @enderror"
+                                                name="tgl_bpkb" value="{{ old('tgl_bpkb') }}" autocomplete="off"
                                                 autofocus>
+                                            @error('tgl_bpkb')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>No. BPKB</label>
-                                            <input type="text" class="form-control" name="no_bpkb" autocomplete="off"
+                                            <input type="text"
+                                                class="form-control @error('no_bpkb') is-invalid @enderror"
+                                                name="no_bpkb" value="{{ old('no_bpkb') }}" autocomplete="off"
                                                 autofocus>
+                                            @error('no_bpkb')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Harga</label>
-                                            <input type="number" class="form-control" name="harga" autocomplete="off"
-                                                autofocus>
+                                            <input type="number"
+                                                class="form-control @error('harga') is-invalid @enderror" name="harga"
+                                                value="{{ old('harga') }}" autocomplete="off" autofocus>
+                                            @error('harga')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Keterangan</label>
-                                            <textarea name="keterangan" rows="4" cols="4" class="form-control"
-                                                placeholder="Masukkan Keterangan..."></textarea>
+                                            <textarea name="keterangan" rows="4" cols="4"
+                                                class="form-control @error('keterangan') is-invalid @enderror" placeholder="Masukkan Keterangan...">{{ old('keterangan') }}</textarea>
+                                            @error('keterangan')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>

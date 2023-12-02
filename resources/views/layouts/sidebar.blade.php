@@ -26,13 +26,13 @@
                             class="{{ Route::current()->getName() == 'user.index' || Route::current()->getName() == 'role.index' ? 'show' : '' }}">
 
                             @can('user.index')
-                                <li class="{{ Route::current()->getName() == 'user.index' ? 'active' : '' }}"><a
+                                <li class="{{ explode('.', Route::current()->getName())[0] == 'user' ? 'active' : '' }}"><a
                                         href="{{ route('user.index') }}">User
                                         Managament</a></li>
                             @endcan
 
                             @can('role.index')
-                                <li class="{{ Route::current()->getName() == 'role.index' ? 'active' : '' }}"><a
+                                <li class="{{ explode('.', Route::current()->getName())[0] == 'role' ? 'active' : '' }}"><a
                                         href="{{ route('role.index') }}">Role Management</a></li>
                             @endcan
 
@@ -41,7 +41,7 @@
                 @endcanany
 
                 @can('bidang.index')
-                    <li class="{{ Route::current()->getName() == 'bidang.index' ? 'active' : '' }}">
+                    <li class="{{ explode('.', Route::current()->getName())[0] == 'bidang' ? 'active' : '' }}">
                         <a href="{{ route('bidang.index') }}"><i class="fa fa-sitemap"></i> <span>
                                 Bidang</span></a>
                     </li>
@@ -55,32 +55,32 @@
                 @endcan
 
                 @can('ruangan.index')
-                    <li class="{{ Route::current()->getName() == 'ruangan.index' ? 'active' : '' }}">
+                    <li class="{{ explode('.', Route::current()->getName())[0] == 'ruangan' ? 'active' : '' }}">
                         <a href="{{ route('ruangan.index') }}"><i class="fas fa-holly-berry"></i> <span> Ruangan</span></a>
                     </li>
                 @endcan
 
                 @can('tanah.index')
-                    <li class="{{ Route::current()->getName() == 'tanah.index' ? 'active' : '' }}">
+                    <li class="{{ explode('.', Route::current()->getName())[0] == 'tanah' ? 'active' : '' }}">
                         <a href="{{ route('tanah.index') }}"><i class="fa fa-sticky-note"></i> <span> Aset
                                 Tanah</span></a>
                     </li>
                 @endcan
 
                 @can('gedung.index')
-                    <li class="{{ Route::current()->getName() == 'gedung.index' ? 'active' : '' }}">
+                    <li class="{{ explode('.', Route::current()->getName())[0] == 'gedung' ? 'active' : '' }}">
                         <a href="{{ route('gedung.index') }}"><i class="fa fa-building"></i> <span> Aset Gedung</span></a>
                     </li>
                 @endcan
 
                 @can('kendaraan.index')
-                    <li class="{{ Route::current()->getName() == 'kendaraan.index' ? 'active' : '' }}">
+                    <li class="{{ explode('.', Route::current()->getName())[0] == 'kendaraan' ? 'active' : '' }}">
                         <a href="{{ route('kendaraan.index') }}"><i class="fa fa-car"></i> <span> Aset Kendaraan</span></a>
                     </li>
                 @endcan
 
                 @can('inventaris.index')
-                    <li class="{{ Route::current()->getName() == 'inventaris.index' ? 'active' : '' }}">
+                    <li class="{{ explode('.', Route::current()->getName())[0] == 'inventaris' ? 'active' : '' }}">
                         <a href="{{ route('inventaris.index') }}"><i class="fas fa-holly-berry"></i> <span> Aset Inventaris
                                 Ruangan</span></a>
                     </li>

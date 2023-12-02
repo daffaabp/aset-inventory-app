@@ -6,13 +6,11 @@ use App\Models\AsetTanah;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
-use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
 class AsetTanahDataTable extends DataTable
 {
-    protected $jenis = 'tanah';
     /**
      * Build the DataTable class.
      *
@@ -21,10 +19,24 @@ class AsetTanahDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('pilih', function ($row) {
-                return '<input class="form-check-input" name="terpilih[]" type="checkbox" value="' . $row->id_aset_tanah . '">';
+            ->addColumn('action', function ($row) {
+                $editUrl = route('tanah.edit', $row->id_aset_tanah);
+                $deleteUrl = route('tanah.destroy', $row->id_aset_tanah);
+
+                return view('aset.tanah.index', compact('editUrl', 'deleteUrl'));
             })
-            ->rawColumns(['pilih']);
+            ->addColumn('status_aset', function ($row) {
+                return $row->statusAset->status_aset;
+            })
+            ->addColumn('tanggal_inventarisir', function ($row) {
+                return Carbon::parse($row->tanggal_inventarisir)->isoFormat('D MMMM Y');
+            })
+            ->addColumn('tanggal_sertifikat', function ($row) {
+                return Carbon::parse($row->tanggal_sertifikat)->isoFormat('D MMMM Y');
+            })
+            ->addColumn('harga', function ($row) {
+                return formatRupiah($row->harga, true);
+            });
     }
 
     /**
@@ -32,16 +44,7 @@ class AsetTanahDataTable extends DataTable
      */
     public function query(AsetTanah $model): QueryBuilder
     {
-        return $model->newQuery()
-            ->select([
-                'id_aset_tanah',
-                'kode_aset',
-                'nama',
-                'letak_tanah',
-                'status_aset.status_aset',
-            ])
-            ->leftJoin('status_aset', 'status_aset.id_status_aset', '=', 'aset_tanah.id_status_aset')
-            ->where('status_aset.status_aset', 'Tersedia');
+        return $model->newQuery()->with('statusAset');
     }
 
     /**
@@ -50,20 +53,10 @@ class AsetTanahDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('asetTanahTable')
             ->columns($this->getColumns())
             ->minifiedAjax()
-        //->dom('Bfrtip')
-            ->orderBy(1)
-            ->selectStyleSingle()
-            ->buttons([
-                Button::make('excel'),
-                Button::make('csv'),
-                Button::make('pdf'),
-                Button::make('print'),
-                Button::make('reset'),
-                Button::make('reload'),
-            ]);
+            ->dom('Blfrtip')
+            ->orderBy(1);
     }
 
     /**
@@ -72,20 +65,20 @@ class AsetTanahDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::computed('pilih')
-                ->exportable(false)
-                ->printable(false)
-                ->width(60)
-                ->addClass('text-center')
-                ->title('Pilih'),
-            Column::make('id_aset_tanah')->title('ID'),
-            Column::make('kode_aset')->title('Kode Aset'),
-            Column::make('nama')->title('Nama Tanah'),
-            Column::make('letak_tanah')->title('Lokasi Tanah'),
-            Column::make('status_aset')->title('Status'),
-            // Column::make('add your columns'),
-            // Column::make('created_at'),
-            // Column::make('updated_at'),
+            'id_aset_tanah' => ['visible' => false],
+            'status_aset' => ['title' => 'Status Tanah'],
+            'kode_aset' => ['title' => 'Kode'],
+            'nama' => ['title' => 'Nama'],
+            'tanggal_inventarisir' => ['title' => 'Tanggal Inventarisir'],
+            'luas' => ['title' => 'Luas (m^2)'],
+            'letak_tanah' => ['title' => 'Letak Tanah'],
+            'hak' => ['title' => 'Hak'],
+            'tanggal_sertifikat' => ['title' => 'Tgl. Sertifikat'],
+            'no_sertifikat' => ['title' => 'No. Sertifikat'],
+            'penggunaan' => ['title' => 'Penggunaan'],
+            'harga' => ['title' => 'Harga'],
+            'keterangan' => ['title' => 'Keterangan'],
+            'action' => ['title' => 'Aksi', 'orderable' => false, 'searchable' => false],
         ];
     }
 

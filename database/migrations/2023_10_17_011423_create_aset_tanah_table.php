@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('letak_tanah');
             $table->string('hak');
             $table->date('tanggal_sertifikat');
-            $table->string('no_sertifikat');
+            $table->string('no_sertifikat')->nullable();
             $table->string('penggunaan');
             $table->integer('harga');
             $table->string('keterangan');

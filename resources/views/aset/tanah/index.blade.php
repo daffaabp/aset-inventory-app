@@ -28,7 +28,13 @@
                 <div class="card-body">
 
                     <div class="page-header">
-                        <div class="row align-items-center">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <a href="{{ route('tanah.index') }}" class="btn btn-primary me-1"><i
+                                        class="fas fa-arrow-left"></i>
+                                    Kembali</a>
+                            </div>
+
                             <div class="col-auto text-end float-end ms-auto download-grp">
                                 <a href="{{ route('tanah.create') }}" class="btn btn-outline-primary me-1"><i
                                         class="fas fa-plus"></i></i>
@@ -41,12 +47,12 @@
 
                                 <a href="{{ route('tanah.exportExcel') }}" class="btn btn-warning btn-md me-1"><i
                                         class="fas fa-file-export"></i>
-                                    Export Excel
+                                    Cetak Excel
                                 </a>
 
                                 <a href="{{ route('tanah.exportPdf') }}" class="btn btn-danger btn-md me-1"
                                     target="_blank"><i class="fas fa-file-pdf"></i>
-                                    Export PDF
+                                    Cetak PDF
                                 </a>
 
                                 <a href="{{ asset('templates/template_aset_tanah.xlsx') }}" class="btn btn-secondary me-1"
@@ -56,20 +62,6 @@
                             </div>
                         </div>
                     </div>
-
-                    @if (session()->has('success'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if (isset($errors) && $errors->any())
-                        <div class="alert alert-danger" role="alert">
-                            @foreach ($errors->all() as $error)
-                                {{ $error }}
-                            @endforeach
-                        </div>
-                    @endif
 
                     @if (session()->has('failures'))
                         <div id="failures-alert" class="alert alert-warning" role="alert">
@@ -109,8 +101,8 @@
                     @endif
 
                     <div class="table-responsive">
-                        <table
-                            class="table mb-0 border-0 table-bordered star-student table-hover table-center datatable table-stripped">
+                        <table id="datatable"
+                            class="table mb-0 border-0 table-bordered star-student table-hover table-center table-stripped">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -130,43 +122,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($asetTanahs as $asetTanah)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $asetTanah->statusAset->status_aset }}</td>
-                                        <td>{{ $asetTanah->kode_aset }}</td>
-                                        <td>{{ $asetTanah->nama }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($asetTanah->tanggal_inventarisir)->isoFormat('D MMMM Y') }}
-                                        </td>
-                                        <td>{{ $asetTanah->luas }}</td>
-                                        <td>{{ $asetTanah->letak_tanah }}</td>
-                                        <td>{{ $asetTanah->hak }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($asetTanah->tanggal_sertifikat)->isoFormat('D MMMM Y') }}
-                                        </td>
-                                        <td>{{ $asetTanah->no_sertifikat }}</td>
-                                        <td>{{ $asetTanah->penggunaan }}</td>
-                                        <td>{{ formatRupiah($asetTanah->harga, true) }}</td>
-                                        <td>{{ $asetTanah->keterangan }}</td>
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{{ route('tanah.edit', $asetTanah->id_aset_tanah) }}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-edit"></i>
-                                                </a>
 
-                                                <a href="javascript:;" class="btn btn-sm bg-danger-light"
-                                                    onclick="confirmDelete('{{ route('tanah.destroy', $asetTanah->id_aset_tanah) }}')">
-                                                    <i class="feather-trash"></i>
-                                                </a>
-
-                                                <form id="deleteForm" action="" method="POST" style="display: none;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -219,28 +175,82 @@
 @endsection
 
 @push('js')
-    <script>
-        // Tunggu 5 detik setelah halaman dimuat
-        setTimeout(function() {
-            // Sembunyikan pesan kesalahan
-            document.getElementById('failures-alert').style.display = 'none';
-        }, 10000);
-
-        // Sembunyikan pesan kesalahan ketika tombol close ditekan
-        document.getElementById('failures-alert').addEventListener('closed.bs.alert', function() {
-            this.style.display = 'none';
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('tanah.index') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
+                    {
+                        data: 'status_aset',
+                        name: 'status_aset'
+                    },
+                    {
+                        data: 'kode_aset',
+                        name: 'kode_aset'
+                    },
+                    {
+                        data: 'nama',
+                        name: 'nama'
+                    },
+                    {
+                        data: 'tanggal_inventarisir',
+                        name: 'tanggal_inventarisir'
+                    },
+                    {
+                        data: 'luas',
+                        name: 'luas'
+                    },
+                    {
+                        data: 'letak_tanah',
+                        name: 'letak_tanah'
+                    },
+                    {
+                        data: 'hak',
+                        name: 'hak'
+                    },
+                    {
+                        data: 'tanggal_sertifikat',
+                        name: 'tanggal_sertifikat'
+                    },
+                    {
+                        data: 'no_sertifikat',
+                        name: 'no_sertifikat'
+                    },
+                    {
+                        data: 'penggunaan',
+                        name: 'penggunaan'
+                    },
+                    {
+                        data: 'harga',
+                        name: 'harga'
+                    },
+                    {
+                        data: 'keterangan',
+                        name: 'keterangan'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
+            });
         });
 
-        window.onload = function() {
-            alert("Gagal mengimpor data. Silakan periksa file Anda.");
-        };
-
-        function confirmDelete(url) {
-            if (confirm('Apakah Anda yakin ingin menghapus?')) {
-                var form = document.getElementById('deleteForm');
-                form.action = url;
-                form.submit();
+        @if (Session::has('success'))
+            toastr.options = {
+                "progressBar": true,
+                "closeButton": true,
             }
-        }
+            toastr.success("{{ Session::get('success') }}", 'Berhasil!', {
+                timeOut: 5000,
+            });
+        @endif
     </script>
 @endpush

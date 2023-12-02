@@ -11,6 +11,8 @@ use App\Models\AsetTanah;
 use App\Models\RiwayatPeminjamanTanah;
 use App\Models\StatusAset;
 use Barryvdh\DomPDF\Facade\Pdf;
+use DataTables;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AsetTanahController extends Controller
@@ -18,8 +20,73 @@ class AsetTanahController extends Controller
     public function index()
     {
         $asetTanahs = AsetTanah::with('statusAset')->get();
+
+        if (request()->ajax()) {
+            return Datatables::of($asetTanahs)
+                ->addIndexColumn()
+                ->addColumn('status_aset', function ($asetTanah) {
+                    return $asetTanah->statusAset->status_aset;
+                })
+                ->addColumn('tanggal_inventarisir', function ($asetTanah) {
+                    return \Carbon\Carbon::parse($asetTanah->tanggal_inventarisir)->isoFormat('D MMMM Y');
+                })
+                ->addColumn('tanggal_sertifikat', function ($asetTanah) {
+                    return \Carbon\Carbon::parse($asetTanah->tanggal_sertifikat)->isoFormat('D MMMM Y');
+                })
+                ->addColumn('harga', function ($asetTanah) {
+                    return formatRupiah($asetTanah->harga, true);
+                })
+                ->addColumn('action', function ($asetTanah) {
+                    return view('aset.tanah.actions', compact('asetTanah'))->render();
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
         return view('aset.tanah.index', ['asetTanahs' => $asetTanahs]);
     }
+
+    // public function index(Request $request)
+    // {
+    //     if ($request->ajax()) {
+    //         $data = AsetTanah::with('statusAset')->get();
+    //         return DataTables::of($data)
+    //             ->addIndexColumn()
+    //             ->addColumn('action', function ($row) {
+    //                 $editUrl = route('tanah.edit', $row->id_aset_tanah);
+    //                 $deleteUrl = route('tanah.destroy', $row->id_aset_tanah);
+
+    //                 return '<a href="' . $editUrl . '" class="btn btn-primary">Edit</a>
+    //                         <form action="' . $deleteUrl . '" method="POST" style="display:inline;">
+    //                             ' . csrf_field() . '
+    //                             ' . method_field('DELETE') . '
+    //                             <button type="submit" class="btn btn-danger">Delete</button>
+    //                         </form>';
+    //             })
+    //             ->addColumn('status_aset', function ($row) {
+    //                 return $row->statusAset->status_aset;
+    //             })
+    //             ->addColumn('tanggal_inventarisir', function ($row) {
+    //                 return Carbon::parse($row->tanggal_inventarisir)->isoFormat('D MMMM Y');
+    //             })
+    //             ->addColumn('tanggal_sertifikat', function ($row) {
+    //                 return Carbon::parse($row->tanggal_sertifikat)->isoFormat('D MMMM Y');
+    //             })
+    //             ->addColumn('harga', function ($row) {
+    //                 return formatRupiah($row->harga, true);
+    //             })
+    //             ->rawColumns(['action'])
+    //             ->make(true);
+    //     }
+
+    //     return view('aset.tanah.index');
+    // }
+
+    // public function index()
+    // {
+    //     $asetTanahs = AsetTanah::with('statusAset')->get();
+    //     return view('aset.tanah.index', ['asetTanahs' => $asetTanahs]);
+    // }
 
     public function create()
     {
@@ -80,7 +147,7 @@ class AsetTanahController extends Controller
             $asetTanah->save();
 
             return redirect()->route('tanah.index')
-                ->with('success', 'Data aset tanah berhasil disimpan.');
+                ->with('success', 'Data Aset Tanah berhasil disimpan.');
         } catch (\Exception $e) {
             // Tangani kesalahan jika terjadi
             return back()
@@ -98,16 +165,25 @@ class AsetTanahController extends Controller
     public function update(UpdateAsetTanahRequest $request)
     {
         $validated = $request->validated();
-        // echo '<pre>';
-        // print_r($asetTanah->id_aset_tanah);
-        // die;
-
         // insert data ke db
         AsetTanah::where('id_aset_tanah', $request->id_aset_tanah)
             ->update($validated);
         return redirect()->route('tanah.index')
-            ->with('success', 'Aset Tanah berhasil diperbarui.');
+            ->with('success', 'Data Aset Tanah berhasil diperbarui.');
     }
+
+    // public function destroy($id_aset_tanah)
+    // {
+    //     $isAsetDipinjam = RiwayatPeminjamanTanah::where('id_aset_tanah', $id_aset_tanah)->exists();
+
+    //     if ($isAsetDipinjam) {
+    //         return response()->json(['status' => 'error', 'message' => 'Data aset inventaris sudah pernah dipinjam, tidak dapat dihapus.']);
+    //     }
+
+    //     AsetTanah::find($id_aset_tanah)->delete();
+
+    //     return response()->json(['status' => 'success', 'message' => 'Aset Tanah berhasil dihapus.']);
+    // }
 
     public function destroy($id_aset_tanah)
     {
@@ -154,15 +230,20 @@ class AsetTanahController extends Controller
             // Commit transaksi jika sukses
             DB::commit();
 
-            // Berikan umpan balik sukses ke pengguna
-            return redirect()->route('tanah.index')
-                ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
+            // // Berikan umpan balik sukses ke pengguna
+            // return redirect()->route('tanah.index')
+            //     ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
+            // Tampilkan SweetAlert untuk pesan sukses
+            alert()->success("Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
+            return redirect()->route('tanah.index');
 
         } catch (\Exception $e) {
             // Tangani exception jika terjadi kesalahans
             DB::rollBack();
 
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            // return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            alert()->error('Terjadi kesalahan: ' . $e->getMessage())->persistent(true, false);
+            return back();
         }
     }
 

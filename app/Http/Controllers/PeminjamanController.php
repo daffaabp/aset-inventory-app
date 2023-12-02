@@ -32,9 +32,9 @@ class PeminjamanController extends Controller
             'tgl_rencana_kembali' => 'required|date|after:tgl_rencana_pinjam',
         ]);
 
-        // echo '<pre>';
-        // print_r($request->all());
-        // die;
+        echo '<pre>';
+        print_r($request->all());
+        die;
 
         $peminjaman = new Peminjaman;
         $peminjaman->id_peminjam = auth()->user()->id;

@@ -105,7 +105,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/tanah/store', [AsetTanahController::class, 'store'])->name('tanah.store')->middleware('permission:tanah.store');
     Route::get('/tanah/{id}/edit', [AsetTanahController::class, 'edit'])->name('tanah.edit')->middleware('permission:tanah.edit');
     Route::patch('/tanah/{id}/update', [AsetTanahController::class, 'update'])->name('tanah.update')->middleware('permission:tanah.update');
-    Route::delete('/tanah/destroy{id}', [AsetTanahController::class, 'destroy'])->name('tanah.destroy')->middleware('permission:tanah.destroy');
+    Route::delete('/tanah/destroy/{id}', [AsetTanahController::class, 'destroy'])->name('tanah.destroy')->middleware('permission:tanah.destroy');
     Route::post('/tanah-importExcel', [AsetTanahController::class, 'importExcel'])->name('tanah.importExcel')->middleware('permission:tanah.importExcel');
     Route::get('/tanah-exportExcel', [AsetTanahController::class, 'exportExcel'])->name('tanah.exportExcel')->middleware('permission:tanah.exportExcel');
     Route::get('/tanah-exportPdf', [AsetTanahController::class, 'exportPdf'])->name('tanah.exportPdf')->middleware('permission:tanah.exportPdf');
