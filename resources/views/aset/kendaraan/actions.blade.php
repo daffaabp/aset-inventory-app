@@ -1,12 +1,13 @@
-<form action="{{ route('tanah.destroy', $asetTanah->id_aset_tanah) }}" method="POST">
+<form action="{{ route('kendaraan.destroy', $asetKendaraan->id_aset_kendaraan) }}" method="POST">
+
     <a class="btn btn-warning me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" style="color: white;"
-        href="{{ route('tanah.edit', encrypt($asetTanah->id_aset_tanah)) }}"><i class="fas fa-edit"></i></a>
+        href="{{ route('kendaraan.edit', encrypt($asetKendaraan->id_aset_kendaraan)) }}"><i class="fas fa-edit"></i></a>
 
     @csrf
     @method('DELETE')
 
     <button type="button" class="btn btn-danger confirm-button" data-bs-toggle="tooltip" data-bs-placement="top"
-        title="Hapus" nama="{{ $asetTanah->nama }}"><i class="fas fa-trash"></i></button>
+        title="Hapus" nama="{{ $asetKendaraan->nama }}"><i class="fas fa-trash"></i></button>
 </form>
 
 <script type="text/javascript">

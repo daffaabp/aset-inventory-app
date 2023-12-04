@@ -29,12 +29,6 @@
 
                     <div class="page-header">
                         <div class="row align-items-center justify-content-between">
-                            <div class="col-auto">
-                                <a href="{{ route('tanah.index') }}" class="btn btn-primary me-1"><i
-                                        class="fas fa-arrow-left"></i>
-                                    Kembali</a>
-                            </div>
-
                             <div class="col-auto text-end float-end ms-auto download-grp">
                                 <a href="{{ route('tanah.create') }}" class="btn btn-outline-primary me-1"><i
                                         class="fas fa-plus"></i></i>
@@ -45,10 +39,9 @@
                                         class="fas fa-file-import"></i>
                                     Import Excel</button>
 
-                                <a href="{{ route('tanah.exportExcel') }}" class="btn btn-warning btn-md me-1"><i
-                                        class="fas fa-file-export"></i>
-                                    Cetak Excel
-                                </a>
+                                <a href="#" class="btn btn-warning btn-md me-1 cetak-excel"><i
+                                        class="fas fa-file-export"></i> Cetak Excel</a>
+
 
                                 <a href="{{ route('tanah.exportPdf') }}" class="btn btn-danger btn-md me-1"
                                     target="_blank"><i class="fas fa-file-pdf"></i>
@@ -62,6 +55,14 @@
                             </div>
                         </div>
                     </div>
+
+                    @if (isset($errors) && $errors->any())
+                        <div class="alert alert-danger" role="alert">
+                            @foreach ($errors->all() as $error)
+                                {{ $error }}
+                            @endforeach
+                        </div>
+                    @endif
 
                     @if (session()->has('failures'))
                         <div id="failures-alert" class="alert alert-warning" role="alert">
@@ -106,9 +107,9 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Status Tanah</th>
+                                    <th>Status Aset</th>
                                     <th>Kode</th>
-                                    <th>Nama</th>
+                                    <th>Nama Tanah</th>
                                     <th>Tanggal Inventarisir</th>
                                     <th>Luas (m<sup>2</sup>)</th>
                                     <th>Letak Tanah</th>
@@ -251,6 +252,45 @@
             toastr.success("{{ Session::get('success') }}", 'Berhasil!', {
                 timeOut: 5000,
             });
+        @elseif (Session::has('warning'))
+            toastr.options = {
+                "progressBar": true,
+                "closeButton": true,
+            }
+            toastr.warning("{{ Session::get('warning') }}", 'Peringatan!', {
+                timeOut: 5000,
+            });
         @endif
+
+        $('.cetak-excel').click(function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: "Ingin mencetak Excel Aset Tanah?",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Cetak!',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika pengguna memilih Save, arahkan ke route ekspor Excel
+                    window.location.href = "{{ route('tanah.exportExcel') }}";
+                } else if (result.isDenied) {
+                    Swal.fire("Changes are not saved", "", "info");
+                }
+            });
+        });
+
+        // Tunggu 5 detik setelah halaman dimuat
+        setTimeout(function() {
+            // Sembunyikan pesan kesalahan
+            document.getElementById('failures-alert').style.display = 'none';
+        }, 5000);
+
+        // Sembunyikan pesan kesalahan ketika tombol close ditekan
+        document.getElementById('failures-alert').addEventListener('closed.bs.alert', function() {
+            this.style.display = 'none';
+        });
     </script>
 @endpush

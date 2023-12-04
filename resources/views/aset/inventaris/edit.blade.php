@@ -25,26 +25,34 @@
                                 <h5 class="justify-center card-title">Data Aset Inventaris</h5>
                                 <input type="hidden" name="id_aset_inventaris_ruangan"
                                     value="{{ $asetInventaris->id_aset_inventaris_ruangan }}">
-                                <div class="form-group">
-                                    <label>Status Tanah</label>
-                                    <select name="id_status_aset"
-                                        class="form-select @error('status_aset') is-invalid @enderror">
-                                        <option selected disabled> --Pilih Status--</option>
-                                        @foreach ($status_aset as $row)
-                                            <option value="{{ $row->id_status_aset }}"
-                                                {{ (old('id_status_aset') ? old('id_status_aset') : $asetInventaris->id_status_aset) == $row->id_status_aset ? 'selected' : '' }}>
-                                                {{ $row->status_aset }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('status_aset')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Status Aset</label>
+                                            <select name="id_status_aset"
+                                                class="form-select @error('status_aset') is-invalid @enderror">
+                                                <option selected disabled> --Pilih Status--</option>
+                                                @foreach ($status_aset as $row)
+                                                    <option value="{{ $row->id_status_aset }}"
+                                                        {{ (old('id_status_aset') ? old('id_status_aset') : $asetInventaris->id_status_aset) == $row->id_status_aset ? 'selected' : '' }}>
+                                                        {{ $row->status_aset }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('status_aset')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Kode</label>
+                                            <input type="text" class="form-control" name="kode_aset"
+                                                value="{{ $asetInventaris->kode_aset }}" readonly>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Kode Inventaris</label>
-                                    <input type="text" class="form-control" name="kode_aset"
-                                        value="{{ $asetInventaris->kode_aset }}" readonly>
-                                </div>
+
                                 <div class="form-group">
                                     <label>Ruangan</label>
                                     <select name="kode_ruangan"
@@ -63,14 +71,6 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Nama</label>
-                                    <input type="text" class="form-control @error('nama') is-invalid @enderror"
-                                        name="nama" value="{{ old('nama', $asetInventaris->nama) }}">
-                                    @error('nama')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="form-group">
                                     <label>Tanggal Inventarisir</label>
                                     <input type="date"
                                         class="form-control @error('tanggal_inventarisir') is-invalid @enderror"
@@ -80,6 +80,16 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+
+                                <div class="form-group">
+                                    <label>Nama Inventaris</label>
+                                    <input type="text" class="form-control @error('nama') is-invalid @enderror"
+                                        name="nama" value="{{ old('nama', $asetInventaris->nama) }}">
+                                    @error('nama')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -161,14 +171,18 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary"
-                                                style="margin-top: 20px;">Simpan</button>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="text-start">
+                            <a href="{{ route('inventaris.index') }}" class="btn btn-secondary me-1"><i
+                                    class="fas fa-arrow-left"></i>
+                                Kembali</a>
+                        </div>
+
+                        <div class="text-end" style="margin-top: -38px;">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
                         </div>
                     </form>
                 </div>

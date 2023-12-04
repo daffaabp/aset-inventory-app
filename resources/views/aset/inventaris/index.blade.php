@@ -37,10 +37,8 @@
                                         class="fas fa-file-import"></i>
                                     Import Excel</button>
 
-                                <a href="{{ route('inventaris.exportExcel') }}" class="btn btn-warning btn-md me-1"><i
-                                        class="fas fa-file-export"></i>
-                                    Cetak Excel
-                                </a>
+                                <a href="#" class="btn btn-warning btn-md me-1 cetak-excel"><i
+                                        class="fas fa-file-export"></i> Cetak Excel</a>
 
                                 <button type="button" class="btn btn-danger btn-md me-1" data-bs-toggle="modal"
                                     data-bs-target="#export-pdf" data-class="export-pdf"><i class="fas fa-file-import"></i>
@@ -53,12 +51,6 @@
                             </div>
                         </div>
                     </div>
-
-                    @if (session()->has('error'))
-                        <script>
-                            toastr.error("{{ session('error') }}");
-                        </script>
-                    @endif
 
                     @if (isset($errors) && $errors->any())
                         <div class="alert alert-danger" role="alert">
@@ -106,15 +98,15 @@
                     @endif
 
                     <div class="table-responsive">
-                        <table
-                            class="table mb-0 border-0 table-bordered star-student table-hover table-center datatable table-stripped">
+                        <table id="datatable"
+                            class="table mb-0 border-0 table-bordered star-student table-hover table-center table-stripped">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Status</th>
-                                    <th>Kode</th>
+                                    <th>Status Aset</th>
                                     <th>Ruangan</th>
-                                    <th>Nama</th>
+                                    <th>Kode</th>
+                                    <th>Nama Inventaris</th>
                                     <th>Tanggal Inventarisir</th>
                                     <th>Merk</th>
                                     <th>Volume</th>
@@ -126,41 +118,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($asetInventaris as $inventaris)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $inventaris->statusAset->status_aset }}</td>
-                                        <td>{{ $inventaris->kode_aset }}</td>
-                                        <td>{{ $inventaris->ruangan->nama }}</td>
-                                        <td>{{ $inventaris->nama }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($inventaris->tanggal_inventarisir)->isoFormat('D MMMM Y') }}
-                                        </td>
-                                        <td>{{ $inventaris->merk }}</td>
-                                        <td>{{ $inventaris->volume }}</td>
-                                        <td>{{ $inventaris->bahan }}</td>
-                                        <td>{{ $inventaris->tahun }}</td>
-                                        <td>{{ formatRupiah($inventaris->harga, true) }}</td>
-                                        <td>{{ $inventaris->keterangan }}</td>
-                                        <td class="text-end">
-                                            <div class="actions">
-                                                <a href="{{ route('inventaris.edit', $inventaris->id_aset_inventaris_ruangan) }}"
-                                                    class="btn btn-sm bg-success-light me-2">
-                                                    <i class="feather-edit"></i>
-                                                </a>
 
-                                                <a href="javascript:;" class="btn btn-sm bg-danger-light"
-                                                    onclick="confirmDelete('{{ route('inventaris.destroy', $inventaris->id_aset_inventaris_ruangan) }}')">
-                                                    <i class="feather-trash"></i>
-                                                </a>
-
-                                                <form id="deleteForm" action="" method="POST" style="display: none;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -283,6 +241,99 @@
 
 @push('js')
     <script type="text/javascript">
+        $(document).ready(function() {
+            $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('inventaris.index') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
+                    {
+                        data: 'status_aset',
+                        name: 'status_aset'
+                    },
+                    {
+                        data: 'ruangan',
+                        name: 'ruangan'
+                    },
+                    {
+                        data: 'kode_aset',
+                        name: 'kode_aset'
+                    },
+                    {
+                        data: 'nama',
+                        name: 'nama'
+                    },
+                    {
+                        data: 'tanggal_inventarisir',
+                        name: 'tanggal_inventarisir'
+                    },
+                    {
+                        data: 'merk',
+                        name: 'merk'
+                    },
+                    {
+                        data: 'volume',
+                        name: 'volume'
+                    },
+                    {
+                        data: 'bahan',
+                        name: 'bahan'
+                    },
+                    {
+                        data: 'tahun',
+                        name: 'tahun'
+                    },
+                    {
+                        data: 'harga',
+                        name: 'harga'
+                    },
+                    {
+                        data: 'keterangan',
+                        name: 'keterangan'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
+            });
+        });
+
+        @if (Session::has('success'))
+            toastr.options = {
+                "progressBar": true,
+                "closeButton": true,
+            }
+            toastr.success("{{ Session::get('success') }}", 'Berhasil!', {
+                timeOut: 5000,
+            });
+        @endif
+
+        $('.cetak-excel').click(function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: "Ingin mencetak Excel Aset Inventaris?",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Cetak!',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika pengguna memilih Save, arahkan ke route ekspor Excel
+                    window.location.href = "{{ route('inventaris.exportExcel') }}";
+                } else if (result.isDenied) {
+                    Swal.fire("Changes are not saved", "", "info");
+                }
+            });
+        });
+
         // Tunggu 5 detik setelah halaman dimuat
         setTimeout(function() {
             // Sembunyikan pesan kesalahan
@@ -293,28 +344,6 @@
         document.getElementById('failures-alert').addEventListener('closed.bs.alert', function() {
             this.style.display = 'none';
         });
-
-        window.onload = function() {
-            alert("Gagal mengimpor data. Silakan periksa file Anda.");
-        };
-
-        function confirmDelete(url) {
-            if (confirm('Apakah Anda yakin ingin menghapus?')) {
-                var form = document.getElementById('deleteForm');
-                form.action = url;
-                form.submit();
-            }
-        }
-
-        @if (Session::has('error'))
-            toastr.options = {
-                "progressBar": true,
-                "closeButton": true,
-            }
-            toastr.error("{{ Session::get('error') }}", 'Gagal!', {
-                timeOut: 5000,
-            });
-        @endif
     </script>
 
     <script>

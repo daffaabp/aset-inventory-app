@@ -22,7 +22,7 @@
                             <div class="col-md-6">
                                 <h5 class="justify-center card-title">Data Aset Inventaris</h5>
                                 <div class="form-group">
-                                    <label>Status Tanah</label>
+                                    <label>Status Aset</label>
                                     @php
                                         // Simpan nilai status aset sebelumnya
                                         $oldStatusAset = old('id_status_aset', $status_aset[0]->id_status_aset);
@@ -68,7 +68,7 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label>Nama</label>
+                                    <label>Nama Inventaris</label>
                                     <input type="text" class="form-control @error('nama') is-invalid @enderror"
                                         name="nama" value="{{ old('nama') }}" autocomplete="off" autofocus>
                                     @error('nama')
@@ -157,13 +157,19 @@
                                             <input type="hidden" class="form-control" name="jumlah" value="1">
                                         </div>
                                     </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Simpan</button>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
+                        </div>
+
+
+                        <div class="text-start">
+                            <a href="{{ route('inventaris.index') }}" class="btn btn-secondary me-1"><i
+                                    class="fas fa-arrow-left"></i>
+                                Kembali</a>
+                        </div>
+
+                        <div class="text-end" style="margin-top: -38px;">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
                         </div>
 
                     </form>

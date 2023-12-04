@@ -11,14 +11,35 @@ use App\Models\AsetGedung;
 use App\Models\RiwayatPeminjamanGedung;
 use App\Models\StatusAset;
 use Barryvdh\DomPDF\Facade\Pdf;
+use DataTables;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AsetGedungController extends Controller
 {
-
     public function index()
     {
         $asetGedungs = AsetGedung::with('statusAset')->get();
+
+        if (request()->ajax()) {
+            return Datatables::of($asetGedungs)
+                ->addIndexColumn()
+                ->addColumn('status_aset', function ($asetGedung) {
+                    return $asetGedung->statusAset->status_aset;
+                })
+                ->addColumn('tanggal_inventarisir', function ($asetGedung) {
+                    return \Carbon\Carbon::parse($asetGedung->tanggal_inventarisir)->isoFormat('D MMMM Y');
+                })
+                ->addColumn('harga', function ($asetGedung) {
+                    return formatRupiah($asetGedung->harga, true);
+                })
+                ->addColumn('action', function ($asetGedung) {
+                    return view('aset.gedung.actions', compact('asetGedung'))->render();
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
         return view('aset.gedung.index', ['asetGedungs' => $asetGedungs]);
     }
 
@@ -93,7 +114,8 @@ class AsetGedungController extends Controller
 
     public function edit(AsetGedung $asetGedung, $id_aset_gedung)
     {
-        $aset_gedung = AsetGedung::find($id_aset_gedung);
+        $id = decrypt($id_aset_gedung);
+        $aset_gedung = AsetGedung::find($id);
         $status_aset = StatusAset::all();
         return view('aset.gedung.edit', compact('aset_gedung', 'status_aset'));
     }
@@ -119,8 +141,7 @@ class AsetGedungController extends Controller
         }
 
         AsetGedung::find($id_aset_gedung)->delete();
-        return redirect()->route('gedung.index')
-            ->with('success', 'Aset Gedung berhasil dihapus.');
+        return redirect()->route('gedung.index');
     }
 
     public function importExcel(AsetGedungImportRequest $request)
@@ -130,38 +151,29 @@ class AsetGedungController extends Controller
         try {
             DB::beginTransaction();
 
-            // Validasi file
             $file->store('public/import');
 
-            // Lakukan impor
             $import = new AsetGedungImport;
             $import->import($file);
 
-            // Periksa kegagalan impor
             if ($import->failures()->isNotEmpty()) {
-                // Batalkan transaksi jika ada kegagalan
                 DB::rollBack();
 
-                // Berikan umpan balik ke pengguna tentang kegagalan
                 return back()
                     ->withFailures($import->failures())
                     ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
             }
-            // Mendapatkan jumlah baris yang berhasil diimpor
             $importedRowCount = $import->getRowCount();
 
-            // Commit transaksi jika sukses
             DB::commit();
 
-            // Berikan umpan balik sukses ke pengguna
             return redirect()->route('gedung.index')
                 ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
 
         } catch (\Exception $e) {
-            // Tangani exception jika terjadi kesalahans
             DB::rollBack();
-
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            alert()->error('Terjadi kesalahan: ' . $e->getMessage())->persistent(true, false);
+            return back();
         }
     }
 

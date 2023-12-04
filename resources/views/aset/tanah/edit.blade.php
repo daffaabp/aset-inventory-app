@@ -27,7 +27,7 @@
                                 <h5 class="justify-center card-title">Data Tanah</h5>
                                 <input type="hidden" name="id_aset_tanah" value="{{ $aset_tanah->id_aset_tanah }}">
                                 <div class="form-group">
-                                    <label>Status Tanah</label>
+                                    <label>Status Aset</label>
                                     <select name="id_status_aset"
                                         class="form-select @error('status_aset') is-invalid @enderror">
                                         <option selected disabled> --Pilih Status--</option>
@@ -42,12 +42,12 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label>Kode Tanah</label>
+                                    <label>Kode</label>
                                     <input type="text" class="form-control" name="kode_aset" readonly
                                         value="{{ $aset_tanah->kode_aset }}">
                                 </div>
                                 <div class="form-group">
-                                    <label>Nama</label>
+                                    <label>Nama Tanah</label>
                                     <input type="text" class="form-control @error('nama') is-invalid @enderror"
                                         name="nama" autocomplete="off" value="{{ old('nama', $aset_tanah->nama) }}">
                                     @error('nama')
@@ -172,8 +172,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        <div class="text-start">
+                            <a href="{{ route('tanah.index') }}" class="btn btn-secondary me-1"><i
+                                    class="fas fa-arrow-left"></i>
+                                Kembali</a>
+                        </div>
+                        <div class="text-end" style="margin-top: -38px;">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
                         </div>
                     </form>
                 </div>

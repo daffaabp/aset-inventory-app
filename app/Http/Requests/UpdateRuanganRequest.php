@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AsetGedungImportRequest extends FormRequest
+class UpdateRuanganRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,16 +22,19 @@ class AsetGedungImportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|mimes:xlsx,xls|max:2048',
+            'nama' => 'required|string',
+            'lokasi' => 'required|string',
         ];
     }
 
     public function messages()
     {
         return [
-            'file.required' => 'File harus diunggah.',
-            'file.mimes' => 'File harus berformat xlsx (Excel).',
-            'file.max' => 'File tidak boleh lebih dari 2 Mb.',
+
+            'nama.required' => 'Nama Ruangan wajib diisi.',
+            'nama.string' => 'Nama Ruangan harus berupa string.',
+            'lokasi.required' => 'Lokasi Ruangan wajib diisi.',
+            'lokasi.string' => 'Lokasi Ruangan harus berupa string.',
         ];
     }
 }

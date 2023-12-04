@@ -16,11 +16,36 @@
         <div class="col-sm-12">
             <div class="card card-table">
                 <div class="card-body">
-                    @if (session()->has('success'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('success') }}
+
+                    <div class="page-header">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="page-title"></h3>
+                            </div>
+                            <div class="col-auto text-end float-end ms-auto download-grp">
+                                <a href="{{ route('gedung.create') }}" class="btn btn-outline-primary me-2"><i
+                                        class="fas fa-plus"></i></i>
+                                    Tambah Aset</a>
+
+                                <button type="button" class="btn btn-success btn-md me-1" data-bs-toggle="modal"
+                                    data-bs-target="#import-modal" data-class="import-excel"><i
+                                        class="fas fa-file-import"></i> Import Excel</button>
+
+                                <a href="#" class="btn btn-warning btn-md me-1 cetak-excel"><i
+                                        class="fas fa-file-export"></i> Cetak Excel</a>
+
+                                <a href="{{ route('gedung.exportPdf') }}" class="btn btn-danger btn-md me-1"
+                                    target="_blank"><i class="fas fa-file-pdf"></i>
+                                    Cetak PDF
+                                </a>
+
+                                <a href="{{ asset('templates/template_aset_gedung.xlsx') }}" class="btn btn-secondary me-1"
+                                    download><i class="fa fa-file-excel"></i>
+                                    Unduh Template Excel
+                                </a>
+                            </div>
                         </div>
-                    @endif
+                    </div>
 
                     @if (isset($errors) && $errors->any())
                         <div class="alert alert-danger" role="alert">
@@ -67,47 +92,15 @@
                         </div>
                     @endif
 
-                    <div class="page-header">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h3 class="page-title"></h3>
-                            </div>
-                            <div class="col-auto text-end float-end ms-auto download-grp">
-                                <a href="{{ route('gedung.create') }}" class="btn btn-outline-primary me-2"><i
-                                        class="fas fa-plus"></i></i>
-                                    Tambah Aset</a>
-
-                                <button type="button" class="btn btn-success btn-md me-1" data-bs-toggle="modal"
-                                    data-bs-target="#import-modal" data-class="import-excel"><i
-                                        class="fas fa-file-import"></i> Import Excel</button>
-
-                                <a href="{{ route('gedung.exportExcel') }}" class="btn btn-warning btn-md me-1"><i
-                                        class="fas fa-file-export"></i>
-                                    Cetak Excel
-                                </a>
-
-                                <a href="{{ route('gedung.exportPdf') }}" class="btn btn-danger btn-md me-1"
-                                    target="_blank"><i class="fas fa-file-pdf"></i>
-                                    Cetak PDF
-                                </a>
-
-                                <a href="{{ asset('templates/template_aset_gedung.xlsx') }}" class="btn btn-secondary me-1"
-                                    download><i class="fa fa-file-excel"></i>
-                                    Unduh Template Excel
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="table-responsive">
-                        <table
-                            class="table mb-0 border-0 table-bordered star-student table-hover table-center datatable table-stripped">
+                        <table id="datatable"
+                            class="table mb-0 border-0 table-bordered star-student table-hover table-center table-stripped">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Status</th>
-                                    <th>Kode Gedung</th>
-                                    <th>Nama</th>
+                                    <th>Status Aset</th>
+                                    <th>Kode</th>
+                                    <th>Nama Gedung</th>
                                     <th>Tanggal Inventarisir</th>
                                     <th>Kondisi</th>
                                     <th>Bertingkat</th>
@@ -124,40 +117,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($asetGedungs as $asetGedung)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $asetGedung->statusAset->status_aset }}</td>
-                                        <td>{{ $asetGedung->kode_aset }}</td>
-                                        <td>{{ $asetGedung->nama }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($asetGedung->tanggal_inventarisir)->isoFormat('D MMMM Y') }}
-                                        </td>
-                                        <td>{{ $asetGedung->kondisi }}</td>
-                                        <td>{{ $asetGedung->bertingkat }}</td>
-                                        <td>{{ $asetGedung->beton }}</td>
-                                        <td>{{ $asetGedung->luas_lantai }}</td>
-                                        <td>{{ $asetGedung->lokasi }}</td>
-                                        <td>{{ $asetGedung->tahun_dok }}</td>
-                                        <td>{{ $asetGedung->nomor_dok }}</td>
-                                        <td>{{ $asetGedung->luas }}</td>
-                                        <td>{{ $asetGedung->hak }}</td>
-                                        <td>{{ formatRupiah($asetGedung->harga, true) }}</td>
-                                        <td>{{ $asetGedung->keterangan }}</td>
-                                        <td>
-                                            <form action="{{ route('gedung.destroy', $asetGedung->id_aset_gedung) }}"
-                                                method="POST">
 
-                                                <a class="btn btn-primary me-2" style="color: white;"
-                                                    href="{{ route('gedung.edit', $asetGedung->id_aset_gedung) }}">Edit</a>
-
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Hapus</button>
-
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -209,20 +169,125 @@
 @endsection
 
 @push('js')
-    <script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('gedung.index') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
+                    {
+                        data: 'status_aset',
+                        name: 'status_aset'
+                    },
+                    {
+                        data: 'kode_aset',
+                        name: 'kode_aset'
+                    },
+                    {
+                        data: 'nama',
+                        name: 'nama'
+                    },
+                    {
+                        data: 'tanggal_inventarisir',
+                        name: 'tanggal_inventarisir'
+                    },
+                    {
+                        data: 'kondisi',
+                        name: 'kondisi'
+                    },
+                    {
+                        data: 'bertingkat',
+                        name: 'bertingkat'
+                    },
+                    {
+                        data: 'beton',
+                        name: 'beton'
+                    },
+                    {
+                        data: 'luas_lantai',
+                        name: 'luas_lantai'
+                    },
+                    {
+                        data: 'lokasi',
+                        name: 'lokasi'
+                    },
+                    {
+                        data: 'tahun_dok',
+                        name: 'tahun_dok'
+                    },
+                    {
+                        data: 'nomor_dok',
+                        name: 'nomor_dok'
+                    },
+                    {
+                        data: 'luas',
+                        name: 'luas'
+                    },
+                    {
+                        data: 'hak',
+                        name: 'hak'
+                    },
+                    {
+                        data: 'harga',
+                        name: 'harga'
+                    },
+                    {
+                        data: 'keterangan',
+                        name: 'keterangan'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
+            });
+        });
+
+        @if (Session::has('success'))
+            toastr.options = {
+                "progressBar": true,
+                "closeButton": true,
+            }
+            toastr.success("{{ Session::get('success') }}", 'Berhasil!', {
+                timeOut: 5000,
+            });
+        @endif
+
+        $('.cetak-excel').click(function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: "Ingin mencetak Excel Aset Gedung?",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Cetak!',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika pengguna memilih Save, arahkan ke route ekspor Excel
+                    window.location.href = "{{ route('gedung.exportExcel') }}";
+                } else if (result.isDenied) {
+                    Swal.fire("Changes are not saved", "", "info");
+                }
+            });
+        });
+
         // Tunggu 5 detik setelah halaman dimuat
         setTimeout(function() {
             // Sembunyikan pesan kesalahan
             document.getElementById('failures-alert').style.display = 'none';
-        }, 10000);
+        }, 5000);
 
         // Sembunyikan pesan kesalahan ketika tombol close ditekan
         document.getElementById('failures-alert').addEventListener('closed.bs.alert', function() {
             this.style.display = 'none';
         });
-
-        window.onload = function() {
-            alert("Gagal mengimpor data. Silakan periksa file Anda.");
-        };
     </script>
 @endpush

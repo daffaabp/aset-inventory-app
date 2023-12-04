@@ -22,7 +22,7 @@ class AsetKendaraanImportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|mimes:xlsx|max:2048', // Hanya menerima file dengan ekstensi xlsx (Excel) dan maksimal 2 Mb
+            'file' => 'required|mimes:xlsx,xls|max:2048', // Hanya menerima file dengan ekstensi xlsx (Excel) dan maksimal 2 Mb
         ];
     }
 

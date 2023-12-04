@@ -32,14 +32,24 @@
                         <div class="form-group row">
                             <label class="col-lg-3 col-form-label">Nama Ruangan</label>
                             <div class="col-lg-9">
-                                <input type="text" name="nama" class="form-control" value="{{ $ruang->nama }}">
+                                <input type="text" name="nama"
+                                    class="form-control @error('nama') is-invalid @enderror"
+                                    value="{{ old('nama', $ruang->nama) }}" autocomplete="off">
+                                @error('nama')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label class="col-lg-3 col-form-label">Lokasi</label>
                             <div class="col-lg-9">
-                                <input type="text" name="lokasi" class="form-control" value="{{ $ruang->lokasi }}">
+                                <input type="text" name="lokasi"
+                                    class="form-control @error('lokasi') is-invalid @enderror"
+                                    value="{{ old('lokasi', $ruang->lokasi) }}" autocomplete="off">
+                                @error('lokasi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 

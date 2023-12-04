@@ -14,16 +14,38 @@ use App\Models\RiwayatPeminjamanInventarisRuangan;
 use App\Models\Ruangan;
 use App\Models\StatusAset;
 use Barryvdh\DomPDF\Facade\Pdf;
+use DataTables;
 use Illuminate\Support\Facades\DB;
 
 class AsetInventarisRuanganController extends Controller
 {
-
     public function index()
     {
         $asetInventaris = AsetInventarisRuangan::with(['statusAset', 'ruangan'])->get();
+
         // Ambil daftar ruangan dari model Ruangan atau sumber data lainnya
         $daftarRuangan = Ruangan::all(); // Gantilah sesuai model atau sumber data yang sesuai
+        if (request()->ajax()) {
+            return Datatables::of($asetInventaris)
+                ->addIndexColumn()
+                ->addColumn('status_aset', function ($inventaris) {
+                    return $inventaris->statusAset->status_aset;
+                })
+                ->addColumn('ruangan', function ($inventaris) {
+                    return $inventaris->ruangan->nama;
+                })
+                ->addColumn('tanggal_inventarisir', function ($inventaris) {
+                    return \Carbon\Carbon::parse($inventaris->tanggal_inventarisir)->isoFormat('D MMMM Y');
+                })
+                ->addColumn('harga', function ($inventaris) {
+                    return formatRupiah($inventaris->harga, true);
+                })
+                ->addColumn('action', function ($inventaris) {
+                    return view('aset.inventaris.actions', compact('inventaris'))->render();
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
 
         return view('aset.inventaris.index', compact('asetInventaris', 'daftarRuangan'));
     }
@@ -41,6 +63,16 @@ class AsetInventarisRuanganController extends Controller
                     ->where('status_verifikasi', ['ACC', 'Ditolak', 'Dikirim']);
             })
             ->get();
+
+        if (request()->ajax()) {
+            return Datatables::of($asetInventaris)
+                ->addIndexColumn()
+                ->addColumn('action', function ($inventaris) {
+                    return view('aset.inventaris.actionsMassal', compact('inventaris'))->render();
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
 
         return view('aset.inventaris.indexMassal', compact('asetInventaris'));
     }
@@ -173,7 +205,8 @@ class AsetInventarisRuanganController extends Controller
 
     public function edit(AsetInventarisRuangan $asetInventarisRuangan, $id_aset_inventaris_ruangan)
     {
-        $asetInventaris = AsetInventarisRuangan::find($id_aset_inventaris_ruangan);
+        $id = decrypt($id_aset_inventaris_ruangan);
+        $asetInventaris = AsetInventarisRuangan::find($id);
         $status_aset = StatusAset::all();
         $kode_ruangan = Ruangan::all();
         return view('aset.inventaris.edit', compact('asetInventaris', 'status_aset', 'kode_ruangan'));
@@ -200,8 +233,7 @@ class AsetInventarisRuanganController extends Controller
         }
 
         AsetInventarisRuangan::find($id_aset_inventaris_ruangan)->delete();
-        return redirect()->route('inventaris.index')
-            ->with('success', 'Aset Gedung berhasil dihapus.');
+        return redirect()->route('inventaris.index');
     }
 
     public function destroyMassal($grupId)
@@ -219,35 +251,26 @@ class AsetInventarisRuanganController extends Controller
         try {
             DB::beginTransaction();
 
-            // Validasi file
             $file->store('public/import');
 
-            // Lakukan impor
             $import = new AsetInventarisImport;
             $import->import($file);
 
-            // Periksa kegagalan impor
             if ($import->failures()->isNotEmpty()) {
-                // Batalkan transaksi jika ada kegagalan
                 DB::rollBack();
 
-                // Berikan umpan balik ke pengguna tentang kegagalan
                 return back()
                     ->withFailures($import->failures())
                     ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
             }
-            // Mendapatkan jumlah baris yang berhasil diimpor
             $importedRowCount = $import->getRowCount();
 
-            // Commit transaksi jika sukses
             DB::commit();
 
-            // Berikan umpan balik sukses ke pengguna
             return redirect()->route('inventaris.index')
                 ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
 
         } catch (\Exception $e) {
-            // Tangani exception jika terjadi kesalahans
             DB::rollBack();
 
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());

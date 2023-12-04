@@ -22,7 +22,7 @@
                             <div class="col-md-6">
                                 <h5 class="justify-center card-title">Data Kendaraan</h5>
                                 <div class="form-group">
-                                    <label>Status Gedung</label>
+                                    <label>Status Aset</label>
                                     @php
                                         // Simpan nilai status aset sebelumnya
                                         $oldStatusAset = old('id_status_aset', $status_aset[0]->id_status_aset);
@@ -220,8 +220,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        <div class="text-start">
+                            <a href="{{ route('kendaraan.index') }}" class="btn btn-secondary me-1"><i
+                                    class="fas fa-arrow-left"></i>
+                                Kembali</a>
+                        </div>
+                        <div class="text-end" style="margin-top: -38px;">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
                         </div>
                     </form>
                 </div>

@@ -28,10 +28,11 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table
-                            class="table mb-0 border-0 table-bordered star-student table-hover table-center datatable table-stripped">
+                        <table id="datatable"
+                            class="table mb-0 border-0 table-bordered star-student table-hover table-center table-stripped">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th>Kode Ruangan</th>
                                     <th>Nama Ruangan</th>
                                     <th>Lokasi</th>
@@ -39,26 +40,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($ruangan as $ruang)
-                                    <tr>
-                                        <td>{{ $ruang->kode_ruangan }}</td>
-                                        <td>{{ $ruang->nama }}</td>
-                                        <td>{{ $ruang->lokasi }}</td>
-                                        <td>
-                                            <form action="{{ route('ruangan.destroy', $ruang->kode_ruangan) }}"
-                                                method="POST">
 
-                                                <a class="btn btn-primary me-2" style="color: white;"
-                                                    href="{{ route('ruangan.edit', $ruang->kode_ruangan) }}">Edit</a>
-
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Hapus</button>
-                                            </form>
-                                        </td>
-
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -67,3 +49,56 @@
         </div>
     </div>
 @endsection
+
+@push('js')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('ruangan.index') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
+                    {
+                        data: 'kode_ruangan',
+                        name: 'kode_ruangan'
+                    },
+                    {
+                        data: 'nama',
+                        name: 'nama'
+                    },
+                    {
+                        data: 'lokasi',
+                        name: 'lokasi'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
+            });
+        });
+
+        @if (Session::has('success'))
+            toastr.options = {
+                "progressBar": true,
+                "closeButton": true,
+            }
+            toastr.success("{{ Session::get('success') }}", 'Berhasil!', {
+                timeOut: 5000,
+            });
+        @elseif (Session::has('error'))
+            toastr.options = {
+                "progressBar": true,
+                "closeButton": true,
+            }
+            toastr.error("{{ Session::get('error') }}", 'Gagal!', {
+                timeOut: 5000,
+            });
+        @endif
+    </script>
+@endpush

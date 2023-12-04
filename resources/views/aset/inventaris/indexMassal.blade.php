@@ -29,12 +29,13 @@
                         <h6 style="text-align: center;">Tidak ada data aset yang dapat dihapus massal.</h6>
                     @else
                         <div class="table-responsive">
-                            <table class="table mb-0 border-0 table-bordered star-student table-hover table-center">
+                            <table id="datatable"
+                                class="table mb-0 border-0 table-bordered star-student table-hover table-center">
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Grup Id</th>
-                                        <th>Nama</th>
+                                        <th>Nama Inventaris</th>
                                         <th>Ruangan</th>
                                         <th>Merk</th>
                                         <th>Jumlah</th>
@@ -42,30 +43,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($asetInventaris as $index => $inventaris)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $inventaris->grup_id }}</td>
-                                            <td>{{ $inventaris->nama }}</td>
-                                            <td>{{ $inventaris->nama_ruangan }}</td>
-                                            <td>{{ $inventaris->merk }}</td>
-                                            <td>{{ $inventaris->total_jumlah }}</td>
-                                            <td>
-                                                @if ($inventaris->grup_id)
-                                                    <form
-                                                        action="{{ route('inventaris.destroyMassal', $inventaris->grup_id) }}"
-                                                        method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger"
-                                                            onclick="return confirm('Apakah Anda yakin ingin menghapus massal?')">Hapus</button>
-                                                    </form>
-                                                @else
-                                                    <span>Tidak dapat dihapus</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
+
                                 </tbody>
                             </table>
                         </div>
@@ -75,3 +53,46 @@
         </div>
     </div>
 @endsection
+
+@push('js')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('inventaris.indexMassal') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
+                    {
+                        data: 'grup_id',
+                        name: 'grup_id'
+                    },
+                    {
+                        data: 'nama',
+                        name: 'nama'
+                    },
+                    {
+                        data: 'nama_ruangan',
+                        name: 'nama_ruangan'
+                    },
+                    {
+                        data: 'merk',
+                        name: 'merk'
+                    },
+                    {
+                        data: 'total_jumlah',
+                        name: 'total_jumlah'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
+            });
+        });
+    </script>
+@endpush

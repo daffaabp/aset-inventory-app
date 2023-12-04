@@ -15,6 +15,15 @@
     <div class="row">
         <div class="col-xl-8 d-flex">
             <div class="card flex-fill">
+
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+
                 <div class="card-body">
                     <form action="{{ route('ruangan.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -22,21 +31,33 @@
                         <div class="form-group row">
                             <label class="col-lg-3 col-form-label">Kode Ruangan</label>
                             <div class="col-lg-9">
-                                <input type="text" name="kode_ruangan" class="form-control" autocomplete="off" required>
+                                <input type="text" name="kode_ruangan" value="{{ old('kode_ruangan') }}"
+                                    class="form-control @error('kode_ruangan') is-invalid @enderror" autocomplete="off">
+                                @error('kode_ruangan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label class="col-lg-3 col-form-label">Nama Ruangan</label>
                             <div class="col-lg-9">
-                                <input type="text" name="nama" class="form-control" autocomplete="off" required>
+                                <input type="text" name="nama" value="{{ old('nama') }}"
+                                    class="form-control @error('nama') is-invalid @enderror" autocomplete="off">
+                                @error('nama')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label class="col-lg-3 col-form-label">Lokasi</label>
                             <div class="col-lg-9">
-                                <input type="text" name="lokasi" class="form-control" autocomplete="off" required>
+                                <input type="text" name="lokasi" value="{{ old('lokasi') }}"
+                                    class="form-control @error('lokasi') is-invalid @enderror" autocomplete="off">
+                                @error('lokasi')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 

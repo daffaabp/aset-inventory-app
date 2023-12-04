@@ -2,18 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ruangan;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreRuanganRequest;
+use App\Http\Requests\UpdateRuanganRequest;
 use App\Models\AsetInventarisRuangan;
+use App\Models\Ruangan;
+use DataTables;
 
 class RuanganController extends Controller
 {
-
     public function index()
     {
-
         $ruangan = Ruangan::all();
-        return view('ruangan.index', compact('ruangan'));
+
+        if (request()->ajax()) {
+            return Datatables::of($ruangan)
+                ->addIndexColumn()
+                ->addColumn('action', function ($ruang) {
+                    return view('ruangan.actions', compact('ruang'))->render();
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('ruangan.index', ['ruangan' => $ruangan]);
     }
 
     public function create()
@@ -21,17 +31,24 @@ class RuanganController extends Controller
         return view('ruangan.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreRuanganRequest $request)
     {
-        $this->validate($request, [
-            'kode_ruangan' => 'string|required',
-            'nama' => 'string|required',
-            'lokasi' => 'string|required',
-        ]);
+        // Validasi telah dihandle oleh middleware
+        $validated = $request->validated();
 
-        $ruangan = Ruangan::create($request->all());
-        return redirect()->route('ruangan.index')
-            ->with('success', 'Ruangan Berhasil Ditambahkan');
+        try {
+            $ruangan = new Ruangan();
+            $ruangan->kode_ruangan = $validated['kode_ruangan'];
+            $ruangan->nama = $validated['nama'];
+            $ruangan->lokasi = $validated['lokasi'];
+
+            $ruangan->save();
+            return redirect()->route('ruangan.index')
+                ->with('success', 'Ruangan Berhasil Ditambahkan');
+        } catch (\Exception $e) {
+            return back()
+                ->with('error', 'Terjadi kesalahan saat menyimpan data aset tanah.');
+        }
     }
 
     public function edit($kode_ruangan)
@@ -40,13 +57,9 @@ class RuanganController extends Controller
         return view('ruangan.edit', compact('ruang'));
     }
 
-    public function update(Request $request)
+    public function update(UpdateRuanganRequest $request)
     {
-        $this->validate($request, [
-            'kode_ruangan' => 'string|required',
-            'nama' => 'string|required',
-            'lokasi' => 'string|required',
-        ]);
+        $validated = $request->validated();
 
         $result = Ruangan::find($request->kode_ruangan)->update($request->all());
         return redirect()->route('ruangan.index')
@@ -55,8 +68,16 @@ class RuanganController extends Controller
 
     public function destroy($kode_ruangan)
     {
+        // Cek apakah aset pernah dipinjam
+        $isStatusDigunakan = AsetInventarisRuangan::where('kode_ruangan', $kode_ruangan)->exists();
+
+        if ($isStatusDigunakan) {
+            return redirect()->route('ruangan.index')
+                ->with('error', 'Ruangan sudah digunakan, tidak dapat dihapus.');
+        }
+
         Ruangan::find($kode_ruangan)->delete();
         return redirect()->route('ruangan.index')
-            ->with('success', 'Ruangan deleted successfully');
+            ->with('success', 'Ruangan berhasil dihapus');
     }
 }

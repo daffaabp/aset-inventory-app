@@ -1,12 +1,12 @@
-<form action="{{ route('tanah.destroy', $asetTanah->id_aset_tanah) }}" method="POST">
+<form action="{{ route('ruangan.destroy', $ruang->kode_ruangan) }}" method="POST">
     <a class="btn btn-warning me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" style="color: white;"
-        href="{{ route('tanah.edit', encrypt($asetTanah->id_aset_tanah)) }}"><i class="fas fa-edit"></i></a>
+        href="{{ route('ruangan.edit', $ruang->kode_ruangan) }}"><i class="fas fa-edit"></i></a>
 
     @csrf
     @method('DELETE')
 
     <button type="button" class="btn btn-danger confirm-button" data-bs-toggle="tooltip" data-bs-placement="top"
-        title="Hapus" nama="{{ $asetTanah->nama }}"><i class="fas fa-trash"></i></button>
+        title="Hapus" nama="{{ $ruang->nama }}"><i class="fas fa-trash"></i></button>
 </form>
 
 <script type="text/javascript">
@@ -17,7 +17,7 @@
 
         Swal.fire({
                 title: 'Apakah anda yakin?',
-                text: "Apakah anda yakin akan menghapus aset " + '"' + nama + '"' + " ?",
+                text: "Apakah anda yakin akan menghapus ruangan " + '"' + nama + '"' + " ?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -28,12 +28,15 @@
             .then((result) => {
                 if (result.isConfirmed) {
                     form.submit();
-                    Swal.fire(
-                        'Berhasil dihapus!',
-                        'Data kamu berhasil dihapus.',
-                        'success'
-                    )
                 }
             })
+            .catch((error) => {
+                // Jika terjadi kesalahan saat penghapusan
+                Swal.fire(
+                    'Error',
+                    'Terjadi kesalahan saat menghapus data. Silakan coba lagi.',
+                    'error'
+                );
+            });
     });
 </script>

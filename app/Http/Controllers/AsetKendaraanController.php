@@ -8,8 +8,10 @@ use App\Http\Requests\StoreAsetKendaraanRequest;
 use App\Http\Requests\UpdateAsetKendaraanRequest;
 use App\Imports\AsetKendaraanImport;
 use App\Models\AsetKendaraan;
+use App\Models\RiwayatPeminjamanKendaraan;
 use App\Models\StatusAset;
 use Barryvdh\DomPDF\Facade\Pdf;
+use DataTables;
 use Illuminate\Support\Facades\DB;
 
 class AsetKendaraanController extends Controller
@@ -20,6 +22,29 @@ class AsetKendaraanController extends Controller
     public function index()
     {
         $asetKendaraans = AsetKendaraan::with('statusAset')->get();
+
+        if (request()->ajax()) {
+            return Datatables::of($asetKendaraans)
+                ->addIndexColumn()
+                ->addColumn('status_aset', function ($asetKendaraan) {
+                    return $asetKendaraan->statusAset->status_aset;
+                })
+                ->addColumn('tanggal_inventarisir', function ($asetKendaraan) {
+                    return \Carbon\Carbon::parse($asetKendaraan->tanggal_inventarisir)->isoFormat('D MMMM Y');
+                })
+                ->addColumn('tgl_bpkb', function ($asetKendaraan) {
+                    return \Carbon\Carbon::parse($asetKendaraan->tgl_bpkb)->isoFormat('D MMMM Y');
+                })
+                ->addColumn('harga', function ($asetKendaraan) {
+                    return formatRupiah($asetKendaraan->harga, true);
+                })
+                ->addColumn('action', function ($asetKendaraan) {
+                    return view('aset.kendaraan.actions', compact('asetKendaraan'))->render();
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
         return view('aset.kendaraan.index', ['asetKendaraans' => $asetKendaraans]);
     }
 
@@ -92,7 +117,8 @@ class AsetKendaraanController extends Controller
      */
     public function edit(AsetKendaraan $asetKendaraan, $id_aset_kendaraan)
     {
-        $aset_kendaraan = AsetKendaraan::find($id_aset_kendaraan);
+        $id = decrypt($id_aset_kendaraan);
+        $aset_kendaraan = AsetKendaraan::find($id);
         $status_aset = StatusAset::all();
 
         return view('aset.kendaraan.edit', compact('aset_kendaraan', 'status_aset'));
@@ -115,9 +141,16 @@ class AsetKendaraanController extends Controller
      */
     public function destroy($id_aset_kendaraan)
     {
+        // Cek apakah aset pernah dipinjam
+        $isAsetDipinjam = RiwayatPeminjamanKendaraan::where('id_aset_kendaraan', $id_aset_kendaraan)->exists();
+
+        if ($isAsetDipinjam) {
+            return redirect()->route('kendaraan.index')
+                ->with('error', 'Data aset inventaris sudah pernah dipinjam, tidak dapat dihapus.');
+        }
+
         AsetKendaraan::find($id_aset_kendaraan)->delete();
-        return redirect()->route('kendaraan.index')
-            ->with('success', 'Aset Kendaraan berhasil dihapus.');
+        return redirect()->route('kendaraan.index');
     }
 
     public function importExcel(AsetKendaraanImportRequest $request)
@@ -127,35 +160,26 @@ class AsetKendaraanController extends Controller
         try {
             DB::beginTransaction();
 
-            // Validasi file
             $file->store('public/import');
 
-            // Lakukan impor
             $import = new AsetKendaraanImport;
             $import->import($file);
 
-            // Periksa kegagalan impor
             if ($import->failures()->isNotEmpty()) {
-                // Batalkan transaksi jika ada kegagalan
                 DB::rollBack();
 
-                // Berikan umpan balik ke pengguna tentang kegagalan
                 return back()
                     ->withFailures($import->failures())
                     ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
             }
-            // Mendapatkan jumlah baris yang berhasil diimpor
             $importedRowCount = $import->getRowCount();
 
-            // Commit transaksi jika sukses
             DB::commit();
 
-            // Berikan umpan balik sukses ke pengguna
             return redirect()->route('kendaraan.index')
                 ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
 
         } catch (\Exception $e) {
-            // Tangani exception jika terjadi kesalahans
             DB::rollBack();
 
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());

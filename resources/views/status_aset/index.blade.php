@@ -49,9 +49,9 @@
                                                 <a class="btn btn-primary me-2" style="color: white;"
                                                     href="{{ route('status_aset.edit', $status->id_status_aset) }}">Edit</a>
 
-                                                @csrf
+                                                {{-- @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Hapus</button>
+                                                <button type="submit" class="btn btn-danger">Hapus</button> --}}
                                             </form>
                                         </td>
                                     </tr>

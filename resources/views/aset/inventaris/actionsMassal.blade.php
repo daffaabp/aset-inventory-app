@@ -1,13 +1,14 @@
-<form action="{{ route('tanah.destroy', $asetTanah->id_aset_tanah) }}" method="POST">
-    <a class="btn btn-warning me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" style="color: white;"
-        href="{{ route('tanah.edit', encrypt($asetTanah->id_aset_tanah)) }}"><i class="fas fa-edit"></i></a>
+@if ($inventaris->grup_id)
+    <form action="{{ route('inventaris.destroyMassal', $inventaris->grup_id) }}" method="POST">
+        @csrf
+        @method('DELETE')
 
-    @csrf
-    @method('DELETE')
-
-    <button type="button" class="btn btn-danger confirm-button" data-bs-toggle="tooltip" data-bs-placement="top"
-        title="Hapus" nama="{{ $asetTanah->nama }}"><i class="fas fa-trash"></i></button>
-</form>
+        <button type="button" class="btn btn-danger confirm-button" data-bs-toggle="tooltip" data-bs-placement="top"
+            title="Hapus" nama="{{ $inventaris->nama }}"><i class="fas fa-trash"></i></button>
+    </form>
+@else
+    <span>Tidak dapat dihapus</span>
+@endif
 
 <script type="text/javascript">
     $('.confirm-button').click(function(e) {

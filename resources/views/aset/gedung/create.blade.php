@@ -22,7 +22,7 @@
                             <div class="col-md-6">
                                 <h5 class="justify-center card-title">Data Gedung</h5>
                                 <div class="form-group">
-                                    <label>Status Gedung</label>
+                                    <label>Status Aset</label>
                                     @php
                                         // Simpan nilai status aset sebelumnya
                                         $oldStatusAset = old('id_status_aset', $status_aset[0]->id_status_aset);
@@ -41,7 +41,7 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label>Kode Gedung</label>
+                                    <label>Kode</label>
                                     <input type="text" class="form-control @error('kode_aset') is-invalid @enderror"
                                         name="kode_aset" value="{{ $kode_gedung }}" readonly>
                                     @error('status_aset')
@@ -59,32 +59,39 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label>Nama Bangunan</label>
+                                    <label>Nama Gedung</label>
                                     <input type="text" class="form-control @error('nama') is-invalid @enderror"
                                         name="nama" value="{{ old('nama') }}" autocomplete="off" autofocus>
                                     @error('nama')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="form-group">
-                                    <label>Kondisi</label>
-                                    <select name="kondisi"
-                                        class="form-control form-select @error('kondisi') is-invalid @enderror">
-                                        <option value="Baik" @if (old('kondisi') == 'Baik') selected @endif>Baik
-                                        </option>
-                                        <option value="Rusak" @if (old('kondisi') == 'Rusak') selected @endif>Rusak
-                                        </option>
-                                        <option value="Korosi" @if (old('kondisi') == 'Korosi') selected @endif>Korosi
-                                        </option>
-                                        <option value="Baru" @if (old('kondisi') == 'Baru') selected @endif>Baru
-                                        </option>
-                                    </select>
-                                    @error('kondisi')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
 
                                 <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Kondisi</label>
+                                            <select name="kondisi"
+                                                class="form-control form-select @error('kondisi') is-invalid @enderror">
+                                                <option value="Baik" @if (old('kondisi') == 'Baik') selected @endif>
+                                                    Baik
+                                                </option>
+                                                <option value="Rusak" @if (old('kondisi') == 'Rusak') selected @endif>
+                                                    Rusak
+                                                </option>
+                                                <option value="Korosi" @if (old('kondisi') == 'Korosi') selected @endif>
+                                                    Korosi
+                                                </option>
+                                                <option value="Baru" @if (old('kondisi') == 'Baru') selected @endif>
+                                                    Baru
+                                                </option>
+                                            </select>
+                                            @error('kondisi')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Bertingkat</label>
@@ -100,6 +107,10 @@
                                             @enderror
                                         </div>
                                     </div>
+                                </div>
+
+
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Beton</label>
@@ -121,14 +132,18 @@
                                             @enderror
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Luas Lantai (m<sup>2</sup>)</label>
-                                    <input type="number" class="form-control @error('luas_lantai') is-invalid @enderror"
-                                        name="luas_lantai" value="{{ old('luas_lantai') }}" autocomplete="off" autofocus>
-                                    @error('luas_lantai')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Luas Lantai (m<sup>2</sup>)</label>
+                                            <input type="number"
+                                                class="form-control @error('luas_lantai') is-invalid @enderror"
+                                                name="luas_lantai" value="{{ old('luas_lantai') }}" autocomplete="off"
+                                                autofocus>
+                                            @error('luas_lantai')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -217,11 +232,17 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="text-end">
-                                        <button type="submit" class="btn btn-primary">Simpan</button>
-                                    </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="text-start">
+                            <a href="{{ route('gedung.index') }}" class="btn btn-secondary me-1"><i
+                                    class="fas fa-arrow-left"></i>
+                                Kembali</a>
+                        </div>
+
+                        <div class="text-end" style="margin-top: -38px;">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
                         </div>
                     </form>
                 </div>

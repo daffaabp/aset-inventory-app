@@ -10,6 +10,8 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\RichText\RichText;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class AsetTanahExport implements FromCollection, WithMapping, ShouldAutoSize, WithHeadings, WithEvents
@@ -39,20 +41,28 @@ class AsetTanahExport implements FromCollection, WithMapping, ShouldAutoSize, Wi
             $tanah->tanggal_sertifikat,
             $tanah->no_sertifikat,
             $tanah->penggunaan,
-            $tanah->harga,
+            $tanah->harga === 0 ? '0' : $tanah->harga,
             $tanah->keterangan,
         ];
     }
 
     public function headings(): array
     {
+        $richText = new RichText();
+        $richText->createText('Luas (m');
+
+        $superscript = $richText->createTextRun('2');
+        $superscript->getFont()->setSuperscript(true);
+
+        $richText->createText(')');
+
         return [
             'No',
             'Status Aset',
             'Kode Aset',
             'Nama Aset',
             'Tanggal Inventarisir',
-            'Luas',
+            $richText,
             'Letak Tanah',
             'Hak',
             'Tanggal Sertifikat',
@@ -78,7 +88,19 @@ class AsetTanahExport implements FromCollection, WithMapping, ShouldAutoSize, Wi
                         ],
                     ],
                 ]);
+
+                // Set border untuk seluruh data
+                $event->sheet->getStyle('A1:M' . $event->sheet->getHighestRow())
+                    ->getBorders()
+                    ->getAllBorders()
+                    ->setBorderStyle(Border::BORDER_THIN);
+
+                // Set auto size untuk semua kolom
+                foreach (range('A', 'M') as $column) {
+                    $event->sheet->getColumnDimension($column)->setAutoSize(true);
+                }
             },
+
         ];
     }
 
