@@ -131,7 +131,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Nomor Sertifikat</label>
+                                            <label>Nomor Sertifikat <span class="login-danger"
+                                                    style="font-size: 12px;">*opsional</span></label>
                                             <input type="text" name="no_sertifikat" value="{{ old('no_sertifikat') }}"
                                                 class="form-control @error('no_sertifikat') is-invalid @enderror"
                                                 autocomplete="off" autofocus>

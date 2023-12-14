@@ -197,7 +197,7 @@ class RoleController extends Controller
 
         foreach ($routes as $route) {
             $routeName = $route->getName();
-            if ($routeName !== null && !Str::startsWith($routeName, ['password.', 'verification.', 'debugbar.', 'sanctum.', 'ignition.', 'profile.', 'login', 'logout', 'register', 'dashboard'])) {
+            if ($routeName !== null && !Str::startsWith($routeName, ['password.', 'verification.', 'debugbar.', 'sanctum.', 'ignition.', 'profile.', 'login', 'logout', 'register', 'livewire.', 'cariAset'])) {
                 if (!in_array($routeName, $existingRoutes)) {
                     if ($route->getName() != null) {
                         $dataToInsert[] = [
@@ -237,7 +237,8 @@ class RoleController extends Controller
                 'login',
                 'logout',
                 'register',
-                'dashboard',
+                'livewire.',
+                'cariAset',
             ]);
         })->toArray();
 

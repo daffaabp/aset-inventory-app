@@ -51,11 +51,6 @@
                                                             action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
                                                             <button type="submit" class="btn btn-success">Proses</button>
                                                         </form>
-                                                    @else
-                                                        <form
-                                                            action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
-                                                            <button type="submit" class="btn btn-primary">Lihat</button>
-                                                        </form>
                                                     @endif
 
                                                 </td>
@@ -66,8 +61,6 @@
                                                     <span class="badge badge-success">ACC (Sedang Dipinjam)</span>
                                                 @elseif ($row->status_verifikasi === 'Dikirim')
                                                     <span class="badge badge-warning">Dikirim</span>
-                                                @else
-                                                    <span class="badge badge-primary">Selesai</span>
                                                 @endif
                                             </td>
                                             <td>{{ $row->tgl_pengajuan }}</td>

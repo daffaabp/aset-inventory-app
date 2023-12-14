@@ -40,24 +40,27 @@
                             </div>
                         </div>
 
+                        <div class="text-start" style="margin-top: -70px;">
+                            <a href="{{ route('role.index') }}" class="btn btn-secondary me-1"><i
+                                    class="fas fa-arrow-left"></i>
+                                Kembali</a>
+                        </div>
+
                         @if ($message = Session::get('success'))
                             <div class="alert alert-success">
                                 <p>{{ $message }}</p>
                             </div>
                         @endif
 
-                        <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="col-xs-12 col-sm-12 col-md-12" style="margin-top: 10px;">
                             <div class="form-group">
                                 <strong>Nama Role:</strong>
-                                <br> <br>
+                                <br>
                                 <input type="text" name="name" id="name" class="form-control"
-                                    placeholder="Role name" autofocus autocomplete="off">
+                                    placeholder="Role name" autofocus autocomplete="off" style="margin-top: 10px;">
                             </div>
-
                             <strong>Permission:</strong>
-
                             <br> <br>
-
                             @foreach ($permission as $value)
                                 <tr>
                                     <div class="form-check">

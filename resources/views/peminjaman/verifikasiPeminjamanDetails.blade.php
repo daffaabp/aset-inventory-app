@@ -1,4 +1,13 @@
 @extends('layouts.master')
+@push('css')
+    <style>
+        .table-container {
+            max-height: 340px;
+            /* Sesuaikan dengan tinggi maksimal yang Anda inginkan */
+            overflow-y: auto;
+        }
+    </style>
+@endpush
 @section('content')
     <div class="page-header">
         <div class="row align-items-center">
@@ -106,230 +115,242 @@
 
                         <div class="tab-content">
                             <div class="tab-pane show active" id="aset_tanah">
-                                <div class="table-responsive">
-                                    <table class="table mb-0 table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">No</th>
-                                                <th scope="col">Kode Tanah</th>
-                                                <th scope="col">Nama Tanah</th>
-                                                <th scope="col">Letak Tanah</th>
-                                                @if (auth()->user()->hasRole('Petugas'))
-                                                    @if ($peminjaman->status_verifikasi === 'Dikirim' || $peminjaman->status_verifikasi === 'ACC')
-                                                        <th scope="col">Status</th>
-                                                    @endif
-                                                @endif
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($riwayatPeminjamanTanah as $aset)
+                                <div class="table-container">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-bordered">
+                                            <thead>
                                                 <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $aset->kode_aset }}</td>
-                                                    <td>{{ $aset->nama }}</td>
-                                                    <td>{{ $aset->letak_tanah }}</td>
+                                                    <th scope="col">No</th>
+                                                    <th scope="col">Kode Tanah</th>
+                                                    <th scope="col">Nama Tanah</th>
+                                                    <th scope="col">Letak Tanah</th>
                                                     @if (auth()->user()->hasRole('Petugas'))
-                                                        @if ($peminjaman->status_verifikasi == 'Dikirim')
-                                                            <td>
-                                                                {{ $aset->statusAset->status_aset }}
-                                                            </td>
-                                                        @elseif ($peminjaman->status_verifikasi == 'ACC')
-                                                            <td>
-                                                                <select
-                                                                    name="riwayatPeminjamanTanah[status][{{ $aset->id }}]"
-                                                                    class="form-select" style="height: 35px; width: 160px;"
-                                                                    id="status_aset" aria-label="Default select example">
-
-                                                                    @if ($aset->statusAset->id_status_aset == 2)
-                                                                        <option value="1"
-                                                                            {{ $aset->statusAset->id_status_aset == 1 ? 'selected' : '' }}>
-                                                                            Baik</option>
-                                                                        <option value="3"
-                                                                            {{ $aset->statusAset->id_status_aset == 3 ? 'selected' : '' }}>
-                                                                            Rusak</option>
-                                                                    @endif
-                                                                </select>
-                                                            </td>
+                                                        @if ($peminjaman->status_verifikasi === 'Dikirim' || $peminjaman->status_verifikasi === 'ACC')
+                                                            <th scope="col">Status</th>
                                                         @endif
                                                     @endif
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($riwayatPeminjamanTanah as $aset)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $aset->kode_aset }}</td>
+                                                        <td>{{ $aset->nama }}</td>
+                                                        <td>{{ $aset->letak_tanah }}</td>
+                                                        @if (auth()->user()->hasRole('Petugas'))
+                                                            @if ($peminjaman->status_verifikasi == 'Dikirim')
+                                                                <td>
+                                                                    {{ $aset->statusAset->status_aset }}
+                                                                </td>
+                                                            @elseif ($peminjaman->status_verifikasi == 'ACC')
+                                                                <td>
+                                                                    <select
+                                                                        name="riwayatPeminjamanTanah[status][{{ $aset->id }}]"
+                                                                        class="form-select"
+                                                                        style="height: 35px; width: 160px;" id="status_aset"
+                                                                        aria-label="Default select example">
+
+                                                                        @if ($aset->statusAset->id_status_aset == 2)
+                                                                            <option value="1"
+                                                                                {{ $aset->statusAset->id_status_aset == 1 ? 'selected' : '' }}>
+                                                                                Baik</option>
+                                                                            <option value="3"
+                                                                                {{ $aset->statusAset->id_status_aset == 3 ? 'selected' : '' }}>
+                                                                                Rusak</option>
+                                                                        @endif
+                                                                    </select>
+                                                                </td>
+                                                            @endif
+                                                        @endif
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
 
 
                             <div class="tab-pane show" id="aset_gedung">
-                                <div class="table-responsive">
-                                    <table class="table mb-0 table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">No</th>
-                                                <th scope="col">Kode Gedung</th>
-                                                <th scope="col">Nama Gedung</th>
-                                                <th scope="col">Lokasi Gedung</th>
-                                                @if (auth()->user()->hasRole('Petugas'))
-                                                    @if ($peminjaman->status_verifikasi === 'Dikirim' || $peminjaman->status_verifikasi === 'ACC')
-                                                        <th scope="col">Status</th>
-                                                    @endif
-                                                @endif
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($riwayatPeminjamanGedung as $aset)
+                                <div class="table-container">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-bordered">
+                                            <thead>
                                                 <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $aset->kode_aset }}</td>
-                                                    <td>{{ $aset->nama }}</td>
-                                                    <td>{{ $aset->lokasi }}</td>
+                                                    <th scope="col">No</th>
+                                                    <th scope="col">Kode Gedung</th>
+                                                    <th scope="col">Nama Gedung</th>
+                                                    <th scope="col">Lokasi Gedung</th>
                                                     @if (auth()->user()->hasRole('Petugas'))
-                                                        @if ($peminjaman->status_verifikasi == 'Dikirim')
-                                                            <td>
-                                                                {{ $aset->statusAset->status_aset }}
-                                                            </td>
-                                                        @elseif ($peminjaman->status_verifikasi == 'ACC')
-                                                            <td>
-                                                                <select
-                                                                    name="riwayatPeminjamanGedung[status][{{ $aset->id }}]"
-                                                                    class="form-select"
-                                                                    style="height: 35px; width: 160px;" id="status_aset"
-                                                                    aria-label="Default select example">
-
-                                                                    @if ($aset->statusAset->id_status_aset == 2)
-                                                                        <option value="1"
-                                                                            {{ $aset->statusAset->id_status_aset == 1 ? 'selected' : '' }}>
-                                                                            Baik</option>
-                                                                        <option value="3"
-                                                                            {{ $aset->statusAset->id_status_aset == 3 ? 'selected' : '' }}>
-                                                                            Rusak</option>
-                                                                    @endif
-                                                                </select>
-                                                            </td>
+                                                        @if ($peminjaman->status_verifikasi === 'Dikirim' || $peminjaman->status_verifikasi === 'ACC')
+                                                            <th scope="col">Status</th>
                                                         @endif
                                                     @endif
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($riwayatPeminjamanGedung as $aset)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $aset->kode_aset }}</td>
+                                                        <td>{{ $aset->nama }}</td>
+                                                        <td>{{ $aset->lokasi }}</td>
+                                                        @if (auth()->user()->hasRole('Petugas'))
+                                                            @if ($peminjaman->status_verifikasi == 'Dikirim')
+                                                                <td>
+                                                                    {{ $aset->statusAset->status_aset }}
+                                                                </td>
+                                                            @elseif ($peminjaman->status_verifikasi == 'ACC')
+                                                                <td>
+                                                                    <select
+                                                                        name="riwayatPeminjamanGedung[status][{{ $aset->id }}]"
+                                                                        class="form-select"
+                                                                        style="height: 35px; width: 160px;"
+                                                                        id="status_aset"
+                                                                        aria-label="Default select example">
+
+                                                                        @if ($aset->statusAset->id_status_aset == 2)
+                                                                            <option value="1"
+                                                                                {{ $aset->statusAset->id_status_aset == 1 ? 'selected' : '' }}>
+                                                                                Baik</option>
+                                                                            <option value="3"
+                                                                                {{ $aset->statusAset->id_status_aset == 3 ? 'selected' : '' }}>
+                                                                                Rusak</option>
+                                                                        @endif
+                                                                    </select>
+                                                                </td>
+                                                            @endif
+                                                        @endif
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="tab-pane show" id="aset_kendaraan">
-                                <div class="table-responsive">
-                                    <table class="table mb-0 table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">No</th>
-                                                <th scope="col">Kode Kendaraan</th>
-                                                <th scope="col">Nama Kendaraan</th>
-                                                <th scope="col">Merk</th>
-                                                <th scope="col">Warna</th>
-                                                <th scope="col">No Polisi</th>
-                                                @if (auth()->user()->hasRole('Petugas'))
-                                                    @if ($peminjaman->status_verifikasi === 'Dikirim' || $peminjaman->status_verifikasi === 'ACC')
-                                                        <th scope="col">Status</th>
-                                                    @endif
-                                                @endif
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($riwayatPeminjamanKendaraan as $aset)
+                                <div class="table-container">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-bordered">
+                                            <thead>
                                                 <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $aset->kode_aset }}</td>
-                                                    <td>{{ $aset->nama }}</td>
-                                                    <td>{{ $aset->merk }}</td>
-                                                    <td>{{ $aset->warna }}</td>
-                                                    <td>{{ $aset->no_polisi }}</td>
+                                                    <th scope="col">No</th>
+                                                    <th scope="col">Kode Kendaraan</th>
+                                                    <th scope="col">Nama Kendaraan</th>
+                                                    <th scope="col">Merk</th>
+                                                    <th scope="col">Warna</th>
+                                                    <th scope="col">No Polisi</th>
                                                     @if (auth()->user()->hasRole('Petugas'))
-                                                        @if ($peminjaman->status_verifikasi == 'Dikirim')
-                                                            <td>
-                                                                {{ $aset->statusAset->status_aset }}
-                                                            </td>
-                                                        @elseif ($peminjaman->status_verifikasi == 'ACC')
-                                                            <td>
-                                                                <select
-                                                                    name="riwayatPeminjamanKendaraan[status][{{ $aset->id }}]"
-                                                                    class="form-select"
-                                                                    style="height: 35px; width: 160px;" id="status_aset"
-                                                                    aria-label="Default select example">
-
-                                                                    @if ($aset->statusAset->id_status_aset == 2)
-                                                                        <option value="1"
-                                                                            {{ $aset->statusAset->id_status_aset == 1 ? 'selected' : '' }}>
-                                                                            Baik</option>
-                                                                        <option value="3"
-                                                                            {{ $aset->statusAset->id_status_aset == 3 ? 'selected' : '' }}>
-                                                                            Rusak</option>
-                                                                    @endif
-                                                                </select>
-                                                            </td>
+                                                        @if ($peminjaman->status_verifikasi === 'Dikirim' || $peminjaman->status_verifikasi === 'ACC')
+                                                            <th scope="col">Status</th>
                                                         @endif
                                                     @endif
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($riwayatPeminjamanKendaraan as $aset)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $aset->kode_aset }}</td>
+                                                        <td>{{ $aset->nama }}</td>
+                                                        <td>{{ $aset->merk }}</td>
+                                                        <td>{{ $aset->warna }}</td>
+                                                        <td>{{ $aset->no_polisi }}</td>
+                                                        @if (auth()->user()->hasRole('Petugas'))
+                                                            @if ($peminjaman->status_verifikasi == 'Dikirim')
+                                                                <td>
+                                                                    {{ $aset->statusAset->status_aset }}
+                                                                </td>
+                                                            @elseif ($peminjaman->status_verifikasi == 'ACC')
+                                                                <td>
+                                                                    <select
+                                                                        name="riwayatPeminjamanKendaraan[status][{{ $aset->id }}]"
+                                                                        class="form-select"
+                                                                        style="height: 35px; width: 160px;"
+                                                                        id="status_aset"
+                                                                        aria-label="Default select example">
+
+                                                                        @if ($aset->statusAset->id_status_aset == 2)
+                                                                            <option value="1"
+                                                                                {{ $aset->statusAset->id_status_aset == 1 ? 'selected' : '' }}>
+                                                                                Baik</option>
+                                                                            <option value="3"
+                                                                                {{ $aset->statusAset->id_status_aset == 3 ? 'selected' : '' }}>
+                                                                                Rusak</option>
+                                                                        @endif
+                                                                    </select>
+                                                                </td>
+                                                            @endif
+                                                        @endif
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="tab-pane show" id="aset_inventaris_ruangan">
-                                <div class="table-responsive">
-                                    <table class="table mb-0 table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">No</th>
-                                                <th scope="col">Kode Inventaris</th>
-                                                <th scope="col">Nama Inventaris Ruangan</th>
-                                                <th scope="col">Merk</th>
-                                                <th scope="col">Bahan</th>
-                                                <th scope="col">Jumlah</th>
-                                                @if (auth()->user()->hasRole('Petugas'))
-                                                    @if ($peminjaman->status_verifikasi === 'Dikirim' || $peminjaman->status_verifikasi === 'ACC')
-                                                        <th scope="col">Status</th>
-                                                    @endif
-                                                @endif
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($riwayatPeminjamanInventarisRuangan as $aset)
+                                <div class="table-container">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-bordered">
+                                            <thead>
                                                 <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $aset->kode_aset }}</td>
-                                                    <td>{{ $aset->nama }}</td>
-                                                    <td>{{ $aset->merk }}</td>
-                                                    <td>{{ $aset->bahan }}</td>
-                                                    <td>{{ $aset->jumlah }}</td>
+                                                    <th scope="col">No</th>
+                                                    <th scope="col">Kode Inventaris</th>
+                                                    <th scope="col">Nama Inventaris Ruangan</th>
+                                                    <th scope="col">Merk</th>
+                                                    <th scope="col">Bahan</th>
+                                                    <th scope="col">Jumlah</th>
                                                     @if (auth()->user()->hasRole('Petugas'))
-                                                        @if ($peminjaman->status_verifikasi == 'Dikirim')
-                                                            <td>
-                                                                {{ $aset->statusAset->status_aset }}
-                                                            </td>
-                                                        @elseif ($peminjaman->status_verifikasi == 'ACC')
-                                                            <td>
-                                                                <select
-                                                                    name="riwayatPeminjamanInventarisRuangan[status][{{ $aset->id }}]"
-                                                                    class="form-select"
-                                                                    style="height: 35px; width: 160px;" id="status_aset"
-                                                                    aria-label="Default select example">
-
-                                                                    @if ($aset->statusAset->id_status_aset == 2)
-                                                                        <option value="1"
-                                                                            {{ $aset->statusAset->id_status_aset == 1 ? 'selected' : '' }}>
-                                                                            Baik</option>
-                                                                        <option value="3"
-                                                                            {{ $aset->statusAset->id_status_aset == 3 ? 'selected' : '' }}>
-                                                                            Rusak</option>
-                                                                    @endif
-                                                                </select>
-                                                            </td>
+                                                        @if ($peminjaman->status_verifikasi === 'Dikirim' || $peminjaman->status_verifikasi === 'ACC')
+                                                            <th scope="col">Status</th>
                                                         @endif
                                                     @endif
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($riwayatPeminjamanInventarisRuangan as $aset)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $aset->kode_aset }}</td>
+                                                        <td>{{ $aset->nama }}</td>
+                                                        <td>{{ $aset->merk }}</td>
+                                                        <td>{{ $aset->bahan }}</td>
+                                                        <td>{{ $aset->jumlah }}</td>
+                                                        @if (auth()->user()->hasRole('Petugas'))
+                                                            @if ($peminjaman->status_verifikasi == 'Dikirim')
+                                                                <td>
+                                                                    {{ $aset->statusAset->status_aset }}
+                                                                </td>
+                                                            @elseif ($peminjaman->status_verifikasi == 'ACC')
+                                                                <td>
+                                                                    <select
+                                                                        name="riwayatPeminjamanInventarisRuangan[status][{{ $aset->id }}]"
+                                                                        class="form-select"
+                                                                        style="height: 35px; width: 160px;"
+                                                                        id="status_aset"
+                                                                        aria-label="Default select example">
+
+                                                                        @if ($aset->statusAset->id_status_aset == 2)
+                                                                            <option value="1"
+                                                                                {{ $aset->statusAset->id_status_aset == 1 ? 'selected' : '' }}>
+                                                                                Baik</option>
+                                                                            <option value="3"
+                                                                                {{ $aset->statusAset->id_status_aset == 3 ? 'selected' : '' }}>
+                                                                                Rusak</option>
+                                                                        @endif
+                                                                    </select>
+                                                                </td>
+                                                            @endif
+                                                        @endif
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
 

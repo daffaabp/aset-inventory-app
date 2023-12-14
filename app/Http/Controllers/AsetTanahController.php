@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\AsetTanahExport;
 use App\Http\Requests\AsetTanahImportRequest;
+use App\Http\Requests\ExportPdfAsetTanahRequest;
 use App\Http\Requests\StoreAsetTanahRequest;
 use App\Http\Requests\UpdateAsetTanahRequest;
 use App\Imports\AsetTanahImport;
@@ -20,6 +21,7 @@ class AsetTanahController extends Controller
     public function index()
     {
         $asetTanahs = AsetTanah::with('statusAset')->get();
+        $statusAset = StatusAset::all();
 
         if (request()->ajax()) {
             return Datatables::of($asetTanahs)
@@ -43,7 +45,7 @@ class AsetTanahController extends Controller
                 ->make(true);
         }
 
-        return view('aset.tanah.index', ['asetTanahs' => $asetTanahs]);
+        return view('aset.tanah.index', compact('asetTanahs', 'statusAset'));
     }
 
     public function create()
@@ -164,7 +166,6 @@ class AsetTanahController extends Controller
                 // Batalkan transaksi jika ada kegagalan
                 DB::rollBack();
 
-                // Berikan umpan balik ke pengguna tentang kegagalan
                 return back()
                     ->withFailures($import->failures())
                     ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
@@ -174,18 +175,13 @@ class AsetTanahController extends Controller
 
             // Commit transaksi jika sukses
             DB::commit();
-
-            // Berikan umpan balik sukses ke pengguna
             return redirect()->route('tanah.index')
                 ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
 
         } catch (\Exception $e) {
             // Tangani exception jika terjadi kesalahans
             DB::rollBack();
-
-            // return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-            alert()->error('Terjadi kesalahan: ' . $e->getMessage())->persistent(true, false);
-            return back();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
@@ -194,23 +190,40 @@ class AsetTanahController extends Controller
         return (new AsetTanahExport)->download('aset_tanah.xlsx');
     }
 
-    public function exportPdf()
+    public function exportPdf(ExportPdfAsetTanahRequest $request)
     {
-        $aset_tanah = AsetTanah::with('statusAset')->get();
+        $query = AsetTanah::with('statusAset')->orderBy('id_aset_tanah');
 
-        $data = [
+        if ($request->opsi === 'Berdasarkan Status Aset') {
+            $status_aset = $request->status_aset;
+
+            $query->where('id_status_aset', $status_aset);
+
+        } elseif ($request->opsi === 'Berdasarkan Hak') {
+            $hak = $request->hak;
+
+            $query->where('hak', $hak);
+
+        } elseif ($request->opsi === 'Berdasarkan Kustom') {
+
+            if ($request->filled('status_aset2')) {
+                $status_aset2 = $request->status_aset2;
+                $query->where('id_status_aset', $status_aset2);
+            }
+
+            if ($request->filled('hak2')) {
+                $hak2 = $request->hak2;
+                $query->where('hak', $hak2);
+            }
+        }
+
+        if ($aset_tanah->isEmpty()) {
+            return redirect()->back()->with('error', 'Data yang dicari tidak ditemukan.');
+        }
+
+        $pdf = PDF::loadview('aset.tanah.cetak_pdf', [
             'aset_tanah' => $aset_tanah,
-        ];
-
-        $pdf = PDF::loadview('aset.tanah.cetak_pdf', $data);
-        // Set ukuran kertas menjadi F4 dan margin ke nol
-        $pdf->setPaper('f4', 'landscape')
-            ->setOption('page-width', 'F4-width-in-mm') // Ganti dengan lebar F4 dalam milimeter
-            ->setOption('page-height', 'F4-height-in-mm') // Ganti dengan tinggi F4 dalam milimeter
-            ->setOption('margin-top', 0)
-            ->setOption('margin-right', 0)
-            ->setOption('margin-bottom', 0)
-            ->setOption('margin-left', 0);
+        ])->setPaper('a4', 'landscape');
 
         return $pdf->stream('aset_tanah.pdf');
     }

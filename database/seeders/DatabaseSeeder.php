@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Bidang;
 use App\Models\User;
 use Database\Seeders\BidangSeeder;
 use Database\Seeders\RuanganSeeder;
@@ -19,6 +20,14 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
+
+        $this->call([
+            StatusAsetSeeder::class,
+            RuanganSeeder::class,
+            BidangSeeder::class,
+        ]);
+
+        Permission::create(['name' => 'dashboard']);
         Permission::create(['name' => 'user.index']);
         Permission::create(['name' => 'user.create']);
         Permission::create(['name' => 'user.store']);
@@ -111,6 +120,14 @@ class DatabaseSeeder extends Seeder
 
         Role::create(['name' => 'Superadmin']);
         $roleSuperadmin = Role::findByName('Superadmin');
+        $roleSuperadmin->givePermissionTo('dashboard');
+        $roleSuperadmin->givePermissionTo('bidang.index');
+        $roleSuperadmin->givePermissionTo('bidang.create');
+        $roleSuperadmin->givePermissionTo('bidang.store');
+        $roleSuperadmin->givePermissionTo('bidang.edit');
+        $roleSuperadmin->givePermissionTo('bidang.update');
+        $roleSuperadmin->givePermissionTo('bidang.destroy');
+
         $roleSuperadmin->givePermissionTo('user.index');
         $roleSuperadmin->givePermissionTo('user.create');
         $roleSuperadmin->givePermissionTo('user.store');
@@ -127,8 +144,23 @@ class DatabaseSeeder extends Seeder
         $roleSuperadmin->givePermissionTo('role.getRoutesAllJson');
         $roleSuperadmin->givePermissionTo('role.getRefreshAndDeleteJson');
 
+        $superadmin = User::create([
+            'name' => 'Superadmin',
+            'email' => 'superadmin@gmail.com',
+            'password' => bcrypt('password'),
+        ]);
+        $superadmin->assignRole('Superadmin');
+        $superadminBidang = Bidang::find(10); // Sesuaikan dengan id_bidang Superadmin
+        $superadmin->update([
+            'id_bidang' => $superadminBidang->id_bidang,
+            'keterangan_bidang' => $superadminBidang->deskripsi,
+        ]);
+        $permissionsFromRole = $superadmin->getPermissionsViaRoles();
+        $superadmin->givePermissionTo($permissionsFromRole);
+
         Role::create(['name' => 'Sekretaris Bidang']);
         $roleSekretarisBidang = Role::findByName('Sekretaris Bidang');
+        $roleSekretarisBidang->givePermissionTo('dashboard');
         $roleSekretarisBidang->givePermissionTo('getAset');
         $roleSekretarisBidang->givePermissionTo('addAset');
         $roleSekretarisBidang->givePermissionTo('peminjaman.index');
@@ -136,8 +168,23 @@ class DatabaseSeeder extends Seeder
         $roleSekretarisBidang->givePermissionTo('verifikasiPeminjamanDetails');
         $roleSekretarisBidang->givePermissionTo('riwayatPeminjaman');
 
+        $sekretaris_bidang_binamuda = User::create([
+            'name' => 'Sekretaris Bidang Binamuda',
+            'email' => 'sekbid_binamuda@gmail.com',
+            'password' => bcrypt('password'),
+        ]);
+        $sekretaris_bidang_binamuda->assignRole('Sekretaris Bidang');
+        $sekretarisBidangBinamudaBidang = Bidang::find(1); // Sesuaikan dengan id_bidang Sekretaris Bidang Binamuda
+        $sekretaris_bidang_binamuda->update([
+            'id_bidang' => $sekretarisBidangBinamudaBidang->id_bidang,
+            'keterangan_bidang' => $sekretarisBidangBinamudaBidang->deskripsi,
+        ]);
+        $permissionsFromRole = $sekretaris_bidang_binamuda->getPermissionsViaRoles();
+        $sekretaris_bidang_binamuda->givePermissionTo($permissionsFromRole);
+
         Role::create(['name' => 'Sekretaris Kwarcab']);
         $roleSekretarisKwarcab = Role::findByName('Sekretaris Kwarcab');
+        $roleSekretarisKwarcab->givePermissionTo('dashboard');
         $roleSekretarisKwarcab->givePermissionTo('getAset');
         $roleSekretarisKwarcab->givePermissionTo('addAset');
         $roleSekretarisKwarcab->givePermissionTo('peminjaman.index');
@@ -145,15 +192,23 @@ class DatabaseSeeder extends Seeder
         $roleSekretarisKwarcab->givePermissionTo('verifikasiPeminjamanDetails');
         $roleSekretarisKwarcab->givePermissionTo('riwayatPeminjaman');
 
+        $sekretaris_kwarcab = User::create([
+            'name' => 'Sekretaris Kwarcab',
+            'email' => 'sekcab@gmail.com',
+            'password' => bcrypt('password'),
+        ]);
+        $sekretaris_kwarcab->assignRole('Sekretaris Kwarcab');
+        $sekretarisKwarcabBidang = Bidang::find(8); // Sesuaikan dengan id_bidang Sekretaris Kwarcab
+        $sekretaris_kwarcab->update([
+            'id_bidang' => $sekretarisKwarcabBidang->id_bidang,
+            'keterangan_bidang' => $sekretarisKwarcabBidang->deskripsi,
+        ]);
+        $permissionsFromRole = $sekretaris_kwarcab->getPermissionsViaRoles();
+        $sekretaris_kwarcab->givePermissionTo($permissionsFromRole);
+
         Role::create(['name' => 'Petugas']);
         $rolePetugas = Role::findByName('Petugas');
-        $rolePetugas->givePermissionTo('bidang.index');
-        $rolePetugas->givePermissionTo('bidang.create');
-        $rolePetugas->givePermissionTo('bidang.store');
-        $rolePetugas->givePermissionTo('bidang.edit');
-        $rolePetugas->givePermissionTo('bidang.update');
-        $rolePetugas->givePermissionTo('bidang.destroy');
-
+        $rolePetugas->givePermissionTo('dashboard');
         $rolePetugas->givePermissionTo('status_aset.index');
         $rolePetugas->givePermissionTo('status_aset.create');
         $rolePetugas->givePermissionTo('status_aset.store');
@@ -217,50 +272,19 @@ class DatabaseSeeder extends Seeder
         $rolePetugas->givePermissionTo('processVerification');
         $rolePetugas->givePermissionTo('riwayatPeminjaman');
 
-        $superadmin = User::create([
-            'name' => 'Superadmin',
-            'email' => 'superadmin@gmail.com',
-            'password' => bcrypt('password'),
-        ]);
-        $superadmin->assignRole('Superadmin');
-
         $petugas = User::create([
             'name' => 'Petugas',
             'email' => 'petugas@gmail.com',
             'password' => bcrypt('password'),
         ]);
         $petugas->assignRole('Petugas');
-
-        $sekretaris_bidang_binamuda = User::create([
-            'name' => 'Sekretaris Bidang Binamuda',
-            'email' => 'sekbid_binamuda@gmail.com',
-            'password' => bcrypt('password'),
+        $petugasBidang = Bidang::find(9); // Sesuaikan dengan id_bidang Petugas
+        $petugas->update([
+            'id_bidang' => $petugasBidang->id_bidang,
+            'keterangan_bidang' => $petugasBidang->deskripsi,
         ]);
-        $sekretaris_bidang_binamuda->assignRole('Sekretaris Bidang');
-
-        $sekretaris_kwarcab = User::create([
-            'name' => 'Sekretaris Kwarcab',
-            'email' => 'sekcab@gmail.com',
-            'password' => bcrypt('password'),
-        ]);
-        $sekretaris_kwarcab->assignRole('Sekretaris Kwarcab');
-
-        // Ambil semua izin yang terkait dengan peran Superadmin
-        $permissionsFromRole = $superadmin->getPermissionsViaRoles();
         $permissionsFromRole = $petugas->getPermissionsViaRoles();
-        $permissionsFromRole = $sekretaris_bidang_binamuda->getPermissionsViaRoles();
-        $permissionsFromRole = $sekretaris_kwarcab->getPermissionsViaRoles();
-
-        // Berikan izin yang ada dalam peran secara langsung ke pengguna
-        $superadmin->givePermissionTo($permissionsFromRole);
         $petugas->givePermissionTo($permissionsFromRole);
-        $sekretaris_bidang_binamuda->givePermissionTo($permissionsFromRole);
-        $sekretaris_kwarcab->givePermissionTo($permissionsFromRole);
 
-        $this->call([
-            StatusAsetSeeder::class,
-            RuanganSeeder::class,
-            BidangSeeder::class,
-        ]);
     }
 }

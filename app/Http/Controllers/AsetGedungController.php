@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\AsetGedungExport;
 use App\Http\Requests\AsetGedungImportRequest;
+use App\Http\Requests\ExportPdfAsetGedungRequest;
 use App\Http\Requests\StoreAsetGedungRequest;
 use App\Http\Requests\UpdateAsetGedungRequest;
 use App\Imports\AsetGedungImport;
@@ -20,6 +21,7 @@ class AsetGedungController extends Controller
     public function index()
     {
         $asetGedungs = AsetGedung::with('statusAset')->get();
+        $statusAset = StatusAset::all();
 
         if (request()->ajax()) {
             return Datatables::of($asetGedungs)
@@ -40,7 +42,7 @@ class AsetGedungController extends Controller
                 ->make(true);
         }
 
-        return view('aset.gedung.index', ['asetGedungs' => $asetGedungs]);
+        return view('aset.gedung.index', compact('asetGedungs', 'statusAset'));
     }
 
     public function create()
@@ -182,9 +184,49 @@ class AsetGedungController extends Controller
         return (new AsetGedungExport)->download('aset_gedung.xlsx');
     }
 
-    public function exportPdf()
+    public function exportPdf(ExportPdfAsetGedungRequest $request)
     {
-        $aset_gedung = AsetGedung::with('statusAset')->get();
+        $query = AsetGedung::with('statusAset')->orderBy('id_aset_gedung');
+
+        if ($request->opsi === 'Berdasarkan Status Aset') {
+            $status_aset = $request->status_aset;
+            $query->where('id_status_aset', $status_aset);
+
+        } elseif ($request->opsi === 'Berdasarkan Hak') {
+            $hak = $request->hak;
+            $query->where('hak', $hak);
+
+        } elseif ($request->opsi === 'Berdasarkan Kondisi') {
+            $kondisi = $request->kondisi;
+            $query->where('kondisi', $kondisi);
+
+        } elseif ($request->opsi === 'Berdasarkan Tahun Dokumen') {
+            $tahun_dok = $request->tahun_dok;
+            $query->where('tahun_dok', $tahun_dok);
+
+        } elseif ($request->opsi === 'Berdasarkan Kustom') {
+
+            if ($request->filled('status_aset2')) {
+                $status_aset2 = $request->status_aset2;
+                $query->where('id_status_aset', $status_aset2);
+            }
+
+            if ($request->filled('kondisi2')) {
+                $kondisi2 = $request->kondisi2;
+                $query->where('kondisi', $kondisi2);
+            }
+
+            if ($request->filled('tahun_dok2')) {
+                $tahun_dok2 = $request->tahun_dok2;
+                $query->where('tahun_dok', $tahun_dok2);
+            }
+        }
+
+        $aset_gedung = $query->get();
+
+        if ($aset_gedung->isEmpty()) {
+            return redirect()->back()->with('error', 'Data yang dicari tidak ditemukan.');
+        }
 
         $pdf = PDF::loadview('aset.gedung.cetak_pdf', [
             'aset_gedung' => $aset_gedung,

@@ -132,7 +132,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Luas Lantai (m<sup>2</sup>)</label>
+                                            <label>Luas Lantai (m<sup>2</sup>) <span class="login-danger"
+                                                    style="font-size: 12px;">*opsional</span></label>
                                             <input type="text"
                                                 class="form-control @error('luas_lantai') is-invalid @enderror"
                                                 name="luas_lantai" autocomplete="off"
@@ -185,7 +186,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Luas (m<sup>2</sup>)</label>
+                                            <label>Luas (m<sup>2</sup>) <span class="login-danger"
+                                                    style="font-size: 12px;">*opsional</span></label>
                                             <input type="text"
                                                 class="form-control @error('luas') is-invalid @enderror" name="luas"
                                                 autocomplete="off" value="{{ old('luas', $aset_gedung->luas) }}">

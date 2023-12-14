@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="{{ URL::to('assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ URL::to('assets/plugins/datatables/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('assets/plugins//toastr/toatr.css') }}">
+    <link rel="stylesheet" href="{{ URL::to('assets/plugins/twitter-bootstrap-wizard/form-wizard.css') }}">
+    <link href="{{ asset('node_modules/select2/dist/css/select2.min.css') }}" rel="stylesheet">
 
 </head>
 
@@ -70,6 +72,10 @@
     <script src="{{ URL::to('assets/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ URL::to('assets/plugins/toastr/toastr.js') }}"></script>
     <script src="{{ URL::to('assets/js/script.js') }}"></script>
+    <script src="{{ asset('node_modules/select2/dist/js/select2.full.min.js') }}"></script>
+    <script src="{{ URL::to('assets/plugins/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
+    <script src="{{ URL::to('assets/plugins/twitter-bootstrap-wizard/prettify.js') }}"></script>
+    <script src="{{ URL::to('assets/plugins/twitter-bootstrap-wizard/form-wizard.js') }}"></script>
     <script type="text/javascript">
         $('.confirm-buttons').click(function(e) {
             var form = $(this).closest("form");

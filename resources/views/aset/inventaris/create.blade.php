@@ -84,7 +84,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Merk</label>
+                                            <label>Merk <span class="login-danger"
+                                                    style="font-size: 12px;">*opsional</span></label>
                                             <input type="text" class="form-control @error('merk') is-invalid @enderror"
                                                 name="merk" value="{{ old('merk') }}" autocomplete="off" autofocus>
                                             @error('merk')
@@ -94,7 +95,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Volume</label>
+                                            <label>Volume <span class="login-danger"
+                                                    style="font-size: 12px;">*opsional</span></label>
                                             <input type="text" class="form-control @error('volume') is-invalid @enderror"
                                                 name="volume" value="{{ old('volume') }}" autocomplete="off" autofocus>
                                             @error('volume')
@@ -108,7 +110,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Bahan</label>
+                                            <label>Bahan <span class="login-danger"
+                                                    style="font-size: 12px;">*opsional</span></label>
                                             <input type="text" class="form-control @error('bahan') is-invalid @enderror"
                                                 name="bahan" value="{{ old('bahan') }}" autocomplete="off" autofocus>
                                             @error('bahan')

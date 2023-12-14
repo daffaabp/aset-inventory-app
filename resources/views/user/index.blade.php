@@ -3,10 +3,10 @@
     <div class="page-header">
         <div class="row align-items-center">
             <div class="col">
-                <h3 class="page-title">User Management</h3>
+                <h3 class="page-title">User Managemen</h3>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Beranda</a></li>
-                    <li class="breadcrumb-item active">User Management</li>
+                    <li class="breadcrumb-item active">User Managemen</li>
                 </ul>
             </div>
         </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StorePeminjamanRequest;
 use App\Models\AsetGedung;
 use App\Models\AsetInventarisRuangan;
 use App\Models\AsetKendaraan;
@@ -24,26 +25,27 @@ class PeminjamanController extends Controller
         return view('peminjaman.index');
     }
 
-    public function store(Request $request)
+    public function store(StorePeminjamanRequest $request)
     {
-        $request->validate([
-            'kegunaan' => 'required|string|max:255',
-            'tgl_rencana_pinjam' => 'required|date',
-            'tgl_rencana_kembali' => 'required|date|after:tgl_rencana_pinjam',
-        ]);
+        $validated = $request->validated();
 
-        echo '<pre>';
-        print_r($request->all());
-        die;
+        // echo '<pre>';
+        // print_r($request->all());
+        // die;
 
         $peminjaman = new Peminjaman;
         $peminjaman->id_peminjam = auth()->user()->id;
-        $peminjaman->kegunaan = $request->kegunaan;
+        $peminjaman->kegunaan = $validated['kegunaan'];
 
         $peminjaman->tgl_pengajuan = now()->format('Y-m-d H:i:s');
 
-        $peminjaman->tgl_rencana_pinjam = $request->tgl_rencana_pinjam;
-        $peminjaman->tgl_rencana_kembali = $request->tgl_rencana_kembali;
+        $peminjaman->tgl_rencana_pinjam = $validated['tgl_rencana_pinjam'];
+        $peminjaman->tgl_rencana_kembali = $validated['tgl_rencana_kembali'];
+
+        // Cek apakah setidaknya ada satu jenis aset yang dipilih
+        if (empty($request->aset_tanah) && empty($request->aset_gedung) && empty($request->aset_kendaraan) && empty($request->aset_inventaris_ruangan)) {
+            return redirect()->back()->withInput()->with('error', 'Pilih setidaknya satu jenis aset untuk melakukan peminjaman.');
+        }
 
         if ($peminjaman->save()) {
             if (!empty($request->aset_tanah)) {
@@ -191,8 +193,7 @@ class PeminjamanController extends Controller
                 }
             }
 
-            return redirect()->route('riwayatPeminjaman')->with('success', 'Peminjaman berhasil dibuat.');
-
+            return redirect()->route('dashboard')->with('success', 'Peminjaman berhasil dibuat.');
         } else {
             return redirect()->back()->with('error', 'Gagal membuat peminjaman.');
         }
@@ -200,9 +201,7 @@ class PeminjamanController extends Controller
 
     public function verifikasiPeminjaman()
     {
-        $peminjaman = Peminjaman::with('peminjam')
-            ->where('status_verifikasi', '!=', 'Selesai')
-            ->get();
+        $peminjaman = Peminjaman::whereIn('status_verifikasi', ['Dikirim', 'ACC'])->get();
         return view('peminjaman.verifikasiPeminjaman', compact('peminjaman'));
     }
 
@@ -257,12 +256,13 @@ class PeminjamanController extends Controller
 
         if ($request->has('accept')) {
             $status = 'ACC';
-            $peminjaman->tgl_acc = now();
+            $peminjaman->tgl_acc = now()->format('Y-m-d H:i:s');
             $peminjaman->id_petugas = auth()->user()->id;
 
         } elseif ($request->has('reject')) {
             $status = 'Ditolak';
-            $peminjaman->tgl_acc = null;
+            $peminjaman->tgl_ditolak = now()->format('Y-m-d H:i:s');
+            $peminjaman->id_petugas = auth()->user()->id;
             $peminjaman->status_verifikasi = $status;
             $peminjaman->save();
 
@@ -290,6 +290,7 @@ class PeminjamanController extends Controller
                 $riwayat->status_verifikasi = $status;
                 $riwayat->save();
             }
+
             return redirect()->route('verifikasiPeminjaman')->with('error', 'Peminjaman telah ditolak.');
 
         } elseif ($request->has('finish')) {
@@ -451,6 +452,7 @@ class PeminjamanController extends Controller
                     $asetInventarisRuangan->save();
                 }
             }
+
             return redirect()->route('riwayatPeminjaman')->with('success', 'Peminjaman Telah Selesai');
         }
 
@@ -541,12 +543,12 @@ class PeminjamanController extends Controller
 
         if ($user) {
             if ($user->hasAnyRole(['Petugas', 'Sekretaris Kwarcab'])) {
-                $peminjamanSelesai = Peminjaman::where('status_verifikasi', 'Selesai')->get();
+                $peminjamanSelesai = Peminjaman::whereIn('status_verifikasi', ['Selesai', 'Ditolak'])->get();
                 return view('peminjaman.riwayatPeminjaman', compact('peminjamanSelesai'));
             } else {
                 $userID = $user->id;
                 $peminjamanSelesai = Peminjaman::where('id_peminjam', $userID)
-                    ->whereIn('status_verifikasi', ['Dikirim', 'ACC', 'Selesai'])
+                    ->whereIn('status_verifikasi', ['Selesai', 'Ditolak'])
                     ->get();
 
                 return view('peminjaman.riwayatPeminjaman', compact('peminjamanSelesai'));

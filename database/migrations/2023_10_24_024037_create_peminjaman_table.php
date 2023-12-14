@@ -17,14 +17,15 @@ return new class extends Migration
             $table->foreign('id_peminjam')->references('id')->on('users');
             $table->unsignedBigInteger('id_petugas')->nullable();
             $table->foreign('id_petugas')->references('id')->on('users');
-            $table->datetime('tgl_pengajuan')->useCurrent();
+            $table->datetime('tgl_pengajuan');
             $table->datetime('tgl_pengembalian')->nullable();
             $table->date('tgl_rencana_pinjam');
             $table->date('tgl_rencana_kembali');
             $table->string('kegunaan');
             $table->string('status_verifikasi')->default('Dikirim');
             $table->string('catatan_pengembalian')->nullable();
-            $table->datetime('tgl_acc')->nullable(); // Tanggal persetujuan, boleh kosong jika belum disetujui
+            $table->datetime('tgl_acc')->nullable();
+            $table->datetime('tgl_ditolak')->nullable();
             $table->timestamps();
         });
     }

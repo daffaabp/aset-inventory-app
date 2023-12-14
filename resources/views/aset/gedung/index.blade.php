@@ -34,10 +34,9 @@
                                 <a href="#" class="btn btn-warning btn-md me-1 cetak-excel"><i
                                         class="fas fa-file-export"></i> Cetak Excel</a>
 
-                                <a href="{{ route('gedung.exportPdf') }}" class="btn btn-danger btn-md me-1"
-                                    target="_blank"><i class="fas fa-file-pdf"></i>
-                                    Cetak PDF
-                                </a>
+                                <button type="button" class="btn btn-danger btn-md me-1" data-bs-toggle="modal"
+                                    data-bs-target="#export-pdf" data-class="export-pdf"><i class="fas fa-file-import"></i>
+                                    Cetak PDF</button>
 
                                 <a href="{{ asset('templates/template_aset_gedung.xlsx') }}" class="btn btn-secondary me-1"
                                     download><i class="fa fa-file-excel"></i>
@@ -166,6 +165,113 @@
             </div>
         </div>
     </div>
+
+    <div id="export-pdf" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Cetak Laporan Aset Gedung
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('gedung.exportPdf') }}" method="GET" enctype="multipart/form-data"
+                        class="px-3" id="export-pdf-form">
+                        @csrf
+                        <div class="form-group">
+                            <label>Pilih Opsi</label>
+                            <select id="opsi" class="form-control form-select" name="opsi" autocomplete="off"
+                                autofocus>
+                                <option value="Semua Data">Semua Data</option>
+                                <option value="Berdasarkan Status Aset">Berdasarkan Status Aset</option>
+                                <option value="Berdasarkan Kondisi">Berdasarkan Kondisi</option>
+                                <option value="Berdasarkan Tahun Dokumen">Berdasarkan Tahun Dokumen</option>
+                                <option value="Berdasarkan Kustom">Berdasarkan Kustom</option>
+
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown status -->
+                        <div id="statusDropdown" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Status Aset</label>
+                            <select class="form-control" name="status_aset">
+                                @foreach ($statusAset as $row)
+                                    <option value="{{ $row->id_status_aset }}">{{ $row->status_aset }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown kondisi -->
+                        <div id="kondisiDropdown" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Kondisi</label>
+                            <select class="form-control" name="hak">
+                                <option value="Baik">
+                                    Baik
+                                </option>
+                                <option value="Rusak">
+                                    Rusak
+                                </option>
+                                <option value="Korosi">
+                                    Korosi
+                                </option>
+                                <option value="Baru">
+                                    Baru
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown status -->
+                        <div id="statusDropdown2" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Status Aset <span style="color: red;">*</span></label>
+                            <select class="form-control" name="status_aset2">
+                                @foreach ($statusAset as $row)
+                                    <option value="{{ $row->id_status_aset }}">{{ $row->status_aset }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown kondisi -->
+                        <div id="kondisiDropdown2" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Kondisi <span style="color: red;">*</span></label>
+                            <select class="form-control" name="hak2">
+                                <option value="Baik">
+                                    Baik
+                                </option>
+                                <option value="Rusak">
+                                    Rusak
+                                </option>
+                                <option value="Korosi">
+                                    Korosi
+                                </option>
+                                <option value="Baru">
+                                    Baru
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan input tahun dokumen-->
+                        <div id="tahunDokumenDropdown2" class="form-group" style="display: none;">
+                            <label class="form-label">Tahun Perolehan <span style="color: red;">*</span></label>
+                            <input type="number" class="form-control" name="tahun_dok2"
+                                placeholder="Masukkan Tahun Dokumen">
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan input tahun dokumen-->
+                        <div id="tahunDokumenDropdown" class="form-group" style="display: none;">
+                            <label class="form-label">Tahun Perolehan</label>
+                            <input type="number" class="form-control" name="tahun_dok"
+                                placeholder="Masukkan Tahun Dokumen">
+                        </div>
+
+                        <div class="mb-2 text-right">
+                            <button class="btn btn-success" type="submit">Export PDF</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('js')
@@ -288,6 +394,57 @@
         // Sembunyikan pesan kesalahan ketika tombol close ditekan
         document.getElementById('failures-alert').addEventListener('closed.bs.alert', function() {
             this.style.display = 'none';
+        });
+    </script>
+
+    <script>
+        // Tampilkan atau sembunyikan dropdown berdasarkan opsi yang dipilih
+        document.getElementById('opsi').addEventListener('change', function() {
+            var statusDropdown = document.getElementById('statusDropdown');
+            var kondisiDropdown = document.getElementById('kondisiDropdown');
+            var tahunDokumenDropdown = document.getElementById('tahunDokumenDropdown');
+
+            if (this.value === 'Berdasarkan Status Aset') {
+                statusDropdown.style.display = 'block';
+                kondisiDropdown.style.display = 'none';
+                tahunDokumenDropdown.style.display = 'none';
+
+                statusDropdown2.style.display = 'none';
+                kondisiDropdown2.style.display = 'none';
+                tahunDokumenDropdown2.style.display = 'none';
+
+            } else if (this.value === 'Berdasarkan Kondisi') {
+                statusDropdown.style.display = 'none';
+                kondisiDropdown.style.display = 'block';
+                tahunDokumenDropdown.style.display = 'none';
+
+                statusDropdown2.style.display = 'none';
+                kondisiDropdown2.style.display = 'none';
+                tahunDokumenDropdown2.style.display = 'none';
+
+            } else if (this.value === 'Berdasarkan Tahun Dokumen') {
+                statusDropdown.style.display = 'none';
+                kondisiDropdown.style.display = 'none';
+                tahunDokumenDropdown.style.display = 'block';
+
+                statusDropdown2.style.display = 'none';
+                kondisiDropdown2.style.display = 'none';
+                tahunDokumenDropdown2.style.display = 'none';
+
+            } else if (this.value === 'Berdasarkan Kustom') {
+                statusDropdown.style.display = 'none';
+                kondisiDropdown.style.display = 'none';
+                tahunDokumenDropdown.style.display = 'none';
+
+                statusDropdown2.style.display = 'block';
+                kondisiDropdown2.style.display = 'block';
+                tahunDokumenDropdown2.style.display = 'block';
+
+            } else {
+                statusDropdown.style.display = 'none';
+                kondisiDropdown.style.display = 'none';
+                tahunDokumenDropdown.style.display = 'none';
+            }
         });
     </script>
 @endpush

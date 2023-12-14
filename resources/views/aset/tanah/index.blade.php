@@ -42,11 +42,9 @@
                                 <a href="#" class="btn btn-warning btn-md me-1 cetak-excel"><i
                                         class="fas fa-file-export"></i> Cetak Excel</a>
 
-
-                                <a href="{{ route('tanah.exportPdf') }}" class="btn btn-danger btn-md me-1"
-                                    target="_blank"><i class="fas fa-file-pdf"></i>
-                                    Cetak PDF
-                                </a>
+                                <button type="button" class="btn btn-danger btn-md me-1" data-bs-toggle="modal"
+                                    data-bs-target="#export-pdf" data-class="export-pdf"><i class="fas fa-file-import"></i>
+                                    Cetak PDF</button>
 
                                 <a href="{{ asset('templates/template_aset_tanah.xlsx') }}" class="btn btn-secondary me-1"
                                     download><i class="fa fa-file-excel"></i>
@@ -173,6 +171,82 @@
             </div>
         </div>
     </div>
+
+    <div id="export-pdf" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Cetak Laporan Aset Tanah
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('tanah.exportPdf') }}" method="GET" enctype="multipart/form-data"
+                        class="px-3" id="export-pdf-form">
+                        @csrf
+                        <div class="form-group">
+                            <label>Pilih Opsi</label>
+                            <select id="opsi" class="form-control form-select" name="opsi" autocomplete="off"
+                                autofocus>
+                                <option value="Semua Data">Semua Data</option>
+                                <option value="Berdasarkan Status Aset">Berdasarkan Status Aset</option>
+                                <option value="Berdasarkan Hak">Berdasarkan Hak</option>
+                                <option value="Berdasarkan Kustom">Berdasarkan Kustom</option>
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown status -->
+                        <div id="statusDropdown" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Status Aset</label>
+                            <select class="form-control" name="status_aset">
+                                @foreach ($statusAset as $row)
+                                    <option value="{{ $row->id_status_aset }}">{{ $row->status_aset }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown hak -->
+                        <div id="hakDropdown" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Hak</label>
+                            <select class="form-control" name="hak">
+                                <option value="Hak Pakai">Hak Pakai</option>
+                                <option value="Hak Milik">Hak Milik</option>
+                                <option value="Hak Guna Usaha">Hak Guna Usaha</option>
+                                <option value="Hak Guna Bangunan">Hak Guna Bangunan</option>
+                                <option value="Hak Sewa">Hak Sewa</option>
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown status 2 -->
+                        <div id="statusDropdown2" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Status Aset <span style="color: red;">*</span></label>
+                            <select class="form-control" name="status_aset2">
+                                @foreach ($statusAset as $row)
+                                    <option value="{{ $row->id_status_aset }}">{{ $row->status_aset }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown hak 2 -->
+                        <div id="hakDropdown2" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Hak <span style="color: red;">*</span></label>
+                            <select class="form-control" name="hak2">
+                                <option value="Hak Pakai">Hak Pakai</option>
+                                <option value="Hak Milik">Hak Milik</option>
+                                <option value="Hak Guna Usaha">Hak Guna Usaha</option>
+                                <option value="Hak Guna Bangunan">Hak Guna Bangunan</option>
+                                <option value="Hak Sewa">Hak Sewa</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-2 text-right">
+                            <button class="btn btn-success" type="submit">Export PDF</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('js')
@@ -291,6 +365,35 @@
         // Sembunyikan pesan kesalahan ketika tombol close ditekan
         document.getElementById('failures-alert').addEventListener('closed.bs.alert', function() {
             this.style.display = 'none';
+        });
+    </script>
+
+    <script>
+        // Tampilkan atau sembunyikan dropdown berdasarkan opsi yang dipilih
+        document.getElementById('opsi').addEventListener('change', function() {
+            var statusDropdown = document.getElementById('statusDropdown');
+            var hakDropdown = document.getElementById('hakDropdown');
+            
+
+            if (this.value === 'Berdasarkan Status Aset') {
+                statusDropdown.style.display = 'block';
+                hakDropdown.style.display = 'none';
+            } else if (this.value === 'Berdasarkan Hak') {
+                statusDropdown.style.display = 'none';
+                hakDropdown.style.display = 'block';
+                statusDropdown2.style.display = 'none';
+                hakDropdown2.style.display = 'none';
+            } else if (this.value === 'Berdasarkan Kustom') {
+                statusDropdown2.style.display = 'block';
+                hakDropdown2.style.display = 'block';
+                statusDropdown.style.display = 'none';
+                hakDropdown.style.display = 'none';
+            } else {
+                statusDropdown.style.display = 'none';
+                hakDropdown.style.display = 'none';
+                statusDropdown2.style.display = 'none';
+                hakDropdown2.style.display = 'none';
+            }
         });
     </script>
 @endpush

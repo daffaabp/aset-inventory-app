@@ -43,19 +43,36 @@ class AsetTanahImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
 
         // Konversi status ke nilai angka
         $status = $row['id_status_aset'];
-        switch ($status) {
-            case 'Tersedia':
-                $statusId = 1;
-                break;
-            case 'Dipinjam':
-                $statusId = 2;
-                break;
-            case 'Rusak':
-                $statusId = 3;
-                break;
-            default:
-                $statusId = 0; // Atau sesuaikan dengan default yang dibutuhkan
+        // switch ($status) {
+        //     case 'Tersedia':
+        //         $statusId = 1;
+        //         break;
+        //     case 'Dipinjam':
+        //         $statusId = 2;
+        //         break;
+        //     case 'Rusak':
+        //         $statusId = 3;
+        //         break;
+        //     default:
+        //         $statusId = 0; // Atau sesuaikan dengan default yang dibutuhkan
+        // }
+
+        //akan lebih baik menggunakan if else
+
+        if($status == 'Tersedia'){
+            $statusId = 1;
+        }elseif($status == 'Dipinjam'){
+            $statusId = 2;
+        }elseif($status == 'Rusak'){
+            $statusId = 3;
+        }else{
+            return false;
         }
+
+        //lakukan query untuk mengecek data di asset tanah
+
+
+
 
         $tanggalInventarisir = Carbon::createFromFormat('d/m/Y', $row['tanggal_inventarisir'])->format('Y-m-d');
         $tanggalSertifikat = Carbon::createFromFormat('d/m/Y', $row['tanggal_sertifikat'])->format('Y-m-d');

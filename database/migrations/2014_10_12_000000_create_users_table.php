@@ -15,6 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->unsignedBigInteger('id_bidang')->nullable();
+            $table->foreign('id_bidang')->references('id_bidang')->on('bidang');
+            $table->text('keterangan_bidang')->nullable();
+            $table->string('foto')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

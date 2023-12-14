@@ -60,43 +60,6 @@
                         </div>
                     @endif
 
-                    @if (session()->has('failures'))
-                        <div id="failures-alert" class="alert alert-warning" role="alert">
-                            <div class="modal-header">
-                                <h4 class="alert-heading">Gagal mengimpor beberapa data!</h4>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
-                            </div>
-
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Baris</th>
-                                        <th>Attribute</th>
-                                        <th>Error</th>
-                                        <th>Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (session()->get('failures') as $failure)
-                                        <tr>
-                                            <td>{{ $failure->row() }}</td>
-                                            <td>{{ $failure->attribute() }}</td>
-                                            <td>
-                                                <ul>
-                                                    @foreach ($failure->errors() as $error)
-                                                        <li>{{ $error }}</li>
-                                                    @endforeach
-                                                </ul>
-                                            </td>
-                                            <td>{{ $failure->values()[$failure->attribute()] }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @endif
-
                     <div class="table-responsive">
                         <table id="datatable"
                             class="table mb-0 border-0 table-bordered star-student table-hover table-center table-stripped">

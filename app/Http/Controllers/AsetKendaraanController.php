@@ -12,6 +12,7 @@ use App\Models\RiwayatPeminjamanKendaraan;
 use App\Models\StatusAset;
 use Barryvdh\DomPDF\Facade\Pdf;
 use DataTables;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AsetKendaraanController extends Controller
@@ -22,6 +23,7 @@ class AsetKendaraanController extends Controller
     public function index()
     {
         $asetKendaraans = AsetKendaraan::with('statusAset')->get();
+        $statusAset = StatusAset::all();
 
         if (request()->ajax()) {
             return Datatables::of($asetKendaraans)
@@ -45,7 +47,7 @@ class AsetKendaraanController extends Controller
                 ->make(true);
         }
 
-        return view('aset.kendaraan.index', ['asetKendaraans' => $asetKendaraans]);
+        return view('aset.kendaraan.index', compact('asetKendaraans', 'statusAset'));
     }
 
     /**
@@ -191,24 +193,60 @@ class AsetKendaraanController extends Controller
         return (new AsetKendaraanExport)->download('aset_kendaraan.xlsx');
     }
 
-    public function exportPdf()
+    public function exportPdf(Request $request)
     {
-        $aset_kendaraan = AsetKendaraan::with('statusAset')->get();
+        $query = AsetKendaraan::with('statusAset')->orderBy('id_aset_kendaraan');
 
-        $data = [
+        if ($request->opsi === 'Berdasarkan Status Aset') {
+            $status_aset = $request->status_aset;
+            $query->where('id_status_aset', $status_aset);
+
+        } elseif ($request->opsi === 'Berdasarkan Nama Kendaraan') {
+            $nama = $request->nama;
+            $query->where('nama', $nama);
+
+        } elseif ($request->opsi === 'Berdasarkan Tahun Pembuatan') {
+            $thn_pembuatan = $request->thn_pembuatan;
+            $query->where('thn_pembuatan', $thn_pembuatan);
+
+        } elseif ($request->opsi === 'Berdasarkan Tahun Pembelian') {
+            $thn_pembelian = $request->thn_pembelian;
+            $query->where('thn_pembelian', $thn_pembelian);
+
+        } elseif ($request->opsi === 'Berdasarkan Kustom') {
+            if ($request->filled('status_aset2')) {
+                $status_aset2 = $request->status_aset2;
+                $query->where('id_status_aset', $status_aset2);
+            }
+
+            if ($request->filled('nama2')) {
+                $nama2 = $request->nama2;
+                $query->where('nama', $nama2);
+            }
+
+            if ($request->filled('thn_pembuatan2')) {
+                $thn_pembuatan2 = $request->thn_pembuatan2;
+                $query->where('thn_pembuatan', $thn_pembuatan2);
+            }
+
+            if ($request->filled('thn_pembelian2')) {
+                $thn_pembelian2 = $request->thn_pembelian2;
+                $query->where('thn_pembelian', $thn_pembelian2);
+            }
+
+        }
+
+        $aset_kendaraan = $query->get();
+
+        // Periksa jika tidak ada hasil
+        if ($aset_kendaraan->isEmpty()) {
+            return redirect()->back()->with('error', 'Data yang dicari tidak ditemukan.');
+        }
+
+        $pdf = PDF::loadview('aset.kendaraan.cetak_pdf', [
             'aset_kendaraan' => $aset_kendaraan,
-        ];
+        ])->setPaper('a4', 'landscape');
 
-        $pdf = PDF::loadview('aset.kendaraan.cetak_pdf', $data);
-        // Set ukuran kertas menjadi F4 dan margin ke nol
-        $pdf->setPaper('f4', 'landscape')
-            ->setOption('page-width', 'F4-width-in-mm') // Ganti dengan lebar F4 dalam milimeter
-            ->setOption('page-height', 'F4-height-in-mm') // Ganti dengan tinggi F4 dalam milimeter
-            ->setOption('margin-top', 0)
-            ->setOption('margin-right', 0)
-            ->setOption('margin-bottom', 0)
-            ->setOption('margin-left', 0);
-
-        return $pdf->stream('aset_.kendaraan_pdf');
+        return $pdf->stream('aset_kendaraan.pdf');
     }
 }

@@ -18,8 +18,15 @@
                     </li>
                 @endcan
 
+                @can('bidang.index')
+                    <li class="{{ explode('.', Route::current()->getName())[0] == 'bidang' ? 'active' : '' }}">
+                        <a href="{{ route('bidang.index') }}"><i class="fa fa-sitemap"></i> <span>
+                                Bidang / Peran</span></a>
+                    </li>
+                @endcan
+
                 @canany(['user.index', 'role.index'])
-                    <li class="submenu">
+                    {{-- <li class="submenu">
                         <a href="#"><i class="fa fa-users"></i> <span> Superadmin</span> <span
                                 class="menu-arrow"></span></a>
                         <ul
@@ -37,15 +44,20 @@
                             @endcan
 
                         </ul>
-                    </li>
-                @endcanany
+                    </li> --}}
 
-                @can('bidang.index')
-                    <li class="{{ explode('.', Route::current()->getName())[0] == 'bidang' ? 'active' : '' }}">
-                        <a href="{{ route('bidang.index') }}"><i class="fa fa-sitemap"></i> <span>
-                                Bidang</span></a>
-                    </li>
-                @endcan
+                    @can('user.index')
+                        <li class="{{ explode('.', Route::current()->getName())[0] == 'user' ? 'active' : '' }}"><a
+                                href="{{ route('user.index') }}"><i class="fa fa-user"></i> <span>User Management</span></a>
+                        </li>
+                    @endcan
+
+                    @can('role.index')
+                        <li class="{{ explode('.', Route::current()->getName())[0] == 'role' ? 'active' : '' }}"><a
+                                href="{{ route('role.index') }}"><i class="fa fa-users"></i> <span>Role Management</span></a>
+                        </li>
+                    @endcan
+                @endcanany
 
                 @can('status_aset.index')
                     <li class="{{ explode('.', Route::current()->getName())[0] == 'status_aset' ? 'active' : '' }}">
@@ -92,7 +104,7 @@
                     </li>
                 @endcan
 
-                @canany(['peminjaman.index', 'peminjaman.store'])
+                @can('peminjaman.index')
                     <li class="{{ Route::current()->getName() == 'peminjaman.index' ? 'active' : '' }}">
                         <a href="{{ route('peminjaman.index') }}"><i class="fas fa-building"></i> <span> Buat
                                 Peminjaman</span>

@@ -3,10 +3,10 @@
     <div class="page-header">
         <div class="row align-items-center">
             <div class="col">
-                <h3 class="page-title">Tambah Bidang</h3>
+                <h3 class="page-title">Tambah Bidang / Peran</h3>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Beranda</a></li>
-                    <li class="breadcrumb-item active">Tambah Bidang</li>
+                    <li class="breadcrumb-item active">Tambah Bidang / Peran</li>
                 </ul>
             </div>
         </div>
@@ -34,10 +34,15 @@
                             </div>
                         </div>
 
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        <div class="text-start">
+                            <a href="{{ route('bidang.index') }}" class="btn btn-secondary me-1"><i
+                                    class="fas fa-arrow-left"></i>
+                                Kembali</a>
                         </div>
 
+                        <div class="text-end" style="margin-top: -38px;">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                        </div>
                     </form>
                 </div>
             </div>

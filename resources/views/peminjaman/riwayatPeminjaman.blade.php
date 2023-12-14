@@ -43,41 +43,20 @@
                                             <td>{{ $loop->iteration }}</td>
                                             @can('verifikasiPeminjamanDetails')
                                                 <td>
-
-                                                    @if (auth()->user()->hasRole('Petugas'))
-                                                        @if ($row->status_verifikasi === 'Dikirim')
-                                                            <form
-                                                                action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
-                                                                <button type="submit" class="btn btn-warning">Proses</button>
-                                                            </form>
-                                                        @elseif($row->status_verifikasi === 'ACC')
-                                                            <form
-                                                                action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
-                                                                <button type="submit" class="btn btn-success">Proses</button>
-                                                            </form>
-                                                        @else
-                                                            <form
-                                                                action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
-                                                                <button type="submit" class="btn btn-primary">Lihat</button>
-                                                            </form>
-                                                        @endif
-                                                    @else
-                                                        <form
-                                                            action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
-                                                            <button type="submit" class="btn btn-primary">Lihat</button>
-                                                        </form>
-                                                    @endif
+                                                    <form
+                                                        action="{{ route('verifikasiPeminjamanDetails', $row->id_peminjaman) }}">
+                                                        <button type="submit" class="btn btn-primary">Lihat</button>
+                                                    </form>
                                                 </td>
                                             @endcan
 
                                             <td>{{ $row->peminjam->name }}</td>
                                             <td>
-                                                @if ($row->status_verifikasi === 'ACC')
-                                                    <span class="badge badge-success">ACC (Sedang Dipinjam)</span>
-                                                @elseif ($row->status_verifikasi === 'Dikirim')
-                                                    <span class="badge badge-warning">Dikirim</span>
-                                                @else
-                                                    <span class="badge badge-custom">Selesai</span>
+                                                @if ($row->status_verifikasi === 'Selesai')
+                                                    <span class="badge"
+                                                        style="background-color: blue; color: white;">Selesai</span>
+                                                @elseif ($row->status_verifikasi === 'Ditolak')
+                                                    <span class="badge badge-danger">Ditolak</span>
                                                 @endif
                                             </td>
                                             <td>{{ $row->tgl_pengajuan }}</td>
@@ -90,9 +69,55 @@
                             </table>
                         @endif
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+{{-- @push('js')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('riwayatPeminjaman') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
+                    {
+                        data: 'aksi',
+                        name: 'aksi'
+                    },
+                    {
+                        data: 'status_verifikasi',
+                        name: 'status_verifikasi'
+                    },
+                    {
+                        data: 'tgl_pengajuan',
+                        name: 'tgl_pengajuan'
+                    },
+                    {
+                        data: 'tgl_rencana_pinjam',
+                        name: 'tgl_rencana_pinjam'
+                    },
+                    {
+                        data: 'tgl_rencana_kembali',
+                        name: 'tgl_rencana_kembali'
+                    },
+                    {
+                        data: 'kegunaan',
+                        name: 'kegunaan'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
+            });
+        });
+    </script>
+@endpush --}}

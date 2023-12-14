@@ -174,7 +174,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>TgL. BPKB</label>
+                                            <label>TgL. BPKB <span class="login-danger"
+                                                    style="font-size: 12px;">*opsional</span></label>
                                             <input type="date"
                                                 class="form-control @error('tgl_bpkb') is-invalid @enderror"
                                                 name="tgl_bpkb" value="{{ old('tgl_bpkb') }}" autocomplete="off"
@@ -186,7 +187,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>No. BPKB</label>
+                                            <label>No. BPKB <span class="login-danger"
+                                                style="font-size: 12px;">*opsional</span></label>
                                             <input type="text"
                                                 class="form-control @error('no_bpkb') is-invalid @enderror"
                                                 name="no_bpkb" value="{{ old('no_bpkb') }}" autocomplete="off"

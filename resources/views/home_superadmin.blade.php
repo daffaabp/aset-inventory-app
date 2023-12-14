@@ -5,8 +5,8 @@
             <div class="col-sm-12">
                 <div class="page-sub-header">
                     <h3 class="page-title">Beranda Superadmin</h3>
-                    <ul class="breadcrumb"> 
-                        <li class="breadcrumb-item"><a href="index.html">Beranda</a></li>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Beranda</a></li>
                         <li class="breadcrumb-item active">Admin</li>
                     </ul>
                 </div>

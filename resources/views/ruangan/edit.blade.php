@@ -53,8 +53,14 @@
                             </div>
                         </div>
 
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        <div class="text-start">
+                            <a href="{{ route('ruangan.index') }}" class="btn btn-secondary me-1"><i
+                                    class="fas fa-arrow-left"></i>
+                                Kembali</a>
+                        </div>
+
+                        <div class="text-end" style="margin-top: -38px;">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
                         </div>
                     </form>
                 </div>

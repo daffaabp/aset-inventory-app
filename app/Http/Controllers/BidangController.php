@@ -3,17 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bidang;
+use App\Models\User;
+use DataTables;
 use Illuminate\Http\Request;
 
 class BidangController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+
+    public function index()
     {
-        $bidangs = Bidang::select('id_bidang', 'nama', 'deskripsi')->get();
-        return view('bidang.index', compact('bidangs'));
+        $bidangs = Bidang::all();
+
+        if (request()->ajax()) {
+            return Datatables::of($bidangs)
+                ->addIndexColumn()
+                ->addColumn('action', function ($bidang) {
+                    return view('bidang.actions', compact('bidang'))->render();
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('bidang.index', ['bidangs' => $bidangs]);
     }
 
     /**
@@ -34,7 +44,7 @@ class BidangController extends Controller
 
         Bidang::create($data);
         return redirect()->route('bidang.index')
-            ->with('success', 'Bidang baru berhasil disimpan.');
+            ->with('success', 'Data Bidang berhasil disimpan.');
     }
 
     public function edit($id_bidang)
@@ -71,7 +81,7 @@ class BidangController extends Controller
         // }
 
         return redirect()->route('bidang.index')
-            ->with('success', 'Product updated successfully');
+            ->with('success', 'Data Bidang berhasil diperbarui');
     }
 
     /**
@@ -79,8 +89,16 @@ class BidangController extends Controller
      */
     public function destroy($id_bidang)
     {
+        // Cek apakah penamaan bidang sudah pernah digunakan pada User
+        $isBidangSudahDigunakan = User::where('id_bidang', $id_bidang)->exists();
+
+        if ($isBidangSudahDigunakan) {
+            return redirect()->route('bidang.index')
+                ->with('error', 'Data bidang sudah digunakan pada User, tidak dapat dihapus.');
+        }
+
         Bidang::find($id_bidang)->delete();
         return redirect()->route('bidang.index')
-            ->with('success', 'Product deleted successfully');
+            ->with('success', 'Data Bidang berhasil dihapus');
     }
 }

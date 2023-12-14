@@ -21,11 +21,11 @@ return new class extends Migration
             $table->string('kondisi');
             $table->string('bertingkat');
             $table->string('beton');
-            $table->decimal('luas_lantai');
+            $table->decimal('luas_lantai')->nullable();
             $table->string('lokasi');
             $table->integer('tahun_dok');
             $table->string('nomor_dok')->nullable();
-            $table->decimal('luas');
+            $table->decimal('luas')->nullable();
             $table->string('hak');
             $table->integer('harga');
             $table->string('keterangan');

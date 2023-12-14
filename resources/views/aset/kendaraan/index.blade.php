@@ -35,10 +35,9 @@
                                 <a href="#" class="btn btn-warning btn-md me-1 cetak-excel"><i
                                         class="fas fa-file-export"></i> Cetak Excel</a>
 
-                                <a href="{{ route('kendaraan.exportPdf') }}" class="btn btn-danger btn-md me-1"
-                                    target="_blank"><i class="fas fa-file-pdf"></i>
-                                    Cetak PDF
-                                </a>
+                                <button type="button" class="btn btn-danger btn-md me-1" data-bs-toggle="modal"
+                                    data-bs-target="#export-pdf" data-class="export-pdf"><i class="fas fa-file-import"></i>
+                                    Cetak PDF</button>
 
                                 <a href="{{ asset('templates/template_aset_kendaraan.xlsx') }}"
                                     class="btn btn-secondary me-1" download><i class="fa fa-file-excel"></i>
@@ -166,6 +165,139 @@
                             <button class="btn btn-success" type="submit">Import Excel</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="export-pdf" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Cetak Laporan Aset Kendaraan
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('kendaraan.exportPdf') }}" method="GET" enctype="multipart/form-data"
+                        class="px-3" id="export-pdf-form">
+                        @csrf
+                        <div class="form-group">
+                            <label>Pilih Opsi</label>
+                            <select id="opsi" class="form-control form-select" name="opsi" autocomplete="off"
+                                autofocus>
+                                <option value="Semua Data">Semua Data</option>
+                                <option value="Berdasarkan Status Aset">Berdasarkan Status Aset</option>
+                                <option value="Berdasarkan Nama Kendaraan">Berdasarkan Nama Kendaraan</option>
+                                <option value="Berdasarkan Tahun Pembuatan">Berdasarkan Tahun Pembuatan</option>
+                                <option value="Berdasarkan Tahun Pembelian">Berdasarkan Tahun Pembelian</option>
+                                <option value="Berdasarkan Kustom">Berdasarkan Kustom</option>
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown status -->
+                        <div id="statusDropdown" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Status Aset</label>
+                            <select class="form-control" name="status_aset">
+                                @foreach ($statusAset as $row)
+                                    <option value="{{ $row->id_status_aset }}">{{ $row->status_aset }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown nama kendaraan -->
+                        <div id="namaKendaraanDropdown" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Nama Kendaraan</label>
+                            <select class="form-control" name="nama">
+                                @foreach ($asetKendaraans->unique('nama')->sortBy('nama') as $row)
+                                    <option value="{{ $row->nama }}">{{ $row->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown tahun pembuatan -->
+                        <div id="tahunPembuatanDropdown" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Tahun Pembuatan</label>
+                            {{-- <input type="number" class="form-control" name="thn_pembuatan"
+                                placeholder="Masukkan Tahun Perolehan"> --}}
+                            <select class="form-control" name="thn_pembuatan">
+                                @foreach ($asetKendaraans->unique('thn_pembuatan') as $row)
+                                    <option value="{{ $row->thn_pembuatan }}">{{ $row->thn_pembuatan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown tahun pembelian -->
+                        <div id="tahunPembelianDropdown" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Tahun Pembelian</label>
+                            {{-- <input type="number" class="form-control" name="thn_pembelian"
+                                placeholder="Masukkan Tahun Pembelian"> --}}
+                            <select class="form-control" name="thn_pembelian">
+                                @foreach ($asetKendaraans->unique('thn_pembelian')->sortByDesc('thn_pembuatan') as $row)
+                                    <option value="{{ $row->thn_pembelian }}">{{ $row->thn_pembelian }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Kustom --}}
+                        <!-- Tambahkan div untuk menyimpan dropdown status -->
+                        <div id="statusDropdown2" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Status Aset <span style="color: red;">*</span></label>
+                            <select class="form-control" name="status_aset2">
+                                <option value="">-- Pilih Status Aset --</option>
+                                @if ($asetKendaraans->isNotEmpty())
+                                    @foreach ($statusAset as $row)
+                                        <option value="{{ $row->id_status_aset }}">{{ $row->status_aset }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown nama kendaraan -->
+                        <div id="namaKendaraanDropdown2" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Nama Kendaraan <span style="color: red;">*</span></label>
+                            <select class="form-control" name="nama2">
+                                <option value="">-- Pilih Nama Kendaraan --</option>
+                                @if ($asetKendaraans->isNotEmpty())
+                                    @foreach ($asetKendaraans->sortBy('nama')->unique('nama') as $row)
+                                        <option value="{{ $row->nama }}">{{ $row->nama }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown tahun pembuatan -->
+                        <div id="tahunPembuatanDropdown2" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Tahun Pembuatan <span style="color: red;">*</span></label>
+                            <select class="form-control" name="thn_pembuatan2">
+                                <option value="">-- Pilih Tahun Pembuatan --</option>
+                                @if ($asetKendaraans->isNotEmpty())
+                                    @foreach ($asetKendaraans->unique('thn_pembuatan') as $row)
+                                        <option value="{{ $row->thn_pembuatan }}">{{ $row->thn_pembuatan }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown tahun pembelian -->
+                        <div id="tahunPembelianDropdown2" class="form-group" style="display: none;">
+                            <label class="form-label">-- Pilih Tahun Pembelian -- <span
+                                    style="color: red;">*</span></label>
+                            <select class="form-control" name="thn_pembelian2">
+                                <option value="">-- Pilih Tahun Pembelian --</option>
+                                @if ($asetKendaraans->isNotEmpty())
+                                    @foreach ($asetKendaraans->unique('thn_pembelian')->sortByDesc('thn_pembuatan') as $row)
+                                        <option value="{{ $row->thn_pembelian }}">{{ $row->thn_pembelian }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+                        <div class="mb-2 text-right">
+                            <button class="btn btn-success" type="submit">Export PDF</button>
+                        </div>
+                    </form>
+
                 </div>
             </div>
         </div>
@@ -301,6 +433,87 @@
         // Sembunyikan pesan kesalahan ketika tombol close ditekan
         document.getElementById('failures-alert').addEventListener('closed.bs.alert', function() {
             this.style.display = 'none';
+        });
+    </script>
+
+    <script>
+        // Tampilkan atau sembunyikan dropdown berdasarkan opsi yang dipilih
+        document.getElementById('opsi').addEventListener('change', function() {
+            var statusDropdown = document.getElementById('statusDropdown');
+            var namaKendaraanDropdown = document.getElementById('namaKendaraanDropdown');
+            var tahunPembuatanDropdown = document.getElementById('tahunPembuatanDropdown');
+            var tahunPembelianDropdown = document.getElementById('tahunPembelianDropdown');
+
+            var statusDropdown2 = document.getElementById('statusDropdown2');
+            var namaKendaraanDropdown2 = document.getElementById('namaKendaraanDropdown2');
+            var tahunPembuatanDropdown2 = document.getElementById('tahunPembuatanDropdown2');
+            var tahunPembelianDropdown2 = document.getElementById('tahunPembelianDropdown2');
+
+            if (this.value === 'Berdasarkan Status Aset') {
+                statusDropdown.style.display = 'block';
+                namaKendaraanDropdown.style.display = 'none';
+                tahunPembuatanDropdown.style.display = 'none';
+                tahunPembelianDropdown.style.display = 'none';
+
+                statusDropdown2.style.display = 'none';
+                namaKendaraanDropdown2.style.display = 'none';
+                tahunPembuatanDropdown2.style.display = 'none';
+                tahunPembelianDropdown2.style.display = 'none';
+
+            } else if (this.value === 'Berdasarkan Nama Kendaraan') {
+                statusDropdown.style.display = 'none';
+                namaKendaraanDropdown.style.display = 'block';
+                tahunPembuatanDropdown.style.display = 'none';
+                tahunPembelianDropdown.style.display = 'none';
+
+                statusDropdown2.style.display = 'none';
+                namaKendaraanDropdown2.style.display = 'none';
+                tahunPembuatanDropdown2.style.display = 'none';
+                tahunPembelianDropdown2.style.display = 'none';
+
+            } else if (this.value === 'Berdasarkan Tahun Pembuatan') {
+                statusDropdown.style.display = 'none';
+                namaKendaraanDropdown.style.display = 'none';
+                tahunPembuatanDropdown.style.display = 'block';
+                tahunPembelianDropdown.style.display = 'none';
+
+                statusDropdown2.style.display = 'none';
+                namaKendaraanDropdown2.style.display = 'none';
+                tahunPembuatanDropdown2.style.display = 'none';
+                tahunPembelianDropdown2.style.display = 'none';
+
+            } else if (this.value === 'Berdasarkan Tahun Pembelian') {
+                statusDropdown.style.display = 'none';
+                namaKendaraanDropdown.style.display = 'none';
+                tahunPembuatanDropdown.style.display = 'none';
+                tahunPembelianDropdown.style.display = 'block';
+
+                statusDropdown2.style.display = 'none';
+                namaKendaraanDropdown2.style.display = 'none';
+                tahunPembuatanDropdown2.style.display = 'none';
+                tahunPembelianDropdown2.style.display = 'none';
+
+            } else if (this.value === 'Berdasarkan Kustom') {
+                statusDropdown.style.display = 'none';
+                namaKendaraanDropdown.style.display = 'none';
+                tahunPembuatanDropdown.style.display = 'none';
+                tahunPembelianDropdown.style.display = 'none';
+
+                statusDropdown2.style.display = 'block';
+                namaKendaraanDropdown2.style.display = 'block';
+                tahunPembuatanDropdown2.style.display = 'block';
+                tahunPembelianDropdown2.style.display = 'block';
+
+            } else {
+                statusDropdown.style.display = 'none';
+                namaKendaraanDropdown.style.display = 'none';
+                tahunPembuatanDropdown.style.display = 'none';
+                tahunPembelianDropdown.style.display = 'none';
+                statusDropdown2.style.display = 'none';
+                namaKendaraanDropdown2.style.display = 'none';
+                tahunPembuatanDropdown2.style.display = 'none';
+                tahunPembelianDropdown2.style.display = 'none';
+            }
         });
     </script>
 @endpush

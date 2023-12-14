@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Models\Bidang;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -24,36 +26,53 @@ class UserController extends Controller
         $roles = $roles->reject(function ($role) {
             return $role->name === 'Superadmin';
         });
-        return view('user.create', compact('roles'));
+        $bidangs = Bidang::all(); // Tambahkan ini$bidangs = Bidang::all(); // Tambahkan ini
+        return view('user.create', compact('roles', 'bidangs'));
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|same:confirm-password',
-            'roles' => 'required',
-        ]);
+        $validated = $request->validated();
 
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
-        $user = User::create($input);
-        $user->assignRole($request->input('roles'));
+        try {
+            // Simpan data ke dalam tabel users
+            $user = new User();
+            $user->name = $validated['name'];
+            $user->email = $validated['email'];
+            $user->password = Hash::make($validated['password']);
+            $user->id_bidang = $validated['id_bidang'];
+            $user->keterangan_bidang = $validated['keterangan_bidang'];
 
-        // Ambil izin dari peran yang ditetapkan ke pengguna
-        $permissionsFromRoles = $user->getPermissionsViaRoles();
+            // Upload dan simpan foto
+            if ($request->hasFile('foto')) {
+                $foto = $request->file('foto');
+                $fileName = time() . '_' . $foto->getClientOriginalName();
+                $path = $request->file('foto')->storeAs('user_fotos', $fileName, 'public');
+                $user->foto = $path;
+            }
 
-        // Memberikan izin yang ada dalam peran secara langsung ke pengguna
-        $user->givePermissionTo($permissionsFromRoles);
+            // Simpan ke dalam database
+            $user->save();
+            $user->assignRole($validated['roles']);
 
-        return redirect()->route('user.index')
-            ->with('success', 'User created successfully');
+            // Ambil izin dari peran yang ditetapkan ke pengguna
+            $permissionsFromRoles = $user->getPermissionsViaRoles();
+
+            // Memberikan izin yang ada dalam peran secara langsung ke pengguna
+            $user->givePermissionTo($permissionsFromRoles);
+
+            return redirect()->route('user.index')
+                ->with('success', 'User created successfully');
+        } catch (\Exception $e) {
+            // Handle exception here
+            return redirect()->back()->with('error', 'Failed to create user.')->withInput();
+        }
     }
 
     public function edit($id)
     {
         $user = User::findOrFail($id);
+        $bidangs = Bidang::all();
         // $roles = Role::pluck('name', 'name')->all();
         $roles = Role::where('name', '!=', 'Superadmin')->pluck('name', 'name')->all();
         $userRole = $user->roles->pluck('name', 'name')->all();
@@ -61,7 +80,7 @@ class UserController extends Controller
         // Jika pengguna yang sedang diedit adalah Superadmin, atur peran menjadi read-only
         $isSuperadmin = $user->hasRole('Superadmin');
 
-        return view('user.edit', compact(['user', 'roles', 'userRole', 'isSuperadmin']));
+        return view('user.edit', compact(['user', 'roles', 'userRole', 'isSuperadmin', 'bidangs']));
     }
 
     /**
@@ -74,6 +93,8 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'same:confirm-password',
             'roles' => 'required',
+            'id_bidang' => 'required',
+            'keterangan_bidang' => 'required',
         ]);
 
         $input = $request->all();

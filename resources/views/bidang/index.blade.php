@@ -3,10 +3,10 @@
     <div class="page-header">
         <div class="row align-items-center">
             <div class="col">
-                <h3 class="page-title">Jenis Bidang</h3>
+                <h3 class="page-title">Jenis Bidang / Peran</h3>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Beranda</a></li>
-                    <li class="breadcrumb-item active">Jenis Bidang</li>
+                    <li class="breadcrumb-item active">Jenis Bidang / Peran</li>
                 </ul>
             </div>
         </div>
@@ -24,7 +24,6 @@
                                         class="fas fa-plus"></i></i>
                                     Tambah Bidang</a>
                             </div>
-
                         </div>
                     </div>
 
@@ -35,35 +34,18 @@
                     @endif
 
                     <div class="table-responsive">
-                        <table
-                            class="table mb-0 border-0 table-bordered star-student table-hover table-center datatable table-stripped">
+                        <table id="datatable"
+                            class="table mb-0 border-0 table-bordered star-student table-hover table-center table-stripped">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>No</th>
                                     <th>Nama Bidang</th>
                                     <th>Deskripsi</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($bidangs as $bidang)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $bidang->nama }}</td>
-                                        <td>{{ $bidang->deskripsi }}</td>
-                                        <td>
-                                            <form action="{{ route('bidang.destroy', $bidang->id_bidang) }}" method="POST">
 
-                                                <a class="btn btn-primary me-2" style="color: white;"
-                                                    href="{{ route('bidang.edit', $bidang->id_bidang) }}">Edit</a>
-
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Hapus</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -72,3 +54,53 @@
         </div>
     </div>
 @endsection
+
+
+@push('js')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('bidang.index') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
+                    {
+                        data: 'nama',
+                        name: 'nama'
+                    },
+                    {
+                        data: 'deskripsi',
+                        name: 'deskripsi'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ]
+            });
+        });
+
+        @if (Session::has('success'))
+            toastr.options = {
+                "progressBar": true,
+                "closeButton": true,
+            }
+            toastr.success("{{ Session::get('success') }}", 'Berhasil!', {
+                timeOut: 5000,
+            });
+        @elseif (Session::has('warning'))
+            toastr.options = {
+                "progressBar": true,
+                "closeButton": true,
+            }
+            toastr.warning("{{ Session::get('warning') }}", 'Peringatan!', {
+                timeOut: 5000,
+            });
+        @endif
+    </script>
+@endpush

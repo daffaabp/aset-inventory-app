@@ -5,13 +5,13 @@ use App\Http\Controllers\AsetInventarisRuanganController;
 use App\Http\Controllers\AsetKendaraanController;
 use App\Http\Controllers\AsetTanahController;
 use App\Http\Controllers\BidangController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\StatusAsetController;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,36 +26,38 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 // Route::get('/dashboard', function () {
 //     return view('home');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/dashboard', function () {
-    $user = Auth::user();
-    if ($user->hasRole('Superadmin')) {
-        return view('home_superadmin');
-    }
-    if ($user->hasRole('Petugas')) {
-        return view('home_petugas');
-    }
-    if ($user->hasRole('Sekretaris Bidang')) {
-        return view('home_sekretaris_bidang');
-    }
-    if ($user->hasRole('Sekretaris Kwarcab')) {
-        return view('home_sekretaris_kwarcab');
-    }
-    // Default view if no role matches
-    return view('home');
+// Route::get('/dashboard', function () {
+//     $user = Auth::user();
+//     if ($user->hasRole('Superadmin')) {
+//         return view('home_superadmin');
+//     }
+//     if ($user->hasRole('Petugas')) {
+//         return view('home_petugas');
+//     }
+//     if ($user->hasRole('Sekretaris Bidang')) {
+//         return view('home_sekretaris_bidang');
+//     }
+//     if ($user->hasRole('Sekretaris Kwarcab')) {
+//         return view('home_sekretaris_kwarcab');
+//     }
+//     // Default view if no role matches
+//     return view('home');
 
-})->middleware(['auth', 'verified'])->name('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('permission:dashboard');
 
 // User Access Management
     Route::get('/user', [UserController::class, 'index'])->name('user.index')->middleware('permission:user.index');
@@ -150,6 +152,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Kelola Peminjaman
     Route::get('/getAset', [PeminjamanController::class, 'getAset'])->name('getAset')->middleware('permission:getAset');
     Route::post('/addAset', [PeminjamanController::class, 'addAset'])->name('addAset')->middleware('permission:addAset');
+    Route::post('/cari-aset', [PeminjamanController::class, 'cariAset'])->name('cariAset')->middleware('permission:cariAset');
     Route::get('/peminjaman/index', [PeminjamanController::class, 'index'])->name('peminjaman.index')->middleware('permission:peminjaman.index');
     Route::post('/peminjaman/store', [PeminjamanController::class, 'store'])->name('peminjaman.store')->middleware('permission:peminjaman.store');
     Route::get('/verifikasiPeminjaman', [PeminjamanController::class, 'verifikasiPeminjaman'])->name('verifikasiPeminjaman')->middleware('permission:verifikasiPeminjaman');

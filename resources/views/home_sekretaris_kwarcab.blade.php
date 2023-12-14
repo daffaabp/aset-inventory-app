@@ -4,74 +4,11 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="page-sub-header">
-                    <h3 class="page-title">Beranda Sekretaris Kwarcab</h3>
+                    <h3 class="page-title">Beranda Sekretaris Bidang</h3>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Beranda</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Beranda</a></li>
                         <li class="breadcrumb-item active">Admin</li>
                     </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xl-3 col-sm-6 col-12 d-flex">
-            <div class="card bg-comman w-100">
-                <div class="card-body">
-                    <div class="db-widgets d-flex justify-content-between align-items-center">
-                        <div class="db-info">
-                            <h6>Students</h6>
-                            <h3>50055</h3>
-                        </div>
-                        <div class="db-icon">
-                            <img src="assets/img/icons/dash-icon-01.svg" alt="Dashboard Icon">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 col-12 d-flex">
-            <div class="card bg-comman w-100">
-                <div class="card-body">
-                    <div class="db-widgets d-flex justify-content-between align-items-center">
-                        <div class="db-info">
-                            <h6>Awards</h6>
-                            <h3>50+</h3>
-                        </div>
-                        <div class="db-icon">
-                            <img src="assets/img/icons/dash-icon-02.svg" alt="Dashboard Icon">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 col-12 d-flex">
-            <div class="card bg-comman w-100">
-                <div class="card-body">
-                    <div class="db-widgets d-flex justify-content-between align-items-center">
-                        <div class="db-info">
-                            <h6>Department</h6>
-                            <h3>30+</h3>
-                        </div>
-                        <div class="db-icon">
-                            <img src="assets/img/icons/dash-icon-03.svg" alt="Dashboard Icon">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 col-12 d-flex">
-            <div class="card bg-comman w-100">
-                <div class="card-body">
-                    <div class="db-widgets d-flex justify-content-between align-items-center">
-                        <div class="db-info">
-                            <h6>Revenue</h6>
-                            <h3>$505</h3>
-                        </div>
-                        <div class="db-icon">
-                            <img src="assets/img/icons/dash-icon-04.svg" alt="Dashboard Icon">
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -81,196 +18,350 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="mb-0 card-title" style="text-align: center;">Progres Peminjaman</h4>
+                    <h4 class="card-title mb-0" style="text-align: center;">Riwayat Peminjaman</h4>
                 </div>
+
+                @if (session('notifikasi'))
+                    <div class="alert alert-danger bg-danger">
+                        <ul>
+                            @foreach (session('notifikasi') as $notif)
+                                <li>{{ $notif['pesan'] }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <div class="card-body">
                     <div id="basic-pills-wizard" class="twitter-bs-wizard">
                         <ul class="twitter-bs-wizard-nav">
-                            <li class="nav-item">
-                                <a href="#seller-details" class="nav-link" data-toggle="tab">
-                                    <div class="step-icon" data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="Seller Details">
-                                        <i class="far fa-user"></i>
+                            <li class="nav-item @if ($activeTab === 'diproses') active @endif">
+                                <a href="#diproses" class="nav-link @if ($activeTab === 'diproses') active @endif"
+                                    data-toggle="tab">
+                                    <div class="step-icon @if ($activeTab === 'diproses') active @endif"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Diproses">
+                                        <i class="fa fa-undo"></i>
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="#company-document" class="nav-link" data-toggle="tab">
-                                    <div class="step-icon" data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="Company Document">
-                                        <i class="fas fa-map-pin"></i>
+                            <li class="nav-item @if ($activeTab === 'diacc') active @endif">
+                                <a href="#diacc" class="nav-link @if ($activeTab === 'diacc') active @endif"
+                                    data-toggle="tab">
+                                    <div class="step-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="ACC">
+                                        <i class="fa fa-check"></i>
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="#bank-detail" class="nav-link" data-toggle="tab">
-                                    <div class="step-icon" data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="Bank Details">
-                                        <i class="fas fa-credit-card"></i>
+                            <li class="nav-item @if ($activeTab === 'selesai') active @endif">
+                                <a href="#selesai" class="nav-link @if ($activeTab === 'selesai') active @endif"
+                                    data-toggle="tab">
+                                    <div class="step-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Selesai">
+                                        <i class="fa fa-flag-checkered"></i>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="nav-item @if ($activeTab === 'ditolak') active @endif">
+                                <a href="#ditolak" class="nav-link @if ($activeTab === 'ditolak') active @endif"
+                                    data-toggle="tab">
+                                    <div class="step-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Ditolak">
+                                        <i class="fa fa-times"></i>
                                     </div>
                                 </a>
                             </li>
                         </ul>
 
                         <div class="tab-content twitter-bs-wizard-tab-content">
-                            <div class="tab-pane" id="seller-details">
+                            <div class="tab-pane @if ($activeTab === 'diproses') active @endif" id="diproses">
                                 <div class="mb-4">
-                                    <h5>Enter Your Personal Details</h5>
+                                    <h5 style="text-align: center;">Permintaan Peminjaman Sedang di Proses</h5>
                                 </div>
-                                <form>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label for="basicpill-firstname-input" class="form-label">First
-                                                    name</label>
-                                                <input type="text" class="form-control" id="basicpill-firstname-input">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label for="basicpill-lastname-input" class="form-label">Last name</label>
-                                                <input type="text" class="form-control" id="basicpill-lastname-input">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label for="basicpill-phoneno-input" class="form-label">Phone</label>
-                                                <input type="text" class="form-control" id="basicpill-phoneno-input">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">
-                                                <label for="basicpill-email-input" class="form-label">Email</label>
-                                                <input type="email" class="form-control" id="basicpill-email-input">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                <ul class="pager wizard twitter-bs-wizard-pager-link">
-                                    <li class="next"><a href="javascript: void(0);" class="btn btn-primary"
-                                            onclick="nextTab()">Next <i class="bx bx-chevron-right ms-1"></i></a></li>
-                                </ul>
-                            </div>
 
-                            <div class="tab-pane" id="company-document">
-                                <div>
-                                    <div class="mb-4">
-                                        <h5>Enter Your Address</h5>
-                                    </div>
-                                    <form>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-pancard-input" class="form-label">Address
-                                                        1</label>
-                                                    <input type="text" class="form-control"
-                                                        id="basicpill-pancard-input">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-vatno-input" class="form-label">Address
-                                                        2</label>
-                                                    <input type="text" class="form-control"
-                                                        id="basicpill-vatno-input">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-cstno-input" class="form-label">Landmark</label>
-                                                    <input type="text" class="form-control"
-                                                        id="basicpill-cstno-input">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-servicetax-input"
-                                                        class="form-label">Town</label>
-                                                    <input type="text" class="form-control"
-                                                        id="basicpill-servicetax-input">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
+                                @if ($peminjamanDikirim->isEmpty())
+                                    <h6 style="text-align: center;">Belum Ada Peminjaman yang Baru Anda Buat</h6>
+                                @else
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Tanggal Pengajuan</th>
+                                                <th>Tanggal Rencana Pinjam</th>
+                                                <th>Tanggal Rencana Kembali</th>
+                                                <th>Kegunaan</th>
+                                                <th>Status Verifikasi</th>
+                                                <th>Lihat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($peminjamanDikirim as $index => $peminjaman)
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_pengajuan)->isoFormat('llll') }}
+                                                    </td>
+                                                    <td>
+                                                        {{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_pinjam)->isoFormat('dddd, D MMMM Y') }}
+                                                    </td>
+                                                    <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_kembali)->isoFormat('dddd, D MMMM Y') }}
+                                                    </td>
+                                                    <td>{{ $peminjaman->kegunaan }}
+                                                    </td>
+                                                    <td>
+                                                        @if ($peminjaman->status_verifikasi === 'Dikirim')
+                                                            <span class="badge badge-warning">Sedang Diproses</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <form
+                                                            action="{{ route('verifikasiPeminjamanDetails', $peminjaman->id_peminjaman) }}">
+                                                            <button type="submit" class="btn btn-primary"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                title="Lihat"><i class="fa fa-eye"></i></button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @endif
+
+                                <div class="col-lg-12 text-end">
                                     <ul class="pager wizard twitter-bs-wizard-pager-link">
-                                        <li class="previous"><a href="javascript: void(0);" class="btn btn-primary"
-                                                onclick="nextTab()"><i class="bx bx-chevron-left me-1"></i> Previous</a>
+                                        <li class="next">
+                                            <a href="javascript: void(0);" class="btn btn-primary"
+                                                onclick="nextTab('diacc')">
+                                                Next <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                            </a>
                                         </li>
-                                        <li class="next"><a href="javascript: void(0);" class="btn btn-primary"
-                                                onclick="nextTab()">Next <i class="bx bx-chevron-right ms-1"></i></a></li>
                                     </ul>
                                 </div>
                             </div>
 
-                            <div class="tab-pane" id="bank-detail">
+                            <div class="tab-pane @if ($activeTab === 'diacc') active @endif" id="diacc">
                                 <div>
                                     <div class="mb-4">
-                                        <h5>Payment Details</h5>
+                                        <h5 style="text-align: center;">Peminjaman di ACC</h5>
                                     </div>
-                                    <form>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-namecard-input" class="form-label">Name on
-                                                        Card</label>
-                                                    <input type="text" class="form-control"
-                                                        id="basicpill-namecard-input">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Credit Card Type</label>
-                                                    <select class="form-select">
-                                                        <option selected>Select Card Type</option>
-                                                        <option value="AE">American Express</option>
-                                                        <option value="VI">Visa</option>
-                                                        <option value="MC">MasterCard</option>
-                                                        <option value="DI">Discover</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+
+                                    @if ($peminjamanACC->isEmpty())
+                                        <h6 style="text-align: center;">Belum Ada Peminjaman Yang Sedang Berlangsung</h6>
+                                    @else
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Tanggal Pengajuan</th>
+                                                    <th>Tanggal Rencana Pinjam</th>
+                                                    <th>Tanggal Rencana Kembali</th>
+                                                    <th>Kegunaan</th>
+                                                    <th>Status Verifikasi</th>
+                                                    <th>Tanggal Di ACC</th>
+                                                    <th>Lihat</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($peminjamanACC as $index => $peminjaman)
+                                                    <tr>
+                                                        <td>{{ $index + 1 }}</td>
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_pengajuan)->isoFormat('llll') }}
+                                                        </td>
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_pinjam)->isoFormat('dddd, D MMMM Y') }}
+                                                        </td>
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_kembali)->isoFormat('dddd, D MMMM Y') }}
+                                                        </td>
+                                                        <td>{{ $peminjaman->kegunaan }}</td>
+                                                        <td>
+                                                            @if ($peminjaman->status_verifikasi === 'ACC')
+                                                                <span class="badge badge-success">ACC (Sedang
+                                                                    Dipinjam)</span>
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_acc)->isoFormat('llll') }}
+                                                        <td>
+                                                            <form
+                                                                action="{{ route('verifikasiPeminjamanDetails', $peminjaman->id_peminjaman) }}">
+                                                                <button type="submit" class="btn btn-primary"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                    title="Lihat"><i class="fa fa-eye"></i></button>
+                                                            </form>
+                                                        </td>
+
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @endif
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <ul class="pager wizard twitter-bs-wizard-pager-link">
+                                                <li class="previous disabled">
+                                                    <a href="javascript: void(0);" class="btn btn-primary"
+                                                        onclick="prevTab()">
+                                                        <i class="fa fa-arrow-left" aria-hidden="true"></i> Previous
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-cardno-input" class="form-label">Credit Card
-                                                        Number</label>
-                                                    <input type="text" class="form-control"
-                                                        id="basicpill-cardno-input">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-card-verification-input" class="form-label">Card
-                                                        Verification Number</label>
-                                                    <input type="text" class="form-control"
-                                                        id="basicpill-card-verification-input">
-                                                </div>
-                                            </div>
+                                        <div class="col-lg-6 text-end">
+                                            <ul class="pager wizard twitter-bs-wizard-pager-link">
+                                                <li class="next">
+                                                    <a href="javascript: void(0);" class="btn btn-primary"
+                                                        onclick="nextTab('selesai')">
+                                                        Next <i class="fa fa-arrow-right" aria-hidden="true"></i>
+
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="mb-3">
-                                                    <label for="basicpill-expiration-input" class="form-label">Expiration
-                                                        Date</label>
-                                                    <input type="text" class="form-control"
-                                                        id="basicpill-expiration-input">
-                                                </div>
-                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane @if ($activeTab === 'selesai') active @endif" id="selesai">
+                                <div>
+                                    <div class="mb-4">
+                                        <h5 style="text-align: center;">Peminjaman Selesai</h5>
+                                    </div>
+
+                                    @if ($peminjamanSelesai->isEmpty())
+                                        <h6 style="text-align: center;">Belum Ada Peminjaman Yang Selesai</h6>
+                                    @else
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Tanggal Pengajuan</th>
+                                                    <th>Tanggal Rencana Pinjam</th>
+                                                    <th>Tanggal Rencana Kembali</th>
+                                                    <th>Kegunaan</th>
+                                                    <th>Status Verifikasi</th>
+                                                    <th>Tanggal Ditolak</th>
+                                                    <th>Lihat</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($peminjamanSelesai as $index => $peminjaman)
+                                                    <tr>
+                                                        <td>{{ $index + 1 }}</td>
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_pengajuan)->isoFormat('llll') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_pinjam)->isoFormat('dddd, D MMMM Y') }}
+                                                        </td>
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_kembali)->isoFormat('dddd, D MMMM Y') }}
+                                                        </td>
+                                                        <td>{{ $peminjaman->kegunaan }}
+                                                        </td>
+                                                        <td>
+                                                            @if ($peminjaman->status_verifikasi === 'Selesai')
+                                                                <span class="badge"
+                                                                    style="background-color: blue; color: white;">Selesai</span>
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_ditolak)->isoFormat('dddd, D MMMM Y') }}
+                                                        <td>
+                                                            <form
+                                                                action="{{ route('verifikasiPeminjamanDetails', $peminjaman->id_peminjaman) }}">
+                                                                <button type="submit" class="btn btn-primary"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                    title="Lihat"><i class="fa fa-eye"></i></button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @endif
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <ul class="pager wizard twitter-bs-wizard-pager-link">
+                                                <li class="previous disabled">
+                                                    <a href="javascript: void(0);" class="btn btn-primary"
+                                                        onclick="prevTab()">
+                                                        <i class="fa fa-arrow-left" aria-hidden="true"></i> Previous
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </div>
-                                    </form>
-                                    <ul class="pager wizard twitter-bs-wizard-pager-link">
-                                        <li class="previous"><a href="javascript: void(0);" class="btn btn-primary"
-                                                onclick="nextTab()"><i class="bx bx-chevron-left me-1"></i> Previous</a>
-                                        </li>
-                                        <li class="float-end"><a href="javascript: void(0);" class="btn btn-primary"
-                                                data-bs-toggle="modal" data-bs-target=".confirmModal">Save
-                                                Changes</a></li>
-                                    </ul>
+                                        <div class="col-lg-6 text-end">
+                                            <ul class="pager wizard twitter-bs-wizard-pager-link">
+                                                <li class="next">
+                                                    <a href="javascript: void(0);" class="btn btn-primary"
+                                                        onclick="nextTab('ditolak')">
+                                                        Next <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane @if ($activeTab === 'ditolak') active @endif" id="ditolak">
+                                <div>
+                                    <div class="mb-4">
+                                        <h5 style="text-align: center;">Peminjaman Ditolak</h5>
+                                    </div>
+
+                                    @if ($peminjamanDitolak->isEmpty())
+                                        <h6 style="text-align: center;">Belum Ada Peminjaman Yang Ditolak</h6>
+                                    @else
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Tanggal Pengajuan</th>
+                                                    <th>Tanggal Rencana Pinjam</th>
+                                                    <th>Tanggal Rencana Kembali</th>
+                                                    <th>Kegunaan</th>
+                                                    <th>Status Verifikasi</th>
+                                                    <th>Tanggal Ditolak</th>
+                                                    <th>Lihat</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($peminjamanDitolak as $index => $peminjaman)
+                                                    <tr>
+                                                        <td>{{ $index + 1 }}</td>
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_pengajuan)->isoFormat('llll') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_pinjam)->isoFormat('dddd, D MMMM Y') }}
+                                                        </td>
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_kembali)->isoFormat('dddd, D MMMM Y') }}
+                                                        </td>
+                                                        <td>{{ $peminjaman->kegunaan }}
+                                                        </td>
+                                                        <td>
+                                                            @if ($peminjaman->status_verifikasi === 'Ditolak')
+                                                                <span class="badge badge-danger">Ditolak</span>
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_ditolak)->isoFormat('llll') }}
+                                                        </td>
+                                                        <td>
+                                                            <form
+                                                                action="{{ route('verifikasiPeminjamanDetails', $peminjaman->id_peminjaman) }}">
+                                                                <button type="submit" class="btn btn-primary"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                    title="Lihat"><i class="fa fa-eye"></i></button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @endif
+
+                                    <div class="col-lg-6">
+                                        <ul class="pager wizard twitter-bs-wizard-pager-link">
+                                            <li class="previous disabled">
+                                                <a href="javascript: void(0);" class="btn btn-primary"
+                                                    onclick="prevTab()">
+                                                    <i class="bx bx-chevron-left me-1"></i> Previous
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
 
@@ -290,4 +381,34 @@
     <script src="{{ URL::to('assets/plugins/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
     <script src="{{ URL::to('assets/plugins/twitter-bootstrap-wizard/prettify.js') }}"></script>
     <script src="{{ URL::to('assets/plugins/twitter-bootstrap-wizard/form-wizard.js') }}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Ganti 'ditolak' atau 'selesai' dengan tab default setelah 5 menit
+            setTimeout(function() {
+                changeActiveTab('diproses'); // Ubah ini sesuai dengan tab default
+            }, 300000); // 300000 milidetik = 5 menit
+        });
+
+        function changeActiveTab(tabId) {
+            // Hapus class 'active' dari semua tab
+            document.querySelectorAll('.nav-link').forEach(function(tab) {
+                tab.classList.remove('active');
+            });
+
+            // Hapus class 'active' dari semua tab-pane
+            document.querySelectorAll('.tab-pane').forEach(function(tabPane) {
+                tabPane.classList.remove('active', 'show');
+            });
+
+            // Tambahkan class 'active' ke tab yang diinginkan
+            document.querySelector(`[href="#${tabId}"]`).classList.add('active');
+
+            // Tambahkan class 'active' dan 'show' ke tab-pane yang diinginkan
+            document.querySelector(`#${tabId}`).classList.add('active', 'show');
+
+            // Simulasikan klik pada tab yang diinginkan
+            document.querySelector(`[href="#${tabId}"]`).click();
+        }
+    </script>
 @endpush

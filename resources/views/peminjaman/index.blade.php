@@ -1,32 +1,34 @@
 @extends('layouts.master')
+
+@push('css')
+    <style>
+        .modal-content {
+            max-height: 80vh;
+            /* Atur tinggi maksimal modal */
+            overflow-y: auto;
+            /* Gunakan overflow-y untuk menambahkan scroll jika konten terlalu tinggi */
+        }
+
+        .sticky-header-footer {
+            position: sticky;
+            top: 0;
+            /* Untuk header, tetap di bagian atas */
+            bottom: 0;
+            /* Untuk footer, tetap di bagian bawah */
+            background-color: white;
+            /* Sesuaikan warna latar belakang dengan kebutuhan Anda */
+            z-index: 1000;
+            /* Pastikan lebih tinggi dari kontennya agar tumpang tindih saat di-scroll */
+        }
+
+        .table-container {
+            max-height: 340px;
+            /* Sesuaikan dengan tinggi maksimal yang Anda inginkan */
+            overflow-y: auto;
+        }
+    </style>
+@endpush
 @section('content')
-    @push('css')
-        <style>
-            .judul-tanah {
-                text-align: center;
-                margin: 0 auto;
-                padding-left: 240px;
-            }
-
-            .judul-gedung {
-                text-align: center;
-                margin: 0 auto;
-                padding-left: 242px;
-            }
-
-            .judul-kendaraan {
-                text-align: center;
-                margin: 0 auto;
-                padding-left: 232px;
-            }
-
-            .judul-inventaris-ruangan {
-                text-align: center;
-                margin: 0 auto;
-                padding-left: 220px;
-            }
-        </style>
-    @endpush
     <div class="page-header">
         <div class="row align-items-center">
             <div class="col">
@@ -49,19 +51,33 @@
                             <div class="col-12 col-sm-6">
                                 <div class="form-group local-forms">
                                     <label>Detail Kegunaan Pinjam <span class="login-danger">*</span></label>
-                                    <input type="text" name="kesgunaan" class="form-control">
+                                    <input type="text" name="kegunaan" value="{{ old('kegunaan') }}" autocomplete="off"
+                                        autofocus class="form-control @error('kegunaan') is-invalid @enderror">
+                                    @error('kegunaan')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-12 col-sm-3">
                                 <div class="form-group local-forms">
                                     <label>Tgl Rencana Pinjam <span class="login-danger">*</span></label>
-                                    <input type="date" name="tgl_rencana_pinjam" class="form-control">
+                                    <input type="date" name="tgl_rencana_pinjam" value="{{ old('tgl_rencana_pinjam') }}"
+                                        autocomplete="off" autofocus
+                                        class="form-control @error('tgl_rencana_pinjam') is-invalid @enderror">
+                                    @error('tgl_rencana_pinjam')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-12 col-sm-3">
                                 <div class="form-group local-forms">
                                     <label>Tgl Rencana Kembali <span class="login-danger">*</span></label>
-                                    <input type="date" name="tgl_rencana_kembali" class="form-control">
+                                    <input type="date" name="tgl_rencana_kembali"
+                                        value="{{ old('tgl_rencana_kembali') }}" autocomplete="off" autofocus
+                                        class="form-control @error('tgl_rencana_kembali') is-invalid @enderror">
+                                    @error('tgl_rencana_kembali')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -99,24 +115,26 @@
                                     <div class="tab-pane show active" id="aset_tanah">
                                         <div class="col-lg-2">
                                             <button type="button" class="mt-1 btn btn-info btn-modal-load"
-                                                data-aset="tanah" data-bs-toggle="modal" data-bs-target="#scrollable-modal"
-                                                data-title="Daftar List Aset Tanah" data-class="judul-tanah">Tambah</button>
+                                                data-aset="tanah" data-bs-toggle="modal"
+                                                data-bs-target="#bs-example-modal-lg">Tambah</button>
                                         </div><br>
-                                        <div class="table-responsive">
-                                            <table class="table mb-0 table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">Kode Tanah</th>
-                                                        <th scope="col">Nama Tanah</th>
-                                                        <th scope="col">Lokasi Tanah</th>
-                                                        <th scope="col">Status</th>
-                                                        <th scope="col">Hapus</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="asetTanahTerpilih">
-
-                                                </tbody>
-                                            </table>
+                                        <div class="table-container">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0 table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Kode Aset</th>
+                                                            <th scope="col">Nama Tanah</th>
+                                                            <th scope="col">Lokasi Tanah</th>
+                                                            <th scope="col">Status</th>
+                                                            <th scope="col">Hapus</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="asetTanahTerpilih">
+                                                        <!-- Isi tabel akan diisi melalui JavaScript -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -124,25 +142,26 @@
                                     <div class="tab-pane show" id="aset_gedung">
                                         <div class="col-lg-2">
                                             <button type="button" class="mt-1 btn btn-info btn-modal-load"
-                                                data-aset="gedung" data-bs-toggle="modal" data-bs-target="#scrollable-modal"
-                                                data-title="Daftar List Aset Gedung"
-                                                data-class="judul-gedung">Tambah</button>
+                                                data-aset="gedung" data-bs-toggle="modal"
+                                                data-bs-target="#bs-example-modal-lg">Tambah</button>
                                         </div><br>
-                                        <div class="table-responsive">
-                                            <table class="table mb-0 table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">Kode Gedung</th>
-                                                        <th scope="col">Nama Gedung</th>
-                                                        <th scope="col">Lokasi Gedung</th>
-                                                        <th scope="col">Status</th>
-                                                        <th scope="col">Hapus</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="asetGedungTerpilih">
+                                        <div class="table-container">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0 table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Kode Aset</th>
+                                                            <th scope="col">Nama Gedung</th>
+                                                            <th scope="col">Lokasi Gedung</th>
+                                                            <th scope="col">Status</th>
+                                                            <th scope="col">Hapus</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="asetGedungTerpilih">
 
-                                                </tbody>
-                                            </table>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -151,26 +170,27 @@
                                         <div class="col-lg-2">
                                             <button type="button" class="mt-1 btn btn-info btn-modal-load"
                                                 data-aset="kendaraan" data-bs-toggle="modal"
-                                                data-bs-target="#scrollable-modal" data-title="Daftar List Aset Kendaraan"
-                                                data-class="judul-kendaraan">Tambah</button>
+                                                data-bs-target="#bs-example-modal-lg">Tambah</button>
                                         </div><br>
-                                        <div class="table-responsive">
-                                            <table class="table mb-0 table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">Kode Kendaraan</th>
-                                                        <th scope="col">Nama Kendaraan</th>
-                                                        <th scope="col">Merk</th>
-                                                        <th scope="col">Warna</th>
-                                                        <th scope="col">No Polisi</th>
-                                                        <th scope="col">Status</th>
-                                                        <th scope="col">Hapus</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="asetKendaraanTerpilih">
+                                        <div class="table-container">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0 table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Kode Aset</th>
+                                                            <th scope="col">Nama Kendaraan</th>
+                                                            <th scope="col">Merk</th>
+                                                            <th scope="col">Warna</th>
+                                                            <th scope="col">No Polisi</th>
+                                                            <th scope="col">Status</th>
+                                                            <th scope="col">Hapus</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="asetKendaraanTerpilih">
 
-                                                </tbody>
-                                            </table>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -179,39 +199,38 @@
                                         <div class="col-lg-2">
                                             <button type="button" class="mt-1 btn btn-info btn-modal-load"
                                                 data-aset="inventaris_ruangan" data-bs-toggle="modal"
-                                                data-bs-target="#scrollable-modal"
-                                                data-title="Daftar List Aset Inventaris Ruangan"
-                                                data-class="judul-inventaris-ruangan">Tambah</button>
+                                                data-bs-target="#bs-example-modal-lg">Tambah</button>
                                         </div><br>
-                                        <div class="table-responsive">
-                                            <table class="table mb-0 table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">Kode Inventaris</th>
-                                                        <th scope="col">Nama Inventaris Ruangan</th>
-                                                        <th scope="col">Merk</th>
-                                                        <th scope="col">Bahan</th>
-                                                        <th scope="col">Jumlah</th>
-                                                        <th scope="col">Status</th>
-                                                        <th scope="col">Hapus</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="asetInventarisRuanganTerpilih">
+                                        <div class="table-container">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0 table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Kode Aset</th>
+                                                            <th scope="col">Nama Inventaris Ruangan</th>
+                                                            <th scope="col">Merk</th>
+                                                            <th scope="col">Bahan</th>
+                                                            <th scope="col">Jumlah</th>
+                                                            <th scope="col">Status</th>
+                                                            <th scope="col">Hapus</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="asetInventarisRuanganTerpilih">
 
-                                                </tbody>
-                                            </table>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
 
-                            @can('peminjaman.store')
-                                <div class="col-12" style="margin-left: 575px;">
-                                    <div class="student-submit">
-                                        <button type="submit" class="btn btn-primary">Buat Peminjaman</button>
-                                    </div>
+                            <div class="col-12" style="margin-left: 575px;">
+                                <div class="student-submit">
+                                    <button type="submit" class="btn btn-primary">Buat Peminjaman</button>
                                 </div>
-                            @endcan
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -219,27 +238,34 @@
         </div>
     </div>
 
-    <div class="modal fade" id="scrollable-modal" tabindex="-1" role="dialog" aria-labelledby="scrollableModalTitle"
+
+
+    <div class="modal fade" id="bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Modal title</h5>
+                <div class="modal-header sticky-header-footer">
+                    <h4 class="modal-title" id="myLargeModalLabel">Daftar Aset</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form id="asetFormModel">
-                        <div class="modal-body">
-                            @csrf
-                            <input type="hidden" name="jenis" id="asetFormModel-jenis">
-                            <div class="table-responsive" id="asetListModal">
 
-                            </div>
+                <form id="asetFormModel">
+                    <div class="modal-body">
+                        @csrf
+                        <input type="hidden" name="jenis" id="asetFormModel-jenis">
+                        <div class="form-group">
+                            <label for="searchInput">Cari Aset</label>
+                            <input type="text" class="form-control" id="searchInput"
+                                placeholder="Masukkan nama aset...">
                         </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" id="asetBtnModal" class="btn btn-primary">Tambah</button>
-                </div>
+                        <div class="table-responsive" id="asetListModal">
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer sticky-header-footer">
+                        <button type="submit" id="asetBtnModal" class="btn btn-primary">Tambah</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -252,7 +278,6 @@
         $(document).ready(function() {
             // Membuat objek untuk melacak aset yang telah dipilih
             let asetTerpilih = {};
-
             // Fungsi untuk membersihkan atau mereset data modal
             function clearModalData() {
                 asetTerpilih = {};
@@ -311,11 +336,10 @@
                                     .closest('tr').remove();
                             }
                         }
-
-
                     },
                 });
             });
+
 
             // Fungsi untuk menangani perubahan ceklist
             function handleCeklist(row) {
@@ -338,22 +362,20 @@
                 clearModalData();
             });
 
+
             $("#asetFormModel").on('submit', function(e) {
                 e.preventDefault();
                 let formData = $(this).serializeArray();
-
                 $.ajax({
                     url: "{{ route('addAset') }}",
                     type: "POST",
                     data: formData,
                     success: function(res) {
-                        // mengambil res data dari controller
                         let data = res.data;
                         let jenis = res.jenis_aset;
 
                         for (let i = 0; i < data.length; i++) {
                             let tableRow = '';
-
                             if (jenis === 'tanah') {
                                 const asetId = data[i].id_aset_tanah;
 
@@ -392,9 +414,8 @@
 
                                     // Hapus aset yang telah dipilih dari modal
                                     $(`#asetListModal input[value="${asetId}"]`).closest(
-                                        'tr').remove();
+                                        'tr').remove()
                                 }
-
 
                             } else if (jenis === 'gedung') {
                                 const asetId = data[i].id_aset_gedung;
@@ -409,14 +430,27 @@
                                         <td>${data[i].nama}</td>
                                         <td>${data[i].lokasi}</td>
                                         <td>${data[i].status_aset}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-hapus-aset" data-jenis="${jenis}" data-id="${data[i].id_aset_gedung}">
+                                            Hapus
+                                        </button>
+                                        </td>
                                         <input type="hidden" name="aset_gedung[]" value="${data[i].id_aset_gedung}">
                                     </tr>
                                         `;
                                     $('#asetGedungTerpilih').append(tableRow);
+
+                                    // Tambahkan data ke objek asetTerpilih
+                                    if (!asetTerpilih.hasOwnProperty(jenis)) {
+                                        asetTerpilih[jenis] = {};
+                                    }
+                                    asetTerpilih[jenis][data[i].id] = data[i].id;
+
+                                    // Hapus aset yang telah dipilih dari modal
+                                    $(`#asetListModal input[value="${asetId}"]`).closest(
+                                        'tr').remove()
                                 }
-                                // Hapus aset yang telah dipilih dari modal
-                                $(`#asetListModal input[value="${asetId}"]`).closest(
-                                    'tr').remove();
+
 
                             } else if (jenis === 'kendaraan') {
                                 const asetId = data[i].id_aset_kendaraan;
@@ -433,17 +467,31 @@
                                         <td>${data[i].warna}</td>
                                         <td>${data[i].no_polisi}</td>
                                         <td>${data[i].status_aset}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-hapus-aset" data-jenis="${jenis}" data-id="${data[i].id_aset_kendaraan}">
+                                            Hapus
+                                        </button>
+                                        </td>
                                         <input type="hidden" name="aset_kendaraan[]" value="${data[i].id_aset_kendaraan}">
                                     </tr>
                                         `;
                                     $('#asetKendaraanTerpilih').append(tableRow);
+
+                                    // Tambahkan data ke objek asetTerpilih
+                                    if (!asetTerpilih.hasOwnProperty(jenis)) {
+                                        asetTerpilih[jenis] = {};
+                                    }
+                                    asetTerpilih[jenis][data[i].id] = data[i].id;
+
+                                    // Hapus aset yang telah dipilih dari modal
+                                    $(`#asetListModal input[value="${asetId}"]`).closest(
+                                        'tr').remove()
                                 }
-                                // Hapus aset yang telah dipilih dari modal
-                                $(`#asetListModal input[value="${asetId}"]`).closest(
-                                    'tr').remove();
+
 
                             } else if (jenis === 'inventaris_ruangan') {
                                 const asetId = data[i].id_aset_inventaris_ruangan;
+
                                 //  cek jika aset terpilih dari tabel inventaris ruangan
                                 if (!asetTerpilih.hasOwnProperty('inventaris_ruangan')) {
                                     asetTerpilih['inventaris_ruangan'] = true;
@@ -459,14 +507,26 @@
                                         <td>${data[i].bahan}</td>
                                         <td>${data[i].jumlah}</td>
                                         <td>${data[i].status_aset}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-hapus-aset" data-jenis="${jenis}" data-id="${data[i].id_aset_inventaris}">
+                                            Hapus
+                                        </button>
+                                        </td>
                                         <input type="hidden" name="aset_inventaris_ruangan[]" value="${data[i].id_aset_inventaris_ruangan}">
                                     </tr>
                                         `;
                                     $('#asetInventarisRuanganTerpilih').append(tableRow);
+
+                                    // Tambahkan data ke objek asetTerpilih
+                                    if (!asetTerpilih.hasOwnProperty(jenis)) {
+                                        asetTerpilih[jenis] = {};
+                                    }
+                                    asetTerpilih[jenis][data[i].id] = data[i].id;
+
+                                    // Hapus aset yang telah dipilih dari modal
+                                    $(`#asetListModal input[value="${asetId}"]`).closest(
+                                        'tr').remove();
                                 }
-                                // Hapus aset yang telah dipilih dari modal
-                                $(`#asetListModal input[value="${asetId}"]`).closest(
-                                    'tr').remove();
                             }
                         }
                     },
@@ -482,6 +542,48 @@
                 $(`#asetTanahTerpilih input[value="${asetId}"]`).closest('tr').remove();
 
             });
+
+            // Fungsi untuk menangani setiap perubahan pada input pencarian
+            $('#searchInput').on('input', function() {
+                // Mendapatkan nilai input pencarian
+                var searchValue = $(this).val();
+
+                // Mendapatkan jenis aset dari modal atau sumber data
+                var jenisAset = $('#asetFormModel-jenis').val();
+
+                // Memanggil fungsi pencarian Ajax dengan nilai pencarian
+                searchAset(jenisAset, searchValue);
+            });
+
+            // Fungsi untuk melakukan pencarian menggunakan Ajax
+            function searchAset(jenisAset, keyword) {
+                // Mengirim permintaan Ajax
+                $.ajax({
+                    type: 'GET',
+                    url: '/search-aset', // Ganti dengan URL atau rute yang sesuai di aplikasi Anda
+                    data: {
+                        jenis: jenisAset,
+                        keyword: keyword
+                    },
+                    success: function(data) {
+                        // Memperbarui isi tabel atau daftar dengan hasil pencarian
+                        $('#asetListModal').html(data);
+                    },
+                    error: function(error) {
+                        console.error('Error during search:', error);
+                    }
+                });
+            }
         });
+
+        @if (Session::has('error'))
+            toastr.options = {
+                "progressBar": true,
+                "closeButton": true,
+            }
+            toastr.error("{{ Session::get('error') }}", 'Gagal!', {
+                timeOut: 5000,
+            });
+        @endif
     </script>
 @endpush
