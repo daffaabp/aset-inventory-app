@@ -7,7 +7,7 @@
                     <h3 class="page-title">Beranda Petugas</h3>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Beranda</a></li>
-                        <li class="breadcrumb-item active">Admin</li>
+                        <li class="breadcrumb-item active">Beranda Petugas</li>
                     </ul>
                 </div>
             </div>
@@ -20,11 +20,11 @@
                 <div class="card-body">
                     <div class="db-widgets d-flex justify-content-between align-items-center">
                         <div class="db-info">
-                            <h6>Students</h6>
-                            <h3>50055</h3>
+                            <h6>Total Aset Tanah</h6>
+                            <h3>{{ $totalAset['totalAsetTanah'] }}</h3>
                         </div>
                         <div class="db-icon">
-                            <img src="assets/img/icons/dash-icon-01.svg" alt="Dashboard Icon">
+                            <img src="assets/img/flat_icons/playground.png" style="width: 50px;" alt="Dashboard Icon">
                         </div>
                     </div>
                 </div>
@@ -35,11 +35,11 @@
                 <div class="card-body">
                     <div class="db-widgets d-flex justify-content-between align-items-center">
                         <div class="db-info">
-                            <h6>Awards</h6>
-                            <h3>50+</h3>
+                            <h6>Total Aset Gedung</h6>
+                            <h3>{{ $totalAset['totalAsetGedung'] }}</h3>
                         </div>
                         <div class="db-icon">
-                            <img src="assets/img/icons/dash-icon-02.svg" alt="Dashboard Icon">
+                            <img src="assets/img/flat_icons/residential.png" style="width: 50px;" alt="Dashboard Icon">
                         </div>
                     </div>
                 </div>
@@ -50,11 +50,11 @@
                 <div class="card-body">
                     <div class="db-widgets d-flex justify-content-between align-items-center">
                         <div class="db-info">
-                            <h6>Department</h6>
-                            <h3>30+</h3>
+                            <h6>Total Aset Kendaraan</h6>
+                            <h3>{{ $totalAset['totalAsetKendaraan'] }}</h3>
                         </div>
                         <div class="db-icon">
-                            <img src="assets/img/icons/dash-icon-03.svg" alt="Dashboard Icon">
+                            <img src="assets/img/flat_icons/motorcycle-1.png" style="width: 48px;" alt="Dashboard Icon">
                         </div>
                     </div>
                 </div>
@@ -65,11 +65,11 @@
                 <div class="card-body">
                     <div class="db-widgets d-flex justify-content-between align-items-center">
                         <div class="db-info">
-                            <h6>Revenue</h6>
-                            <h3>$505</h3>
+                            <h6>Total Aset Inventaris Ruangan</h6>
+                            <h3>{{ $totalAset['totalAsetInventarisRuangan'] }}</h3>
                         </div>
                         <div class="db-icon">
-                            <img src="assets/img/icons/dash-icon-04.svg" alt="Dashboard Icon">
+                            <img src="assets/img/flat_icons/product.png" style="width: 50px;" alt="Dashboard Icon">
                         </div>
                     </div>
                 </div>
@@ -78,234 +78,271 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12 col-lg-6">
-
-            <div class="card card-chart">
+        <div class="col-md-12">
+            <div class="card">
                 <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col-6">
-                            <h5 class="card-title">Overview</h5>
-                        </div>
-                        <div class="col-6">
-                            <ul class="chart-list-out">
-                                <li><span class="circle-blue"></span>Teacher</li>
-                                <li><span class="circle-green"></span>Student</li>
-                                <li class="star-menus"><a href="javascript:;"><i class="fas fa-ellipsis-v"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
+                    <div class="card-title">Grafik Peminjaman Bulanan</div>
                 </div>
                 <div class="card-body">
-                    <div id="apexcharts-area"></div>
+                    <!-- Year Dropdown Filter -->
+                    <form action="{{ route('dashboard') }}" method="GET" class="mb-0" style="margin-top: -10px;">
+                        <div class="form-group mb-0 row">
+                            <label class="col-form-label col-md-1" style="font-size: 14.5px; width: 200px;">Filter Tahun
+                                Peminjaman
+                                :</label>
+                            <div class="col-md-1" style="width: 130px;">
+                                <select class="form-control form-select form-control-sm" name="year" id="year"
+                                    onchange="this.form.submit()">
+                                    @for ($i = date('Y'); $i >= date('Y') - 5; $i--)
+                                        <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>
+                                            {{ $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
+
+
+
+                    <!-- Chart Canvas -->
+                    <canvas id="monthlyChart" height="95"></canvas>
                 </div>
             </div>
-
-        </div>
-        <div class="col-md-12 col-lg-6">
-
-            <div class="card card-chart">
-                <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col-6">
-                            <h5 class="card-title">Number of Students</h5>
-                        </div>
-                        <div class="col-6">
-                            <ul class="chart-list-out">
-                                <li><span class="circle-blue"></span>Girls</li>
-                                <li><span class="circle-green"></span>Boys</li>
-                                <li class="star-menus"><a href="javascript:;"><i class="fas fa-ellipsis-v"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div id="bar"></div>
-                </div>
-            </div>
-
         </div>
     </div>
 
     <div class="row">
-        <div class="col-xl-6 d-flex">
 
-            <div class="card flex-fill student-space comman-shadow">
-                <div class="card-header d-flex align-items-center">
-                    <h5 class="card-title">Star Students</h5>
-                    <ul class="chart-list-out student-ellips">
-                        <li class="star-menus"><a href="javascript:;"><i class="fas fa-ellipsis-v"></i></a>
-                        </li>
-                    </ul>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Grafik Status Aset Tanah</div>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table star-student table-hover table-center table-borderless table-striped">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th class="text-center">Marks</th>
-                                    <th class="text-center">Percentage</th>
-                                    <th class="text-end">Year</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-nowrap">
-                                        <div>PRE2209</div>
-                                    </td>
-                                    <td class="text-nowrap">
-                                        <a href="profile.html">
-                                            <img class="rounded-circle" src="assets/img/profiles/avatar-02.jpg"
-                                                width="25" alt="Star Students">
-                                            John Smith
-                                        </a>
-                                    </td>
-                                    <td class="text-center">1185</td>
-                                    <td class="text-center">98%</td>
-                                    <td class="text-end">
-                                        <div>2019</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-nowrap">
-                                        <div>PRE1245</div>
-                                    </td>
-                                    <td class="text-nowrap">
-                                        <a href="profile.html">
-                                            <img class="rounded-circle" src="assets/img/profiles/avatar-01.jpg"
-                                                width="25" alt="Star Students">
-                                            Jolie Hoskins
-                                        </a>
-                                    </td>
-                                    <td class="text-center">1195</td>
-                                    <td class="text-center">99.5%</td>
-                                    <td class="text-end">
-                                        <div>2018</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-nowrap">
-                                        <div>PRE1625</div>
-                                    </td>
-                                    <td class="text-nowrap">
-                                        <a href="profile.html">
-                                            <img class="rounded-circle" src="assets/img/profiles/avatar-03.jpg"
-                                                width="25" alt="Star Students">
-                                            Pennington Joy
-                                        </a>
-                                    </td>
-                                    <td class="text-center">1196</td>
-                                    <td class="text-center">99.6%</td>
-                                    <td class="text-end">
-                                        <div>2017</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-nowrap">
-                                        <div>PRE2516</div>
-                                    </td>
-                                    <td class="text-nowrap">
-                                        <a href="profile.html">
-                                            <img class="rounded-circle" src="assets/img/profiles/avatar-04.jpg"
-                                                width="25" alt="Star Students">
-                                            Millie Marsden
-                                        </a>
-                                    </td>
-                                    <td class="text-center">1187</td>
-                                    <td class="text-center">98.2%</td>
-                                    <td class="text-end">
-                                        <div>2016</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-nowrap">
-                                        <div>PRE2209</div>
-                                    </td>
-                                    <td class="text-nowrap">
-                                        <a href="profile.html">
-                                            <img class="rounded-circle" src="assets/img/profiles/avatar-05.jpg"
-                                                width="25" alt="Star Students">
-                                            John Smith
-                                        </a>
-                                    </td>
-                                    <td class="text-center">1185</td>
-                                    <td class="text-center">98%</td>
-                                    <td class="text-end">
-                                        <div>2015</div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <canvas id="chartTanah"></canvas>
                 </div>
             </div>
-
         </div>
-        <div class="col-xl-6 d-flex">
 
-            <div class="card flex-fill comman-shadow">
-                <div class="card-header d-flex align-items-center">
-                    <h5 class="card-title ">Student Activity </h5>
-                    <ul class="chart-list-out student-ellips">
-                        <li class="star-menus"><a href="javascript:;"><i class="fas fa-ellipsis-v"></i></a>
-                        </li>
-                    </ul>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Grafik Status Aset Gedung</div>
                 </div>
                 <div class="card-body">
-                    <div class="activity-groups">
-                        <div class="activity-awards">
-                            <div class="award-boxs">
-                                <img src="assets/img/icons/award-icon-01.svg" alt="Award">
-                            </div>
-                            <div class="award-list-outs">
-                                <h4>1st place in "Chess”</h4>
-                                <h5>John Doe won 1st place in "Chess"</h5>
-                            </div>
-                            <div class="award-time-list">
-                                <span>1 Day ago</span>
-                            </div>
-                        </div>
-                        <div class="activity-awards">
-                            <div class="award-boxs">
-                                <img src="assets/img/icons/award-icon-02.svg" alt="Award">
-                            </div>
-                            <div class="award-list-outs">
-                                <h4>Participated in "Carrom"</h4>
-                                <h5>Justin Lee participated in "Carrom"</h5>
-                            </div>
-                            <div class="award-time-list">
-                                <span>2 hours ago</span>
-                            </div>
-                        </div>
-                        <div class="activity-awards">
-                            <div class="award-boxs">
-                                <img src="assets/img/icons/award-icon-03.svg" alt="Award">
-                            </div>
-                            <div class="award-list-outs">
-                                <h4>Internation conference in "St.John School"</h4>
-                                <h5>Justin Leeattended internation conference in "St.John School"</h5>
-                            </div>
-                            <div class="award-time-list">
-                                <span>2 Week ago</span>
-                            </div>
-                        </div>
-                        <div class="mb-0 activity-awards">
-                            <div class="award-boxs">
-                                <img src="assets/img/icons/award-icon-04.svg" alt="Award">
-                            </div>
-                            <div class="award-list-outs">
-                                <h4>Won 1st place in "Chess"</h4>
-                                <h5>John Doe won 1st place in "Chess"</h5>
-                            </div>
-                            <div class="award-time-list">
-                                <span>3 Day ago</span>
-                            </div>
-                        </div>
-                    </div>
+                    <canvas id="chartGedung"></canvas>
                 </div>
             </div>
-
         </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Grafik Status Aset Kendaraan</div>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartKendaraan"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Grafik Status Aset Inventaris Ruangan</div>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartInventarisRuangan"></canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
 @endsection
+
+@push('js')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
+    <script src="{{ URL::to('assets/plugins/flot/jquery.flot.js') }}"></script>
+    <script src="{{ URL::to('assets/plugins/flot/jquery.flot.fillbetween.js') }}"></script>
+    <script src="{{ URL::to('assets/plugins/flot/jquery.flot.pie.js') }}"></script>
+
+    <script>
+        function createDonutChart(ctx, data, title) {
+            return new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        data: Object.values(data),
+                        backgroundColor: getColors(Object.keys(data)),
+                        hoverBackgroundColor: getColors(Object.keys(data)),
+                        hoverBorderColor: getHoverColors(Object.keys(data)),
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: title,
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    circumferencePercentage: 70,
+                    animation: {
+                        animateScale: true,
+                        easing: 'easeInOutQuart',
+                        animateRotate: true,
+                        duration: 2000,
+                        animateRotate: true,
+                        animateRotateDegrees: 360,
+                        animateScaleRadius: true,
+                        animateScaleAngle: true,
+                    },
+                    elements: {
+                        arc: {
+                            borderColor: '#fff',
+                            borderWidth: 2,
+                        }
+                    },
+
+                }
+            });
+        }
+
+        function getColors(labels) {
+            return labels.map(function(label) {
+                switch (label) {
+                    case 'Tersedia':
+                        return '#36A2EB';
+                    case 'Dipinjam':
+                        return '#FFCE56';
+                    case 'Rusak':
+                        return '#FF6384';
+                    default:
+                        return '#000000';
+                }
+            });
+        }
+
+        function getHoverColors(labels) {
+            return labels.map(function(label) {
+                switch (label) {
+                    case 'Tersedia':
+                        return '#2B81CC';
+                    case 'Dipinjam':
+                        return '#E5B451';
+                    case 'Rusak':
+                        return '#E75A7C';
+                    default:
+                        return '#000000';
+                }
+            });
+        }
+
+        function getHoverColors(labels) {
+            return labels.map(function(label) {
+                switch (label) {
+                    case 'Tersedia':
+                        return '#2B81CC';
+                    case 'Dipinjam':
+                        return '#E5B451';
+                    case 'Rusak':
+                        return '#E75A7C';
+                    default:
+                        return '#000000';
+                }
+            });
+        }
+
+        $(function() {
+            var monthlyPeminjamanData = chartData.getMonthlyPeminjamanData();
+
+            $.plot('#flotAreaPoints', [{
+                data: monthlyPeminjamanData,
+                lines: {
+                    show: true
+                },
+                points: {
+                    show: true,
+                    radius: 5,
+                    fill: true,
+                    fillColor: '#ffffff',
+                    lineWidth: 2
+                }
+            }], chartOptions.areaChartPoints);
+        });
+
+        var ctxTanah = document.getElementById('chartTanah').getContext('2d');
+        createDonutChart(ctxTanah, @json($dataAsetTanah), 'Aset Tanah');
+
+        var ctxGedung = document.getElementById('chartGedung').getContext('2d');
+        createDonutChart(ctxGedung, @json($dataAsetGedung), 'Aset Gedung');
+
+        var ctxKendaraan = document.getElementById('chartKendaraan').getContext('2d');
+        createDonutChart(ctxKendaraan, @json($dataAsetKendaraan), 'Aset Kendaraan');
+
+        var ctxInventarisRuangan = document.getElementById('chartInventarisRuangan').getContext('2d');
+        createDonutChart(ctxInventarisRuangan, @json($dataAsetInventarisRuangan), 'Aset Inventaris Ruangan');
+    </script>
+
+
+
+    <script>
+        var chartData = {!! json_encode($chartData) !!};
+
+        // Array of Indonesian month names
+        var monthNames = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+
+        var ctx = document.getElementById('monthlyChart').getContext('2d');
+        var monthlyChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: monthNames, // Use Indonesian month names
+                datasets: [{
+                    label: 'Peminjaman Selesai',
+                    data: chartData.totals,
+                    fill: true,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'category',
+                        labels: monthNames, // Use Indonesian month names
+                        title: {
+                            display: true,
+                            text: 'Bulan',
+                        },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 30,
+                        ticks: {
+                            stepSize: 5
+                        },
+                        title: {
+                            display: true,
+                            text: 'Jumlah Peminjaman',
+                        },
+                    },
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return ' Jumlah Peminjaman: ' + context.parsed.y;
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    </script>
+@endpush

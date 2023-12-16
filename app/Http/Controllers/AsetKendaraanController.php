@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\AsetKendaraanExport;
-use App\Http\Requests\AsetKendaraanImportRequest;
-use App\Http\Requests\StoreAsetKendaraanRequest;
-use App\Http\Requests\UpdateAsetKendaraanRequest;
-use App\Imports\AsetKendaraanImport;
-use App\Models\AsetKendaraan;
-use App\Models\RiwayatPeminjamanKendaraan;
-use App\Models\StatusAset;
-use Barryvdh\DomPDF\Facade\Pdf;
 use DataTables;
+use Carbon\Carbon;
+use App\Models\StatusAset;
 use Illuminate\Http\Request;
+use App\Models\AsetKendaraan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use App\Exports\AsetKendaraanExport;
+use App\Imports\AsetKendaraanImport;
+use App\Models\RiwayatPeminjamanKendaraan;
+use App\Http\Requests\StoreAsetKendaraanRequest;
+use App\Http\Requests\AsetKendaraanImportRequest;
+use App\Http\Requests\UpdateAsetKendaraanRequest;
 
 class AsetKendaraanController extends Controller
 {
@@ -48,6 +49,32 @@ class AsetKendaraanController extends Controller
         }
 
         return view('aset.kendaraan.index', compact('asetKendaraans', 'statusAset'));
+    }
+
+    public function showDetail(Request $request)
+    {
+        $id = $request->input('id');
+        $asetKendaraan = AsetKendaraan::with('statusAset')->findOrFail($id);
+
+        return response()->json([
+            'status_aset' => $asetKendaraan->statusAset->status_aset,
+            'kode_aset' => $asetKendaraan->kode_aset,
+            'tanggal_inventarisir' => Carbon::parse($asetKendaraan->tanggal_inventarisir)->isoFormat('D MMMM Y'),
+            'nama' => $asetKendaraan->nama,
+            'merk' => $asetKendaraan->merk,
+            'type' => $asetKendaraan->type,
+            'cylinder' => $asetKendaraan->cylinder,
+            'warna' => $asetKendaraan->warna,
+            'no_rangka' => $asetKendaraan->no_rangka,
+            'no_mesin' => $asetKendaraan->no_mesin,
+            'thn_pembuatan' => $asetKendaraan->thn_pembuatan,
+            'thn_pembelian' => $asetKendaraan->thn_pembelian,
+            'no_polisi' => $asetKendaraan->no_polisi,
+            'tgl_bpkb' => Carbon::parse($asetKendaraan->tgl_bpkb)->isoFormat('D MMMM Y'),
+            'no_bpkb' => $asetKendaraan->no_bpkb,
+            'harga' => formatRupiah($asetKendaraan->harga, true),
+            'keterangan' => $asetKendaraan->keterangan,
+        ]);
     }
 
     /**
@@ -201,7 +228,7 @@ class AsetKendaraanController extends Controller
             $status_aset = $request->status_aset;
             $query->where('id_status_aset', $status_aset);
 
-        } elseif ($request->opsi === 'Berdasarkan Nama Kendaraan') {
+        } elseif ($request->opsi === 'Berdasarkan Jenis Kendaraan') {
             $nama = $request->nama;
             $query->where('nama', $nama);
 

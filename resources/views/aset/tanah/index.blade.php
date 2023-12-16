@@ -108,12 +108,8 @@
                                     <th>Status Aset</th>
                                     <th>Kode</th>
                                     <th>Nama Tanah</th>
-                                    <th>Tanggal Inventarisir</th>
                                     <th>Luas (m<sup>2</sup>)</th>
                                     <th>Letak Tanah</th>
-                                    <th>Hak</th>
-                                    <th>Tgl. Sertifikat</th>
-                                    <th>No. Sertifikat</th>
                                     <th>Penggunaan</th>
                                     <th>Harga</th>
                                     <th>Keterangan</th>
@@ -135,7 +131,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle" style="padding-left: 105px;">Import File Excel Aset Tanah</h5>
+                    <h5 class="modal-title" id="modalTitle" style="padding-left: 105px;">Import File Excel Aset Tanah
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -273,28 +270,12 @@
                         name: 'nama'
                     },
                     {
-                        data: 'tanggal_inventarisir',
-                        name: 'tanggal_inventarisir'
-                    },
-                    {
                         data: 'luas',
                         name: 'luas'
                     },
                     {
                         data: 'letak_tanah',
                         name: 'letak_tanah'
-                    },
-                    {
-                        data: 'hak',
-                        name: 'hak'
-                    },
-                    {
-                        data: 'tanggal_sertifikat',
-                        name: 'tanggal_sertifikat'
-                    },
-                    {
-                        data: 'no_sertifikat',
-                        name: 'no_sertifikat'
                     },
                     {
                         data: 'penggunaan',
@@ -373,7 +354,7 @@
         document.getElementById('opsi').addEventListener('change', function() {
             var statusDropdown = document.getElementById('statusDropdown');
             var hakDropdown = document.getElementById('hakDropdown');
-            
+
 
             if (this.value === 'Berdasarkan Status Aset') {
                 statusDropdown.style.display = 'block';

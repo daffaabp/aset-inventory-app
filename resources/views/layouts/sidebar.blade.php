@@ -48,13 +48,13 @@
 
                     @can('user.index')
                         <li class="{{ explode('.', Route::current()->getName())[0] == 'user' ? 'active' : '' }}"><a
-                                href="{{ route('user.index') }}"><i class="fa fa-user"></i> <span>User Management</span></a>
+                                href="{{ route('user.index') }}"><i class="fa fa-user"></i> <span>User Managemen</span></a>
                         </li>
                     @endcan
 
                     @can('role.index')
                         <li class="{{ explode('.', Route::current()->getName())[0] == 'role' ? 'active' : '' }}"><a
-                                href="{{ route('role.index') }}"><i class="fa fa-users"></i> <span>Role Management</span></a>
+                                href="{{ route('role.index') }}"><i class="fa fa-users"></i> <span>Role Managemen</span></a>
                         </li>
                     @endcan
                 @endcanany

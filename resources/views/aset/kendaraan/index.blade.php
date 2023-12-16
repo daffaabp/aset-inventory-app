@@ -100,21 +100,12 @@
                                     <th>No</th>
                                     <th>Status Aset</th>
                                     <th>Kode</th>
-                                    <th>Nama Kendaraan</th>
-                                    <th>Tanggal Inventarisir</th>
+                                    <th>Jenis Kendaraan</th>
                                     <th>Merk</th>
                                     <th>Type</th>
-                                    <th>Cylinder</th>
                                     <th>Warna</th>
-                                    <th>No. Rangka</th>
-                                    <th>No. Mesin</th>
-                                    <th>Thn Pembuatan</th>
-                                    <th>Thn Pembelian</th>
                                     <th>No. Polisi</th>
-                                    <th>Tgl. BPKB</th>
-                                    <th>No. BPKB</th>
                                     <th>Harga</th>
-                                    <th>Keterangan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -188,7 +179,7 @@
                                 autofocus>
                                 <option value="Semua Data">Semua Data</option>
                                 <option value="Berdasarkan Status Aset">Berdasarkan Status Aset</option>
-                                <option value="Berdasarkan Nama Kendaraan">Berdasarkan Nama Kendaraan</option>
+                                <option value="Berdasarkan Jenis Kendaraan">Berdasarkan Jenis Kendaraan</option>
                                 <option value="Berdasarkan Tahun Pembuatan">Berdasarkan Tahun Pembuatan</option>
                                 <option value="Berdasarkan Tahun Pembelian">Berdasarkan Tahun Pembelian</option>
                                 <option value="Berdasarkan Kustom">Berdasarkan Kustom</option>
@@ -207,7 +198,7 @@
 
                         <!-- Tambahkan div untuk menyimpan dropdown nama kendaraan -->
                         <div id="namaKendaraanDropdown" class="form-group" style="display: none;">
-                            <label class="form-label">Pilih Nama Kendaraan</label>
+                            <label class="form-label">Pilih Jenis Kendaraan</label>
                             <select class="form-control" name="nama">
                                 @foreach ($asetKendaraans->unique('nama')->sortBy('nama') as $row)
                                     <option value="{{ $row->nama }}">{{ $row->nama }}</option>
@@ -230,8 +221,6 @@
                         <!-- Tambahkan div untuk menyimpan dropdown tahun pembelian -->
                         <div id="tahunPembelianDropdown" class="form-group" style="display: none;">
                             <label class="form-label">Pilih Tahun Pembelian</label>
-                            {{-- <input type="number" class="form-control" name="thn_pembelian"
-                                placeholder="Masukkan Tahun Pembelian"> --}}
                             <select class="form-control" name="thn_pembelian">
                                 @foreach ($asetKendaraans->unique('thn_pembelian')->sortByDesc('thn_pembuatan') as $row)
                                     <option value="{{ $row->thn_pembelian }}">{{ $row->thn_pembelian }}</option>
@@ -255,9 +244,9 @@
 
                         <!-- Tambahkan div untuk menyimpan dropdown nama kendaraan -->
                         <div id="namaKendaraanDropdown2" class="form-group" style="display: none;">
-                            <label class="form-label">Pilih Nama Kendaraan <span style="color: red;">*</span></label>
+                            <label class="form-label">Pilih Jenis Kendaraan <span style="color: red;">*</span></label>
                             <select class="form-control" name="nama2">
-                                <option value="">-- Pilih Nama Kendaraan --</option>
+                                <option value="">-- Pilih Jenis Kendaraan --</option>
                                 @if ($asetKendaraans->isNotEmpty())
                                     @foreach ($asetKendaraans->sortBy('nama')->unique('nama') as $row)
                                         <option value="{{ $row->nama }}">{{ $row->nama }}</option>
@@ -329,10 +318,6 @@
                         name: 'nama'
                     },
                     {
-                        data: 'tanggal_inventarisir',
-                        name: 'tanggal_inventarisir'
-                    },
-                    {
                         data: 'merk',
                         name: 'merk'
                     },
@@ -341,48 +326,16 @@
                         name: 'type'
                     },
                     {
-                        data: 'cylinder',
-                        name: 'cylinder'
-                    },
-                    {
                         data: 'warna',
                         name: 'warna'
-                    },
-                    {
-                        data: 'no_rangka',
-                        name: 'no_rangka'
-                    },
-                    {
-                        data: 'no_mesin',
-                        name: 'no_mesin'
-                    },
-                    {
-                        data: 'thn_pembuatan',
-                        name: 'thn_pembuatan'
-                    },
-                    {
-                        data: 'thn_pembelian',
-                        name: 'thn_pembelian'
                     },
                     {
                         data: 'no_polisi',
                         name: 'no_polisi'
                     },
                     {
-                        data: 'tgl_bpkb',
-                        name: 'tgl_bpkb'
-                    },
-                    {
-                        data: 'no_bpkb',
-                        name: 'no_bpkb'
-                    },
-                    {
                         data: 'harga',
                         name: 'harga'
-                    },
-                    {
-                        data: 'keterangan',
-                        name: 'keterangan'
                     },
                     {
                         data: 'action',
@@ -460,7 +413,7 @@
                 tahunPembuatanDropdown2.style.display = 'none';
                 tahunPembelianDropdown2.style.display = 'none';
 
-            } else if (this.value === 'Berdasarkan Nama Kendaraan') {
+            } else if (this.value === 'Berdasarkan Jenis Kendaraan') {
                 statusDropdown.style.display = 'none';
                 namaKendaraanDropdown.style.display = 'block';
                 tahunPembuatanDropdown.style.display = 'none';

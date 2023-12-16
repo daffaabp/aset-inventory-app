@@ -102,7 +102,7 @@
                     @endif
                     <div class="user-text">
                         <h6>{{ Auth::user()->name }}</h6>
-                        @if (Auth::user()->hasRole(['Sekretaris Kwarcab', 'Sekretaris Bidang']))
+                        @if (Auth::user()->hasRole(['Sekretaris Kwarcab', 'Sekretaris Bidang', 'Superadmin', 'Petugas']))
                             <p class="text-muted mb-0">{{ Auth::user()->bidang->nama }}</p>
                         @endif
                     </div>

@@ -17,13 +17,13 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title mb-0" style="text-align: center;">Riwayat Peminjaman</h4>
-                </div>
+
+                <h5 class="card-title mb-0" style="text-align: center; margin-top: 17px;">Progres Peminjaman</h5>
+
 
                 @if (session('notifikasi'))
                     <div class="alert alert-danger bg-danger">
-                        <ul>
+                        <ul>6
                             @foreach (session('notifikasi') as $notif)
                                 <li>{{ $notif['pesan'] }}</li>
                             @endforeach
@@ -31,15 +31,16 @@
                     </div>
                 @endif
 
+
                 <div class="card-body">
-                    <div id="basic-pills-wizard" class="twitter-bs-wizard">
-                        <ul class="twitter-bs-wizard-nav">
+                    <div id="basic-pills-wizard" class="tab-pane">
+                        <ul class="nav nav-tabs">
                             <li class="nav-item @if ($activeTab === 'diproses') active @endif">
                                 <a href="#diproses" class="nav-link @if ($activeTab === 'diproses') active @endif"
                                     data-toggle="tab">
                                     <div class="step-icon @if ($activeTab === 'diproses') active @endif"
                                         data-bs-toggle="tooltip" data-bs-placement="top" title="Diproses">
-                                        <i class="fa fa-undo"></i>
+                                        <i class="fa fa-undo"></i> DIPROSES
                                     </div>
                                 </a>
                             </li>
@@ -47,7 +48,7 @@
                                 <a href="#diacc" class="nav-link @if ($activeTab === 'diacc') active @endif"
                                     data-toggle="tab">
                                     <div class="step-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="ACC">
-                                        <i class="fa fa-check"></i>
+                                        <i class="fa fa-check"></i> DI ACC
                                     </div>
                                 </a>
                             </li>
@@ -55,7 +56,7 @@
                                 <a href="#selesai" class="nav-link @if ($activeTab === 'selesai') active @endif"
                                     data-toggle="tab">
                                     <div class="step-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Selesai">
-                                        <i class="fa fa-flag-checkered"></i>
+                                        <i class="fa fa-flag-checkered"></i> SELESAI
                                     </div>
                                 </a>
                             </li>
@@ -63,17 +64,14 @@
                                 <a href="#ditolak" class="nav-link @if ($activeTab === 'ditolak') active @endif"
                                     data-toggle="tab">
                                     <div class="step-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Ditolak">
-                                        <i class="fa fa-times"></i>
+                                        <i class="fa fa-times"></i> DITOLAK
                                     </div>
                                 </a>
                             </li>
                         </ul>
 
-                        <div class="tab-content twitter-bs-wizard-tab-content">
+                        <div class="tab-content">
                             <div class="tab-pane @if ($activeTab === 'diproses') active @endif" id="diproses">
-                                <div class="mb-4">
-                                    <h5 style="text-align: center;">Permintaan Peminjaman Sedang di Proses</h5>
-                                </div>
 
                                 @if ($peminjamanDikirim->isEmpty())
                                     <h6 style="text-align: center;">Belum Ada Peminjaman yang Baru Anda Buat</h6>
@@ -136,10 +134,6 @@
 
                             <div class="tab-pane @if ($activeTab === 'diacc') active @endif" id="diacc">
                                 <div>
-                                    <div class="mb-4">
-                                        <h5 style="text-align: center;">Peminjaman di ACC</h5>
-                                    </div>
-
                                     @if ($peminjamanACC->isEmpty())
                                         <h6 style="text-align: center;">Belum Ada Peminjaman Yang Sedang Berlangsung</h6>
                                     @else
@@ -217,9 +211,6 @@
 
                             <div class="tab-pane @if ($activeTab === 'selesai') active @endif" id="selesai">
                                 <div>
-                                    <div class="mb-4">
-                                        <h5 style="text-align: center;">Peminjaman Selesai</h5>
-                                    </div>
 
                                     @if ($peminjamanSelesai->isEmpty())
                                         <h6 style="text-align: center;">Belum Ada Peminjaman Yang Selesai</h6>
@@ -298,9 +289,6 @@
 
                             <div class="tab-pane @if ($activeTab === 'ditolak') active @endif" id="ditolak">
                                 <div>
-                                    <div class="mb-4">
-                                        <h5 style="text-align: center;">Peminjaman Ditolak</h5>
-                                    </div>
 
                                     @if ($peminjamanDitolak->isEmpty())
                                         <h6 style="text-align: center;">Belum Ada Peminjaman Yang Ditolak</h6>

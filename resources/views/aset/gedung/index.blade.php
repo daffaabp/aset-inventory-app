@@ -100,18 +100,10 @@
                                     <th>Status Aset</th>
                                     <th>Kode</th>
                                     <th>Nama Gedung</th>
-                                    <th>Tanggal Inventarisir</th>
                                     <th>Kondisi</th>
-                                    <th>Bertingkat</th>
-                                    <th>Beton</th>
-                                    <th>Luas Lantai (m<sup>2</sup>)</th>
                                     <th>Lokasi</th>
-                                    <th>Tahun Dokumen</th>
-                                    <th>No Dokumen</th>
                                     <th>Luas Tanah (m<sup>2</sup>)</th>
-                                    <th>Hak</th>
-                                    <th>Harga</th>
-                                    <th>Keterangan</th>
+                                    <th>Bertingkat</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -185,6 +177,7 @@
                                 <option value="Semua Data">Semua Data</option>
                                 <option value="Berdasarkan Status Aset">Berdasarkan Status Aset</option>
                                 <option value="Berdasarkan Kondisi">Berdasarkan Kondisi</option>
+                                <option value="Berdasarkan Hak">Berdasarkan Hak</option>
                                 <option value="Berdasarkan Tahun Dokumen">Berdasarkan Tahun Dokumen</option>
                                 <option value="Berdasarkan Kustom">Berdasarkan Kustom</option>
 
@@ -204,7 +197,7 @@
                         <!-- Tambahkan div untuk menyimpan dropdown kondisi -->
                         <div id="kondisiDropdown" class="form-group" style="display: none;">
                             <label class="form-label">Pilih Kondisi</label>
-                            <select class="form-control" name="hak">
+                            <select class="form-control" name="kondisi">
                                 <option value="Baik">
                                     Baik
                                 </option>
@@ -220,10 +213,31 @@
                             </select>
                         </div>
 
+                        <!-- Tambahkan div untuk menyimpan dropdown kondisi -->
+                        <div id="hakDropdown" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Hak</label>
+                            <select class="form-control" name="hak">
+                                <option value="HGB">
+                                    HGB
+                                </option>
+                                <option value="Milik">
+                                    Milik
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan input tahun dokumen-->
+                        <div id="tahunDokumenDropdown" class="form-group" style="display: none;">
+                            <label class="form-label">Tahun Perolehan</label>
+                            <input type="number" class="form-control" name="tahun_dok"
+                                placeholder="Masukkan Tahun Dokumen">
+                        </div>
+
                         <!-- Tambahkan div untuk menyimpan dropdown status -->
                         <div id="statusDropdown2" class="form-group" style="display: none;">
                             <label class="form-label">Pilih Status Aset <span style="color: red;">*</span></label>
                             <select class="form-control" name="status_aset2">
+                                <option value="">-- Pilih Status Aset --</option>
                                 @foreach ($statusAset as $row)
                                     <option value="{{ $row->id_status_aset }}">{{ $row->status_aset }}</option>
                                 @endforeach
@@ -233,19 +247,26 @@
                         <!-- Tambahkan div untuk menyimpan dropdown kondisi -->
                         <div id="kondisiDropdown2" class="form-group" style="display: none;">
                             <label class="form-label">Pilih Kondisi <span style="color: red;">*</span></label>
+                            <select class="form-control" name="kondisi2">
+                                <option value="">-- Pilih Kondisi --</option>
+                                @if ($asetGedungs->isNotEmpty())
+                                    @foreach ($asetGedungs->sortBy('kondisi')->unique('kondisi') as $row)
+                                        <option value="{{ $row->kondisi }}">{{ $row->kondisi }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+                        <!-- Tambahkan div untuk menyimpan dropdown kondisi -->
+                        <div id="hakDropdown2" class="form-group" style="display: none;">
+                            <label class="form-label">Pilih Hak</label>
                             <select class="form-control" name="hak2">
-                                <option value="Baik">
-                                    Baik
-                                </option>
-                                <option value="Rusak">
-                                    Rusak
-                                </option>
-                                <option value="Korosi">
-                                    Korosi
-                                </option>
-                                <option value="Baru">
-                                    Baru
-                                </option>
+                                <option value="">-- Pilih Hak --</option>
+                                @if ($asetGedungs->isNotEmpty())
+                                    @foreach ($asetGedungs->sortBy('hak')->unique('hak') as $row)
+                                        <option value="{{ $row->hak }}">{{ $row->hak }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
 
@@ -253,13 +274,6 @@
                         <div id="tahunDokumenDropdown2" class="form-group" style="display: none;">
                             <label class="form-label">Tahun Perolehan <span style="color: red;">*</span></label>
                             <input type="number" class="form-control" name="tahun_dok2"
-                                placeholder="Masukkan Tahun Dokumen">
-                        </div>
-
-                        <!-- Tambahkan div untuk menyimpan input tahun dokumen-->
-                        <div id="tahunDokumenDropdown" class="form-group" style="display: none;">
-                            <label class="form-label">Tahun Perolehan</label>
-                            <input type="number" class="form-control" name="tahun_dok"
                                 placeholder="Masukkan Tahun Dokumen">
                         </div>
 
@@ -298,52 +312,20 @@
                         name: 'nama'
                     },
                     {
-                        data: 'tanggal_inventarisir',
-                        name: 'tanggal_inventarisir'
-                    },
-                    {
                         data: 'kondisi',
                         name: 'kondisi'
-                    },
-                    {
-                        data: 'bertingkat',
-                        name: 'bertingkat'
-                    },
-                    {
-                        data: 'beton',
-                        name: 'beton'
-                    },
-                    {
-                        data: 'luas_lantai',
-                        name: 'luas_lantai'
                     },
                     {
                         data: 'lokasi',
                         name: 'lokasi'
                     },
                     {
-                        data: 'tahun_dok',
-                        name: 'tahun_dok'
-                    },
-                    {
-                        data: 'nomor_dok',
-                        name: 'nomor_dok'
-                    },
-                    {
                         data: 'luas',
                         name: 'luas'
                     },
                     {
-                        data: 'hak',
-                        name: 'hak'
-                    },
-                    {
-                        data: 'harga',
-                        name: 'harga'
-                    },
-                    {
-                        data: 'keterangan',
-                        name: 'keterangan'
+                        data: 'bertingkat',
+                        name: 'bertingkat'
                     },
                     {
                         data: 'action',
@@ -402,48 +384,79 @@
         document.getElementById('opsi').addEventListener('change', function() {
             var statusDropdown = document.getElementById('statusDropdown');
             var kondisiDropdown = document.getElementById('kondisiDropdown');
+            var hakDropdown = document.getElementById('hakDropdown');
             var tahunDokumenDropdown = document.getElementById('tahunDokumenDropdown');
+
+            var statusDropdown2 = document.getElementById('statusDropdown2');
+            var kondisiDropdown2 = document.getElementById('kondisiDropdown2');
+            var hakDropdown2 = document.getElementById('hakDropdown2');
+            var tahunDokumenDropdown2 = document.getElementById('tahunDokumenDropdown2');
 
             if (this.value === 'Berdasarkan Status Aset') {
                 statusDropdown.style.display = 'block';
                 kondisiDropdown.style.display = 'none';
+                hakDropdown.style.display = 'none';
                 tahunDokumenDropdown.style.display = 'none';
 
                 statusDropdown2.style.display = 'none';
                 kondisiDropdown2.style.display = 'none';
+                hakDropdown2.style.display = 'none';
                 tahunDokumenDropdown2.style.display = 'none';
 
             } else if (this.value === 'Berdasarkan Kondisi') {
                 statusDropdown.style.display = 'none';
                 kondisiDropdown.style.display = 'block';
+                hakDropdown.style.display = 'none';
                 tahunDokumenDropdown.style.display = 'none';
 
                 statusDropdown2.style.display = 'none';
                 kondisiDropdown2.style.display = 'none';
+                hakDropdown2.style.display = 'none';
+                tahunDokumenDropdown2.style.display = 'none';
+
+            } else if (this.value === 'Berdasarkan Hak') {
+                statusDropdown.style.display = 'none';
+                kondisiDropdown.style.display = 'none';
+                hakDropdown.style.display = 'block';
+                tahunDokumenDropdown.style.display = 'none';
+
+                statusDropdown2.style.display = 'none';
+                kondisiDropdown2.style.display = 'none';
+                hakDropdown2.style.display = 'none';
                 tahunDokumenDropdown2.style.display = 'none';
 
             } else if (this.value === 'Berdasarkan Tahun Dokumen') {
                 statusDropdown.style.display = 'none';
                 kondisiDropdown.style.display = 'none';
+                hakDropdown.style.display = 'none';
                 tahunDokumenDropdown.style.display = 'block';
 
                 statusDropdown2.style.display = 'none';
                 kondisiDropdown2.style.display = 'none';
+                hakDropdown2.style.display = 'none';
                 tahunDokumenDropdown2.style.display = 'none';
 
             } else if (this.value === 'Berdasarkan Kustom') {
                 statusDropdown.style.display = 'none';
                 kondisiDropdown.style.display = 'none';
+                hakDropdown.style.display = 'none';
                 tahunDokumenDropdown.style.display = 'none';
 
                 statusDropdown2.style.display = 'block';
                 kondisiDropdown2.style.display = 'block';
+                hakDropdown2.style.display = 'block';
                 tahunDokumenDropdown2.style.display = 'block';
 
             } else {
                 statusDropdown.style.display = 'none';
                 kondisiDropdown.style.display = 'none';
+                hakDropdown2.style.display = 'none';
                 tahunDokumenDropdown.style.display = 'none';
+
+                statusDropdown2.style.display = 'none';
+                kondisiDropdown2.style.display = 'none';
+                hakDropdown2.style.display = 'none';
+                tahunDokumenDropdown2.style.display = 'none';
             }
         });
     </script>

@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\AsetTanahExport;
-use App\Http\Requests\AsetTanahImportRequest;
-use App\Http\Requests\ExportPdfAsetTanahRequest;
-use App\Http\Requests\StoreAsetTanahRequest;
-use App\Http\Requests\UpdateAsetTanahRequest;
-use App\Imports\AsetTanahImport;
-use App\Models\AsetTanah;
-use App\Models\RiwayatPeminjamanTanah;
-use App\Models\StatusAset;
-use Barryvdh\DomPDF\Facade\Pdf;
 use DataTables;
+use Carbon\Carbon;
+use App\Models\AsetTanah;
+use App\Models\StatusAset;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\AsetTanahExport;
+use App\Imports\AsetTanahImport;
 use Illuminate\Support\Facades\DB;
+use App\Models\RiwayatPeminjamanTanah;
+use App\Http\Requests\StoreAsetTanahRequest;
+use App\Http\Requests\AsetTanahImportRequest;
+use App\Http\Requests\UpdateAsetTanahRequest;
+use App\Http\Requests\ExportPdfAsetTanahRequest;
 
 class AsetTanahController extends Controller
 {
@@ -46,6 +47,28 @@ class AsetTanahController extends Controller
         }
 
         return view('aset.tanah.index', compact('asetTanahs', 'statusAset'));
+    }
+
+    public function showDetail(Request $request)
+    {
+        $id = $request->input('id');
+        $asetTanah = AsetTanah::with('statusAset')->findOrFail($id);
+
+        return response()->json([
+            'id_aset_tanah' => $asetTanah->id_aset_tanah,
+            'kode_aset' => $asetTanah->kode_aset,
+            'status_aset' => $asetTanah->statusAset->status_aset,
+            'tanggal_inventarisir' => Carbon::parse($asetTanah->tanggal_inventarisir)->isoFormat('D MMMM Y'),
+            'nama' => $asetTanah->nama,
+            'luas' => $asetTanah->luas,
+            'letak_tanah' => $asetTanah->letak_tanah,
+            'hak' => $asetTanah->hak,
+            'tanggal_sertifikat' => $asetTanah->tanggal_sertifikat,
+            'no_sertifikat' => $asetTanah->no_sertifikat,
+            'penggunaan' => $asetTanah->penggunaan,
+            'harga' => formatRupiah($asetTanah->harga, true),
+            'keterangan' => $asetTanah->keterangan,
+        ]);
     }
 
     public function create()
@@ -216,6 +239,8 @@ class AsetTanahController extends Controller
                 $query->where('hak', $hak2);
             }
         }
+
+        $aset_tanah = $query->get();
 
         if ($aset_tanah->isEmpty()) {
             return redirect()->back()->with('error', 'Data yang dicari tidak ditemukan.');

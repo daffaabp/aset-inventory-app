@@ -70,9 +70,6 @@
                                     <th>Ruangan</th>
                                     <th>Kode</th>
                                     <th>Nama Inventaris</th>
-                                    <th>Tanggal Inventarisir</th>
-                                    <th>Merk</th>
-                                    <th>Volume</th>
                                     <th>Bahan</th>
                                     <th>Tahun</th>
                                     <th>Harga</th>
@@ -230,18 +227,6 @@
                         name: 'nama'
                     },
                     {
-                        data: 'tanggal_inventarisir',
-                        name: 'tanggal_inventarisir'
-                    },
-                    {
-                        data: 'merk',
-                        name: 'merk'
-                    },
-                    {
-                        data: 'volume',
-                        name: 'volume'
-                    },
-                    {
                         data: 'bahan',
                         name: 'bahan'
                     },
@@ -328,43 +313,6 @@
                 ruanganDropdown.style.display = 'none';
                 tahunDropdown.style.display = 'none';
                 tahunDropdown2.style.display = 'none';
-            }
-        });
-    </script>
-
-    <script>
-        document.getElementById('export-pdf-form').addEventListener('submit', function(event) {
-            var opsi = document.getElementById('opsi').value;
-            var tahunPerolehan = document.getElementById('tahun_perolehan');
-            var tahunPerolehan2 = document.getElementById('tahun_perolehan2');
-            var ruanganDropdown = document.getElementById('ruanganDropdown');
-
-            // Lakukan validasi sesuai kebutuhan
-            var isValid = true;
-
-            if (opsi === 'Berdasarkan Tahun Perolehan' && !tahunPerolehan.value.trim()) {
-                isValid = false;
-            }
-
-            if (opsi === 'Berdasarkan Ruang') {
-                if (!ruanganDropdown.value.trim()) {
-                    isValid = false;
-                }
-
-                if (tahunPerolehan2.value.trim()) {
-                    // Jika tahunPerolehan2 diisi, pastikan juga tahunPerolehan diisi
-                    isValid = isValid && !ruangan_id.value.trim();
-                }
-            }
-
-            // Set atau hapus atribut target berdasarkan validasi
-            if (isValid) {
-                this.setAttribute('target', '_blank');
-            } else {
-                this.removeAttribute('target');
-                // Tampilkan pesan kesalahan jika diperlukan
-                alert('Harap isi semua kolom dengan benar');
-                event.preventDefault(); // Hentikan pengiriman formulir
             }
         });
     </script>

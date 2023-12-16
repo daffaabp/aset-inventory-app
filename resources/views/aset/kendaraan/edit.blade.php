@@ -56,7 +56,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Nama Kendaraan</label>
+                                    <label>Jenis Kendaraan</label>
                                     <select class="form-control form-select @error('nama') is-invalid @enderror"
                                         name="nama" value="{{ old('nama', $aset_kendaraan->nama) }}" autocomplete="off"
                                         autofocus>
@@ -125,7 +125,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>No. Rangka</label>
+                                            <label>No. Rangka <span class="login-danger" style="font-size: 12px;">*wajib
+                                                    unik</span></label>
                                             <input type="text"
                                                 class="form-control @error('no_rangka') is-invalid @enderror"
                                                 name="no_rangka"
@@ -137,7 +138,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>No. Mesin</label>
+                                            <label>No. Mesin <span class="login-danger" style="font-size: 12px;">*wajib
+                                                    unik</span></label>
                                             <input type="text"
                                                 class="form-control @error('no_mesin') is-invalid @enderror"
                                                 name="no_mesin" value="{{ old('no_mesin', $aset_kendaraan->no_mesin) }}">
@@ -180,7 +182,8 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label>Nomor Polisi</label>
+                                            <label>Nomor Polisi <span class="login-danger" style="font-size: 12px;">*wajib
+                                                    unik</span></label>
                                             <input type="text"
                                                 class="form-control @error('no_polisi') is-invalid @enderror"
                                                 name="no_polisi"
@@ -207,8 +210,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>No. BPKB <span class="login-danger"
-                                                    style="font-size: 12px;">*opsional</span></label>
+                                            <label>No. BPKB <span class="login-danger" style="font-size: 12px;">*opsional
+                                                    (wajib unik)</span></label>
                                             <input type="text"
                                                 class="form-control @error('no_bpkb') is-invalid @enderror"
                                                 name="no_bpkb" value="{{ old('no_bpkb', $aset_kendaraan->no_bpkb) }}">

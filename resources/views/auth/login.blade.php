@@ -54,18 +54,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Responsive</title>
+    <title>Login SIP-ASET</title>
+
+    <link rel="shortcut icon" href="{{ url('assets/img/logo_sip_aset.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ URL::to('assets/css/style_login.css') }}">
 </head>
+
+<style>
+    @keyframes shadowBlink {
+        0% {
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+        }
+
+        50% {
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+        }
+
+        100% {
+            box-shadow: 0 0 25px rgba(159, 233, 255, 0.7);
+        }
+    }
+
+    /* Menetapkan animasi ke elemen dengan kelas 'bg-white' */
+    .bg-white {
+        animation: shadowBlink 2s infinite alternate;
+    }
+</style>
 
 <body>
 
     <section class="wrapper">
         <div class="container">
             <div class="col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4 text-center">
-                <div class="logo" style="margin-top: 50px; margin-bottom: 10px;">
+                <div class="logo" style="margin-top: 50px; margin-bottom: 15px;">
                     <img src="{{ URL::to('assets/img/logo_lengkap_sip_aset.png') }}" class="img-fluid" alt="logo">
                 </div>
 
@@ -77,7 +100,7 @@
                         style="width: 110px; margin-top: -25px; margin-bottom: 10px" class="img-fluid" alt="logo">
 
                     <div class="fw-normal text-muted mb-2">
-                        <a href="#" class="text-primary fw-bold text-decoration-none">Selamat Datang</a>
+                        <p class="text-primary fw-bold text-decoration-none">Selamat Datang</p>
                     </div>
 
                     <h3 class="text-dark fw-bolder fs-4 mb-2">Sistem Pengelolaan Aset Kwarcab Banyumas</h3>
@@ -85,7 +108,7 @@
 
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" id="floatingInput" placeholder="Masukkan email"
-                            name="email" value="{{ old('email') }}" required autofocus autocomplete="username">
+                            name="email" value="{{ old('email') }}" required autofocus autocomplete="off">
                         <label for="floatingInput">{{ __('Email') }}</label>
                         @error('email')
                             <div class="text-danger">{{ $message }}</div>

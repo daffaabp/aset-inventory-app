@@ -61,7 +61,7 @@
                                         @foreach ($kode_ruangan as $row)
                                             <option value="{{ $row->kode_ruangan }}"
                                                 {{ old('kode_ruangan', $asetInventaris->kode_ruangan) == $row->kode_ruangan ? 'selected' : '' }}>
-                                                {{ $row->nama }}
+                                                {{ $row->nama }} - ({{ $row->kode_ruangan }})
                                             </option>
                                         @endforeach
                                     </select>

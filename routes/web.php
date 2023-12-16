@@ -111,6 +111,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/tanah-importExcel', [AsetTanahController::class, 'importExcel'])->name('tanah.importExcel')->middleware('permission:tanah.importExcel');
     Route::get('/tanah-exportExcel', [AsetTanahController::class, 'exportExcel'])->name('tanah.exportExcel')->middleware('permission:tanah.exportExcel');
     Route::get('/tanah-exportPdf', [AsetTanahController::class, 'exportPdf'])->name('tanah.exportPdf')->middleware('permission:tanah.exportPdf');
+    Route::get('tanah/showDetail', [AsetTanahController::class, 'showDetail'])->name('tanah.showDetail');
 
 // Kelola Aset Gedung
     Route::get('/gedung', [AsetGedungController::class, 'index'])->name('gedung.index')->middleware('permission:gedung.index');
@@ -122,6 +123,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/gedung-importExcel', [AsetGedungController::class, 'importExcel'])->name('gedung.importExcel')->middleware('permission:gedung.importExcel');
     Route::get('/gedung-exportExcel', [AsetGedungController::class, 'exportExcel'])->name('gedung.exportExcel')->middleware('permission:gedung.exportExcel');
     Route::get('/gedung-exportPdf', [AsetGedungController::class, 'exportPdf'])->name('gedung.exportPdf')->middleware('permission:gedung.exportPdf');
+    Route::get('gedung/showDetail', [AsetGedungController::class, 'showDetail'])->name('gedung.showDetail');
 
 // Kelola Aset Kendaraan
     Route::get('/kendaraan', [AsetKendaraanController::class, 'index'])->name('kendaraan.index')->middleware('permission:kendaraan.index');
@@ -133,6 +135,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/kendaraan-importExcel', [AsetKendaraanController::class, 'importExcel'])->name('kendaraan.importExcel')->middleware('permission:kendaraan.importExcel');
     Route::get('/kendaraan-exportExcel', [AsetKendaraanController::class, 'exportExcel'])->name('kendaraan.exportExcel')->middleware('permission:kendaraan.exportExcel');
     Route::get('/kendaraan-exportPdf', [AsetKendaraanController::class, 'exportPdf'])->name('kendaraan.exportPdf')->middleware('permission:kendaraan.exportPdf');
+    Route::get('kendaraan/showDetail', [AsetKendaraanController::class, 'showDetail'])->name('kendaraan.showDetail');
 
 // Kelola Aset Inventaris Ruangan
     Route::get('/inventaris', [AsetInventarisRuanganController::class, 'index'])->name('inventaris.index')->middleware('permission:inventaris.index');
@@ -148,6 +151,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/inventaris-importExcel', [AsetInventarisRuanganController::class, 'importExcel'])->name('inventaris.importExcel')->middleware('permission:inventaris.importExcel');
     Route::get('/inventaris-exportExcel', [AsetInventarisRuanganController::class, 'exportExcel'])->name('inventaris.exportExcel')->middleware('permission:inventaris.exportExcel');
     Route::get('/inventaris-exportPdf', [AsetInventarisRuanganController::class, 'exportPdf'])->name('inventaris.exportPdf')->middleware('permission:inventaris.exportPdf');
+    Route::get('inventaris/showDetail', [AsetInventarisRuanganController::class, 'showDetail'])->name('inventaris.showDetail');
 
 // Kelola Peminjaman
     Route::get('/getAset', [PeminjamanController::class, 'getAset'])->name('getAset')->middleware('permission:getAset');

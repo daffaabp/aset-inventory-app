@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\AsetGedungExport;
-use App\Http\Requests\AsetGedungImportRequest;
-use App\Http\Requests\ExportPdfAsetGedungRequest;
-use App\Http\Requests\StoreAsetGedungRequest;
-use App\Http\Requests\UpdateAsetGedungRequest;
-use App\Imports\AsetGedungImport;
-use App\Models\AsetGedung;
-use App\Models\RiwayatPeminjamanGedung;
-use App\Models\StatusAset;
-use Barryvdh\DomPDF\Facade\Pdf;
 use DataTables;
+use Carbon\Carbon;
+use App\Models\AsetGedung;
+use App\Models\StatusAset;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\AsetGedungExport;
+use App\Imports\AsetGedungImport;
 use Illuminate\Support\Facades\DB;
+use App\Models\RiwayatPeminjamanGedung;
+use App\Http\Requests\StoreAsetGedungRequest;
+use App\Http\Requests\AsetGedungImportRequest;
+use App\Http\Requests\UpdateAsetGedungRequest;
+use App\Http\Requests\ExportPdfAsetGedungRequest;
 
 class AsetGedungController extends Controller
 {
@@ -43,6 +44,30 @@ class AsetGedungController extends Controller
         }
 
         return view('aset.gedung.index', compact('asetGedungs', 'statusAset'));
+    }
+
+    public function showDetail(Request $request)
+    {
+        $id = $request->input('id');
+        $asetGedung = AsetGedung::with('statusAset')->findOrFail($id);
+
+        return response()->json([
+            'status_aset' => $asetGedung->statusAset->status_aset,
+            'kode_aset' => $asetGedung->kode_aset,
+            'tanggal_inventarisir' => Carbon::parse($asetGedung->tanggal_inventarisir)->isoFormat('D MMMM Y'),
+            'nama' => $asetGedung->nama,
+            'kondisi' => $asetGedung->kondisi,
+            'bertingkat' => $asetGedung->bertingkat,
+            'beton' => $asetGedung->beton,
+            'luas_lantai' => $asetGedung->luas_lantai,
+            'lokasi' => $asetGedung->lokasi,
+            'tahun_dok' => $asetGedung->tahun_dok,
+            'nomor_dok' => $asetGedung->nomor_dok,
+            'luas' => $asetGedung->luas,
+            'hak' => $asetGedung->hak,
+            'harga' => formatRupiah($asetGedung->harga, true),
+            'keterangan' => $asetGedung->keterangan,
+        ]);
     }
 
     public function create()
@@ -214,6 +239,11 @@ class AsetGedungController extends Controller
             if ($request->filled('kondisi2')) {
                 $kondisi2 = $request->kondisi2;
                 $query->where('kondisi', $kondisi2);
+            }
+
+            if ($request->filled('hak2')) {
+                $hak2 = $request->hak2;
+                $query->where('hak', $hak2);
             }
 
             if ($request->filled('tahun_dok2')) {

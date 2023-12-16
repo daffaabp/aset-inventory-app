@@ -7,7 +7,6 @@ use App\Models\Bidang;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -39,7 +38,7 @@ class UserController extends Controller
             $user = new User();
             $user->name = $validated['name'];
             $user->email = $validated['email'];
-            $user->password = Hash::make($validated['password']);
+            $user->password = bcrypt($validated['password']);
             $user->id_bidang = $validated['id_bidang'];
             $user->keterangan_bidang = $validated['keterangan_bidang'];
 
@@ -99,7 +98,7 @@ class UserController extends Controller
 
         $input = $request->all();
         if (!empty($input['password'])) {
-            $input['password'] = Hash::make($input['password']);
+            $input['password'] = bcrypt($input['password']);
         } else {
             $input = Arr::except($input, array('password'));
         }

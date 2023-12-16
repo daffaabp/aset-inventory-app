@@ -22,13 +22,13 @@ return new class extends Migration
             $table->string('type');
             $table->integer('cylinder');
             $table->string('warna');
-            $table->string('no_rangka');
-            $table->string('no_mesin');
+            $table->string('no_rangka')->unique();
+            $table->string('no_mesin')->unique();
             $table->integer('thn_pembuatan');
             $table->integer('thn_pembelian');
             $table->string('no_polisi')->unique();
             $table->date('tgl_bpkb')->nullable();
-            $table->string('no_bpkb')->nullable();
+            $table->string('no_bpkb')->unique()->nullable();
             $table->integer('harga');
             $table->string('keterangan');
             $table->timestamps();

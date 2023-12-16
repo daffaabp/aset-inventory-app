@@ -32,7 +32,7 @@ class UpdateAsetKendaraanRequest extends FormRequest
             'warna' => 'required|string|max:255',
             'no_rangka' => 'required|string|max:255',
             'no_mesin' => 'required|string|max:255',
-            'thn_pembuatan' => 'required|numeric|digits:4|min:0',
+            'thn_pembuatan' => 'required|numeric|lte:thn_pembelian|digits:4|min:0',
             'thn_pembelian' => 'required|numeric|digits:4|min:0',
 
             'tgl_bpkb' => 'nullable|date',
@@ -75,6 +75,7 @@ class UpdateAsetKendaraanRequest extends FormRequest
             'no_mesin.string' => 'Nomor Mesin harus bertipe string',
             'thn_pembuatan.required' => 'Tahun Pembuatan wajib diisi',
             'thn_pembuatan.numeric' => 'Tahun Pembuatan harus bertipe numerik',
+            'thn_pembuatan.lte' => 'Tahun Pembuatan harus kurang dari atau sama dengan tahun pembelian.',
             'thn_pembuatan.digits' => 'Tahun Pembuatan minimal harus 4 digit',
             'thn_pembuatan.min' => 'Tahun Pembuatan tidak boleh angka negatif',
             'thn_pembelian.required' => 'Tahun Pembelian wajib diisi',

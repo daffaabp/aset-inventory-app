@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use DataTables;
+use Carbon\Carbon;
 use App\Models\Ruangan;
 use App\Models\StatusAset;
+use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -47,7 +49,6 @@ class AsetInventarisRuanganController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-
         return view('aset.inventaris.index', compact('asetInventaris', 'daftarRuangan'));
     }
 
@@ -76,6 +77,29 @@ class AsetInventarisRuanganController extends Controller
         }
 
         return view('aset.inventaris.indexMassal', compact('asetInventaris'));
+    }
+
+
+    public function showDetail(Request $request)
+    {
+        $id = $request->input('id');
+        $inventaris = AsetInventarisRuangan::with('statusAset', 'ruangan')->findOrFail($id);
+
+        return response()->json([
+            'status_aset' => $inventaris->statusAset->status_aset,
+            'kode_aset' => $inventaris->kode_aset,
+            'tanggal_inventarisir' => Carbon::parse($inventaris->tanggal_inventarisir)->isoFormat('D MMMM Y'),
+            'nama' => $inventaris->nama,
+            'ruangan' => $inventaris->ruangan->nama,
+            'grup_id' => $inventaris->grup_id,
+            'merk' => $inventaris->merk,
+            'volume' => $inventaris->volume,
+            'bahan' => $inventaris->bahan,
+            'tahun' => $inventaris->tahun,
+            'jumlah' => $inventaris->jumlah,
+            'harga' => formatRupiah($inventaris->harga, true),
+            'keterangan' => $inventaris->keterangan,
+        ]);
     }
 
     public function create()
