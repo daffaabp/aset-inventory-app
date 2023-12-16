@@ -17,12 +17,12 @@ class Peminjaman extends Model
     protected $table = 'peminjaman';
     protected $guarded = [];
 
-    public function peminjam()
+    public function usersPeminjam()
     {
         return $this->belongsTo(User::class, 'id_peminjam');
     }
 
-    public function petugas()
+    public function usersPetugas()
     {
         return $this->belongsTo(User::class, 'id_petugas');
     }

@@ -71,31 +71,27 @@ class DashboardController extends Controller
             ->orderBy('month')
             ->get();
 
-            // Prepare data for the chart
             $chartData = $this->prepareChartData($completedPeminjaman, $selectedYear);
 
-            // Mendapatkan data untuk grafik donut Aset Tanah
+            // Mendapatkan data untuk grafik donat
             $dataAsetTanah = AsetTanah::select('status_aset.status_aset', DB::raw('COUNT(*) as total'))
                 ->join('status_aset', 'aset_tanah.id_status_aset', '=', 'status_aset.id_status_aset')
                 ->groupBy('status_aset.status_aset')
                 ->get()
                 ->pluck('total', 'status_aset');
 
-            // Mendapatkan data untuk grafik donut Aset Gedung
             $dataAsetGedung = AsetGedung::select('status_aset.status_aset', \DB::raw('COUNT(*) as total'))
                 ->join('status_aset', 'aset_gedung.id_status_aset', '=', 'status_aset.id_status_aset')
                 ->groupBy('status_aset.status_aset')
                 ->get()
                 ->pluck('total', 'status_aset');
 
-            // Mendapatkan data untuk grafik donut Aset Kendaraan
             $dataAsetKendaraan = AsetKendaraan::select('status_aset.status_aset', \DB::raw('COUNT(*) as total'))
                 ->join('status_aset', 'aset_kendaraan.id_status_aset', '=', 'status_aset.id_status_aset')
                 ->groupBy('status_aset.status_aset')
                 ->get()
                 ->pluck('total', 'status_aset');
 
-            // Mendapatkan data untuk grafik donut Aset Inventaris Ruangan
             $dataAsetInventarisRuangan = AsetInventarisRuangan::select('status_aset.status_aset', \DB::raw('COUNT(*) as total'))
                 ->join('status_aset', 'aset_inventaris_ruangan.id_status_aset', '=', 'status_aset.id_status_aset')
                 ->groupBy('status_aset.status_aset')
@@ -108,7 +104,6 @@ class DashboardController extends Controller
                 ->get()
                 ->pluck('total', 'month');
 
-            // Tampilkan view dengan membawa data grafik
             return view('home_petugas', compact('totalAset', 'dataAsetTanah', 'dataAsetGedung', 'dataAsetKendaraan', 'dataAsetInventarisRuangan','chartData', 'selectedYear'));
         }
 
@@ -120,7 +115,8 @@ class DashboardController extends Controller
                 ->get();
 
             // Mengambil data peminjaman yang memiliki status_verifikasi 'ACC' dan id_peminjam sesuai dengan user yang login
-            $peminjamanACC = Peminjaman::where('id_peminjam', $user->id)
+            $peminjamanACC = Peminjaman::with('usersPetugas')
+                ->where('id_peminjam', $user->id)
                 ->where('status_verifikasi', 'ACC')
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -143,7 +139,7 @@ class DashboardController extends Controller
             $peminjamanJatuhTempo = Peminjaman::where('id_peminjam', $user->id)
                 ->where('status_verifikasi', 'ACC')
                 ->whereDate('tgl_rencana_kembali', now()->toDateString())
-                ->get()->toArray(); // Mengonversi hasil query menjadi array
+                ->get()->toArray();
 
             $notifikasi = [];
 

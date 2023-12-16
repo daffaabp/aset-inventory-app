@@ -31,15 +31,16 @@
                     </div>
                 @endif
 
+
                 <div class="card-body">
-                    <div id="basic-pills-wizard" class="twitter-bs-wizard">
-                        <ul class="twitter-bs-wizard-nav">
+                    <div id="basic-pills-wizard" class="tab-pane">
+                        <ul class="nav nav-tabs">
                             <li class="nav-item @if ($activeTab === 'diproses') active @endif">
                                 <a href="#diproses" class="nav-link @if ($activeTab === 'diproses') active @endif"
                                     data-toggle="tab">
                                     <div class="step-icon @if ($activeTab === 'diproses') active @endif"
                                         data-bs-toggle="tooltip" data-bs-placement="top" title="Diproses">
-                                        <i class="fa fa-undo"></i>
+                                        <i class="fa fa-undo"></i> DIPROSES
                                     </div>
                                 </a>
                             </li>
@@ -47,7 +48,7 @@
                                 <a href="#diacc" class="nav-link @if ($activeTab === 'diacc') active @endif"
                                     data-toggle="tab">
                                     <div class="step-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="ACC">
-                                        <i class="fa fa-check"></i>
+                                        <i class="fa fa-check"></i> DI ACC
                                     </div>
                                 </a>
                             </li>
@@ -55,7 +56,7 @@
                                 <a href="#selesai" class="nav-link @if ($activeTab === 'selesai') active @endif"
                                     data-toggle="tab">
                                     <div class="step-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Selesai">
-                                        <i class="fa fa-flag-checkered"></i>
+                                        <i class="fa fa-flag-checkered"></i> SELESAI
                                     </div>
                                 </a>
                             </li>
@@ -63,17 +64,14 @@
                                 <a href="#ditolak" class="nav-link @if ($activeTab === 'ditolak') active @endif"
                                     data-toggle="tab">
                                     <div class="step-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Ditolak">
-                                        <i class="fa fa-times"></i>
+                                        <i class="fa fa-times"></i> DITOLAK
                                     </div>
                                 </a>
                             </li>
                         </ul>
 
-                        <div class="tab-content twitter-bs-wizard-tab-content">
+                        <div class="tab-content">
                             <div class="tab-pane @if ($activeTab === 'diproses') active @endif" id="diproses">
-                                <div class="mb-4">
-                                    <h5 style="text-align: center;">Permintaan Peminjaman Sedang di Proses</h5>
-                                </div>
 
                                 @if ($peminjamanDikirim->isEmpty())
                                     <h6 style="text-align: center;">Belum Ada Peminjaman yang Baru Anda Buat</h6>
@@ -82,9 +80,9 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Tanggal Pengajuan</th>
-                                                <th>Tanggal Rencana Pinjam</th>
-                                                <th>Tanggal Rencana Kembali</th>
+                                                <th>Tgl Pengajuan</th>
+                                                <th>Tgl Rencana Pinjam</th>
+                                                <th>Tgl Rencana Kembali</th>
                                                 <th>Kegunaan</th>
                                                 <th>Status Verifikasi</th>
                                                 <th>Lihat</th>
@@ -136,10 +134,6 @@
 
                             <div class="tab-pane @if ($activeTab === 'diacc') active @endif" id="diacc">
                                 <div>
-                                    <div class="mb-4">
-                                        <h5 style="text-align: center;">Peminjaman di ACC</h5>
-                                    </div>
-
                                     @if ($peminjamanACC->isEmpty())
                                         <h6 style="text-align: center;">Belum Ada Peminjaman Yang Sedang Berlangsung</h6>
                                     @else
@@ -147,12 +141,13 @@
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Tanggal Pengajuan</th>
-                                                    <th>Tanggal Rencana Pinjam</th>
-                                                    <th>Tanggal Rencana Kembali</th>
+                                                    <th>Tgl Pengajuan</th>
+                                                    <th>Tgl Rencana Pinjam</th>
+                                                    <th>Tgl Rencana Kembali</th>
                                                     <th>Kegunaan</th>
                                                     <th>Status Verifikasi</th>
-                                                    <th>Tanggal Di ACC</th>
+                                                    <th>Tgl Di ACC</th>
+                                                    <th>Petugas</th>
                                                     <th>Lihat</th>
                                                 </tr>
                                             </thead>
@@ -160,11 +155,14 @@
                                                 @foreach ($peminjamanACC as $index => $peminjaman)
                                                     <tr>
                                                         <td>{{ $index + 1 }}</td>
-                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_pengajuan)->isoFormat('llll') }}
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_pengajuan)->isoFormat('ll LT') }}
                                                         </td>
-                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_pinjam)->isoFormat('dddd, D MMMM Y') }}
+
+
+
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_pinjam)->isoFormat('LL') }}
                                                         </td>
-                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_kembali)->isoFormat('dddd, D MMMM Y') }}
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_kembali)->isoFormat('LL') }}
                                                         </td>
                                                         <td>{{ $peminjaman->kegunaan }}</td>
                                                         <td>
@@ -173,7 +171,8 @@
                                                                     Dipinjam)</span>
                                                             @endif
                                                         </td>
-                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_acc)->isoFormat('llll') }}
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_acc)->isoFormat('ll LT') }}
+                                                        <td>{{ $peminjaman->usersPetugas->name }}</td>
                                                         <td>
                                                             <form
                                                                 action="{{ route('verifikasiPeminjamanDetails', $peminjaman->id_peminjaman) }}">
@@ -217,9 +216,6 @@
 
                             <div class="tab-pane @if ($activeTab === 'selesai') active @endif" id="selesai">
                                 <div>
-                                    <div class="mb-4">
-                                        <h5 style="text-align: center;">Peminjaman Selesai</h5>
-                                    </div>
 
                                     @if ($peminjamanSelesai->isEmpty())
                                         <h6 style="text-align: center;">Belum Ada Peminjaman Yang Selesai</h6>
@@ -228,12 +224,11 @@
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Tanggal Pengajuan</th>
-                                                    <th>Tanggal Rencana Pinjam</th>
-                                                    <th>Tanggal Rencana Kembali</th>
+                                                    <th>Tgl Pengajuan</th>
+                                                    <th>Tgl Rencana Pinjam</th>
+                                                    <th>Tgl Rencana Kembali</th>
                                                     <th>Kegunaan</th>
                                                     <th>Status Verifikasi</th>
-                                                    <th>Tanggal Ditolak</th>
                                                     <th>Lihat</th>
                                                 </tr>
                                             </thead>
@@ -298,9 +293,6 @@
 
                             <div class="tab-pane @if ($activeTab === 'ditolak') active @endif" id="ditolak">
                                 <div>
-                                    <div class="mb-4">
-                                        <h5 style="text-align: center;">Peminjaman Ditolak</h5>
-                                    </div>
 
                                     @if ($peminjamanDitolak->isEmpty())
                                         <h6 style="text-align: center;">Belum Ada Peminjaman Yang Ditolak</h6>
@@ -309,12 +301,13 @@
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Tanggal Pengajuan</th>
-                                                    <th>Tanggal Rencana Pinjam</th>
-                                                    <th>Tanggal Rencana Kembali</th>
+                                                    <th>Tgl Pengajuan</th>
+                                                    <th>Tgl Rencana Pinjam</th>
+                                                    <th>Tgl Rencana Kembali</th>
                                                     <th>Kegunaan</th>
                                                     <th>Status Verifikasi</th>
-                                                    <th>Tanggal Ditolak</th>
+                                                    <th>Tgl Ditolak</th>
+                                                    <th>Petugas</th>
                                                     <th>Lihat</th>
                                                 </tr>
                                             </thead>
@@ -338,6 +331,7 @@
                                                         </td>
                                                         <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_ditolak)->isoFormat('llll') }}
                                                         </td>
+                                                        <td>{{ $peminjaman->usersPetugas->name }}</td>
                                                         <td>
                                                             <form
                                                                 action="{{ route('verifikasiPeminjamanDetails', $peminjaman->id_peminjaman) }}">
@@ -369,6 +363,7 @@
 
                     </div>
                 </div>
+
 
             </div>
         </div>

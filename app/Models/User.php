@@ -4,11 +4,12 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Bidang;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Models\Peminjaman;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -51,5 +52,15 @@ class User extends Authenticatable
     public function bidang()
     {
         return $this->belongsTo(Bidang::class, 'id_bidang');
+    }
+
+    public function peminjamPetugas()
+    {
+        return $this->hasMany(Peminjaman::class, 'id', 'id');
+    }
+
+    public function peminjamPeminjam()
+    {
+        return $this->hasMany(Peminjaman::class, 'id', 'id');
     }
 }

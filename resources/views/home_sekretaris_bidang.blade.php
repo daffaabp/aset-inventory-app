@@ -80,9 +80,9 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Tanggal Pengajuan</th>
-                                                <th>Tanggal Rencana Pinjam</th>
-                                                <th>Tanggal Rencana Kembali</th>
+                                                <th>Tgl Pengajuan</th>
+                                                <th>Tgl Rencana Pinjam</th>
+                                                <th>Tgl Rencana Kembali</th>
                                                 <th>Kegunaan</th>
                                                 <th>Status Verifikasi</th>
                                                 <th>Lihat</th>
@@ -141,12 +141,13 @@
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Tanggal Pengajuan</th>
-                                                    <th>Tanggal Rencana Pinjam</th>
-                                                    <th>Tanggal Rencana Kembali</th>
+                                                    <th>Tgl Pengajuan</th>
+                                                    <th>Tgl Rencana Pinjam</th>
+                                                    <th>Tgl Rencana Kembali</th>
                                                     <th>Kegunaan</th>
                                                     <th>Status Verifikasi</th>
-                                                    <th>Tanggal Di ACC</th>
+                                                    <th>Tgl Di ACC</th>
+                                                    <th>Petugas</th>
                                                     <th>Lihat</th>
                                                 </tr>
                                             </thead>
@@ -154,11 +155,14 @@
                                                 @foreach ($peminjamanACC as $index => $peminjaman)
                                                     <tr>
                                                         <td>{{ $index + 1 }}</td>
-                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_pengajuan)->isoFormat('llll') }}
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_pengajuan)->isoFormat('ll LT') }}
                                                         </td>
-                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_pinjam)->isoFormat('dddd, D MMMM Y') }}
+
+
+
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_pinjam)->isoFormat('LL') }}
                                                         </td>
-                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_kembali)->isoFormat('dddd, D MMMM Y') }}
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_kembali)->isoFormat('LL') }}
                                                         </td>
                                                         <td>{{ $peminjaman->kegunaan }}</td>
                                                         <td>
@@ -167,7 +171,8 @@
                                                                     Dipinjam)</span>
                                                             @endif
                                                         </td>
-                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_acc)->isoFormat('llll') }}
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_acc)->isoFormat('ll LT') }}
+                                                        <td>{{ $peminjaman->usersPetugas->name }}</td>
                                                         <td>
                                                             <form
                                                                 action="{{ route('verifikasiPeminjamanDetails', $peminjaman->id_peminjaman) }}">
@@ -219,12 +224,11 @@
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Tanggal Pengajuan</th>
-                                                    <th>Tanggal Rencana Pinjam</th>
-                                                    <th>Tanggal Rencana Kembali</th>
+                                                    <th>Tgl Pengajuan</th>
+                                                    <th>Tgl Rencana Pinjam</th>
+                                                    <th>Tgl Rencana Kembali</th>
                                                     <th>Kegunaan</th>
                                                     <th>Status Verifikasi</th>
-                                                    <th>Tanggal Ditolak</th>
                                                     <th>Lihat</th>
                                                 </tr>
                                             </thead>
@@ -297,12 +301,13 @@
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Tanggal Pengajuan</th>
-                                                    <th>Tanggal Rencana Pinjam</th>
-                                                    <th>Tanggal Rencana Kembali</th>
+                                                    <th>Tgl Pengajuan</th>
+                                                    <th>Tgl Rencana Pinjam</th>
+                                                    <th>Tgl Rencana Kembali</th>
                                                     <th>Kegunaan</th>
                                                     <th>Status Verifikasi</th>
-                                                    <th>Tanggal Ditolak</th>
+                                                    <th>Tgl Ditolak</th>
+                                                    <th>Petugas</th>
                                                     <th>Lihat</th>
                                                 </tr>
                                             </thead>
@@ -326,6 +331,7 @@
                                                         </td>
                                                         <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_ditolak)->isoFormat('llll') }}
                                                         </td>
+                                                        <td>{{ $peminjaman->usersPetugas->name }}</td>
                                                         <td>
                                                             <form
                                                                 action="{{ route('verifikasiPeminjamanDetails', $peminjaman->id_peminjaman) }}">

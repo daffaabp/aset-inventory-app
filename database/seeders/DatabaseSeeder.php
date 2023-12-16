@@ -74,6 +74,8 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'tanah.importExcel']);
         Permission::create(['name' => 'tanah.exportExcel']);
         Permission::create(['name' => 'tanah.exportPdf']);
+        Permission::create(['name' => 'tanah.showDetail']);
+
 
         Permission::create(['name' => 'gedung.index']);
         Permission::create(['name' => 'gedung.create']);
@@ -84,6 +86,7 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'gedung.importExcel']);
         Permission::create(['name' => 'gedung.exportExcel']);
         Permission::create(['name' => 'gedung.exportPdf']);
+        Permission::create(['name' => 'gedung.showDetail']);
 
         Permission::create(['name' => 'kendaraan.index']);
         Permission::create(['name' => 'kendaraan.create']);
@@ -94,6 +97,7 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'kendaraan.importExcel']);
         Permission::create(['name' => 'kendaraan.exportExcel']);
         Permission::create(['name' => 'kendaraan.exportPdf']);
+        Permission::create(['name' => 'kendaraan.showDetail']);
 
         Permission::create(['name' => 'inventaris.index']);
         Permission::create(['name' => 'inventaris.indexMassal']);
@@ -108,6 +112,7 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'inventaris.importExcel']);
         Permission::create(['name' => 'inventaris.exportExcel']);
         Permission::create(['name' => 'inventaris.exportPdf']);
+        Permission::create(['name' => 'inventaris.showDetail']);
 
         Permission::create(['name' => 'getAset']);
         Permission::create(['name' => 'addAset']);
@@ -232,6 +237,7 @@ class DatabaseSeeder extends Seeder
         $rolePetugas->givePermissionTo('tanah.importExcel');
         $rolePetugas->givePermissionTo('tanah.exportExcel');
         $rolePetugas->givePermissionTo('tanah.exportPdf');
+        $rolePetugas->givePermissionTo('tanah.showDetail');
 
         $rolePetugas->givePermissionTo('gedung.index');
         $rolePetugas->givePermissionTo('gedung.create');
@@ -242,6 +248,7 @@ class DatabaseSeeder extends Seeder
         $rolePetugas->givePermissionTo('gedung.importExcel');
         $rolePetugas->givePermissionTo('gedung.exportExcel');
         $rolePetugas->givePermissionTo('gedung.exportPdf');
+        $rolePetugas->givePermissionTo('gedung.showDetail');
 
         $rolePetugas->givePermissionTo('kendaraan.index');
         $rolePetugas->givePermissionTo('kendaraan.create');
@@ -252,6 +259,7 @@ class DatabaseSeeder extends Seeder
         $rolePetugas->givePermissionTo('kendaraan.importExcel');
         $rolePetugas->givePermissionTo('kendaraan.exportExcel');
         $rolePetugas->givePermissionTo('kendaraan.exportPdf');
+        $rolePetugas->givePermissionTo('kendaraan.showDetail');
 
         $rolePetugas->givePermissionTo('inventaris.index');
         $rolePetugas->givePermissionTo('inventaris.indexMassal');
@@ -266,6 +274,7 @@ class DatabaseSeeder extends Seeder
         $rolePetugas->givePermissionTo('inventaris.importExcel');
         $rolePetugas->givePermissionTo('inventaris.exportExcel');
         $rolePetugas->givePermissionTo('inventaris.exportPdf');
+        $rolePetugas->givePermissionTo('inventaris.showDetail');
 
         $rolePetugas->givePermissionTo('verifikasiPeminjaman');
         $rolePetugas->givePermissionTo('verifikasiPeminjamanDetails');

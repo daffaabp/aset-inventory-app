@@ -55,7 +55,7 @@
                             <div class="col-12 col-sm-3">
                                 <div class="form-group local-forms">
                                     <label>Peminjam <span class="login-danger">*</span></label>
-                                    <input type="text" class="form-control" value="{{ $peminjaman->peminjam->name }}"
+                                    <input type="text" class="form-control" value="{{ $peminjaman->usersPeminjam->name }}"
                                         readonly>
                                 </div>
                             </div>
