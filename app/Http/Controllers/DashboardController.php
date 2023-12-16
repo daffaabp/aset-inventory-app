@@ -54,7 +54,53 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         if ($user->hasRole('Superadmin')) {
-            return view('home_superadmin');
+            $totalAset = $this->countTotalAset();
+
+            // Get the selected year from the request, default to the current year
+            $selectedYear = $request->input('year', date('Y'));
+
+           // Get completed peminjaman data by month for the selected year
+            $completedPeminjaman = Peminjaman::where('status_verifikasi', 'Selesai')
+            ->whereYear('tgl_pengajuan', $selectedYear)
+            ->select(DB::raw('DATE_FORMAT(tgl_pengajuan, "%Y-%m") as month'), DB::raw('count(*) as total'))
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
+            $chartData = $this->prepareChartData($completedPeminjaman, $selectedYear);
+
+            // Mendapatkan data untuk grafik donat
+            $dataAsetTanah = AsetTanah::select('status_aset.status_aset', DB::raw('COUNT(*) as total'))
+                ->join('status_aset', 'aset_tanah.id_status_aset', '=', 'status_aset.id_status_aset')
+                ->groupBy('status_aset.status_aset')
+                ->get()
+                ->pluck('total', 'status_aset');
+
+            $dataAsetGedung = AsetGedung::select('status_aset.status_aset', \DB::raw('COUNT(*) as total'))
+                ->join('status_aset', 'aset_gedung.id_status_aset', '=', 'status_aset.id_status_aset')
+                ->groupBy('status_aset.status_aset')
+                ->get()
+                ->pluck('total', 'status_aset');
+
+            $dataAsetKendaraan = AsetKendaraan::select('status_aset.status_aset', \DB::raw('COUNT(*) as total'))
+                ->join('status_aset', 'aset_kendaraan.id_status_aset', '=', 'status_aset.id_status_aset')
+                ->groupBy('status_aset.status_aset')
+                ->get()
+                ->pluck('total', 'status_aset');
+
+            $dataAsetInventarisRuangan = AsetInventarisRuangan::select('status_aset.status_aset', \DB::raw('COUNT(*) as total'))
+                ->join('status_aset', 'aset_inventaris_ruangan.id_status_aset', '=', 'status_aset.id_status_aset')
+                ->groupBy('status_aset.status_aset')
+                ->get()
+                ->pluck('total', 'status_aset');
+
+            $dataPeminjamanSelesai = Peminjaman::where('status_verifikasi', 'Selesai')
+                ->selectRaw('DATE_FORMAT(tgl_rencana_pinjam, "%Y-%m") as month, COUNT(*) as total')
+                ->groupBy('month')
+                ->get()
+                ->pluck('total', 'month');
+
+            return view('home_superadmin', compact('totalAset', 'dataAsetTanah', 'dataAsetGedung', 'dataAsetKendaraan', 'dataAsetInventarisRuangan','chartData', 'selectedYear'));
         }
 
         if ($user->hasRole('Petugas')) {
