@@ -1,4 +1,12 @@
 @extends('layouts.master')
+@push('css')
+    <style>
+        .scrollable-tab-content {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+    </style>
+@endpush
 @section('content')
     <div class="page-header">
         <div class="row">
@@ -70,7 +78,7 @@
                             </li>
                         </ul>
 
-                        <div class="tab-content">
+                        <div class="tab-content scrollable-tab-content">
                             <div class="tab-pane @if ($activeTab === 'diproses') active @endif" id="diproses">
 
                                 @if ($peminjamanDikirim->isEmpty())
@@ -369,6 +377,9 @@
 @endsection
 
 @push('js')
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
     <script src="{{ URL::to('assets/js/feather.min.js') }}"></script>
     <script src="{{ URL::to('assets/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
     <script src="{{ URL::to('assets/plugins/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
@@ -403,5 +414,29 @@
             // Simulasikan klik pada tab yang diinginkan
             document.querySelector(`[href="#${tabId}"]`).click();
         }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Menangani klik pada tombol dengan class 'nav-link'
+            $('.nav-link').on('click', function(e) {
+                e.preventDefault(); // Mencegah default action dari link
+
+                // Menghapus class 'active' dari semua tab dan tab content
+                $('.nav-link, .tab-pane').removeClass('active');
+
+                // Menambahkan class 'active' ke tombol yang diklik
+                $(this).addClass('active');
+
+                // Mengambil href dari tombol yang diklik (contoh: '#diproses')
+                var targetTab = $(this).attr('href');
+
+                // Menambahkan class 'active' ke tab content yang sesuai dengan href tombol
+                $(targetTab).addClass('active');
+
+                // Menampilkan tab content yang sesuai dengan href tombol
+                $(targetTab).tab('show');
+            });
+        });
     </script>
 @endpush
