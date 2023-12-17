@@ -4,10 +4,10 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="page-sub-header">
-                    <h3 class="page-title">Beranda Sekretaris Bidang</h3>
+                    <h3 class="page-title">Beranda Sekretaris Kwarcab</h3>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Beranda</a></li>
-                        <li class="breadcrumb-item active">Admin</li>
+                        <li class="breadcrumb-item active">Beranda Sekretaris Kwarcab</li>
                     </ul>
                 </div>
             </div>
@@ -17,13 +17,13 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title mb-0" style="text-align: center;">Riwayat Peminjaman</h4>
-                </div>
+
+                <h5 class="card-title mb-0" style="text-align: center; margin-top: 17px;">Progres Peminjaman</h5>
+
 
                 @if (session('notifikasi'))
                     <div class="alert alert-danger bg-danger">
-                        <ul>
+                        <ul>6
                             @foreach (session('notifikasi') as $notif)
                                 <li>{{ $notif['pesan'] }}</li>
                             @endforeach
@@ -251,7 +251,6 @@
                                                                     style="background-color: blue; color: white;">Selesai</span>
                                                             @endif
                                                         </td>
-                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_ditolak)->isoFormat('dddd, D MMMM Y') }}
                                                         <td>
                                                             <form
                                                                 action="{{ route('verifikasiPeminjamanDetails', $peminjaman->id_peminjaman) }}">
@@ -363,7 +362,6 @@
 
                     </div>
                 </div>
-
 
             </div>
         </div>

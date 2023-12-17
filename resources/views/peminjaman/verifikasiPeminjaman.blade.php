@@ -55,7 +55,7 @@
 
                                                 </td>
                                             @endcan
-                                            <td>{{ $row->peminjam->name }}</td>
+                                            <td>{{ $row->usersPeminjam->name }}</td>
                                             <td>
                                                 @if ($row->status_verifikasi === 'ACC')
                                                     <span class="badge badge-success">ACC (Sedang Dipinjam)</span>
@@ -63,9 +63,11 @@
                                                     <span class="badge badge-warning">Dikirim</span>
                                                 @endif
                                             </td>
-                                            <td>{{ $row->tgl_pengajuan }}</td>
-                                            <td>{{ $row->tgl_rencana_pinjam }}</td>
-                                            <td>{{ $row->tgl_rencana_kembali }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($row->tgl_pengajuan)->isoFormat('ll LT') }}
+                                            </td>
+                                            <td>{{ \Carbon\Carbon::parse($row->tgl_rencana_pinjam)->isoFormat('LL') }}
+                                            </td>
+                                            <td>{{ \Carbon\Carbon::parse($row->tgl_rencana_kembali)->isoFormat('LL') }}</td>
                                             <td>{{ $row->kegunaan }}</td>
                                         </tr>
                                     @endforeach

@@ -163,6 +163,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/verifikasiPeminjaman/{id}/details', [PeminjamanController::class, 'verifikasiPeminjamanDetails'])->name('verifikasiPeminjamanDetails')->middleware('permission:verifikasiPeminjamanDetails');
     Route::post('/verifikasi-peminjaman/{id_peminjaman}', [PeminjamanController::class, 'processVerification'])->name('processVerification')->middleware('permission:processVerification');
     Route::get('/riwayatPeminjaman', [PeminjamanController::class, 'riwayatPeminjaman'])->name('riwayatPeminjaman')->middleware('permission:riwayatPeminjaman');
+    Route::get('/riwayatPeminjamanSekcab', [PeminjamanController::class, 'riwayatPeminjamanSekcab'])->name('riwayatPeminjamanSekcab')->middleware('permission:riwayatPeminjamanSekcab');
 });
 
 require __DIR__ . '/auth.php';

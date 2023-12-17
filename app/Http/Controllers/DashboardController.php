@@ -157,24 +157,28 @@ class DashboardController extends Controller
             // Mengambil data peminjaman yang memiliki status_verifikasi 'Dikirim' dan id_peminjam sesuai dengan user yang login
             $peminjamanDikirim = Peminjaman::where('id_peminjam', $user->id)
                 ->where('status_verifikasi', 'Dikirim')
+                ->where('tgl_rencana_kembali', '>', now())
                 ->orderBy('created_at', 'desc')
                 ->get();
 
             // Mengambil data peminjaman yang memiliki status_verifikasi 'ACC' dan id_peminjam sesuai dengan user yang login
             $peminjamanACC = Peminjaman::with('usersPetugas')
                 ->where('id_peminjam', $user->id)
+                ->where('tgl_rencana_kembali', '>', now())
                 ->where('status_verifikasi', 'ACC')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
             // Mengambil data peminjaman yang memiliki status_verifikasi 'Selesai' dan id_peminjam sesuai dengan user yang login
             $peminjamanSelesai = Peminjaman::where('id_peminjam', $user->id)
+                ->where('tgl_rencana_kembali', '>', now())
                 ->where('status_verifikasi', 'Selesai')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
             // Mengambil data peminjaman yang memiliki status_verifikasi 'Ditolak' dan id_peminjam sesuai dengan user yang login
             $peminjamanDitolak = Peminjaman::where('id_peminjam', $user->id)
+                 ->where('tgl_rencana_kembali', '>', now())
                 ->where('status_verifikasi', 'Ditolak')
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -215,24 +219,29 @@ class DashboardController extends Controller
         if ($user->hasRole('Sekretaris Kwarcab')) {
             // Mengambil data peminjaman yang memiliki status_verifikasi 'Dikirim' dan id_peminjam sesuai dengan user yang login
             $peminjamanDikirim = Peminjaman::where('id_peminjam', $user->id)
-                ->where('status_verifikasi', 'Dikirim')
-                ->orderBy('created_at', 'desc')
-                ->get();
+            ->where('status_verifikasi', 'Dikirim')
+            ->where('tgl_rencana_kembali', '>', now())
+            ->orderBy('created_at', 'desc')
+            ->get();
 
             // Mengambil data peminjaman yang memiliki status_verifikasi 'ACC' dan id_peminjam sesuai dengan user yang login
-            $peminjamanACC = Peminjaman::where('id_peminjam', $user->id)
+            $peminjamanACC = Peminjaman::with('usersPetugas')
+                ->where('id_peminjam', $user->id)
+                ->where('tgl_rencana_kembali', '>', now())
                 ->where('status_verifikasi', 'ACC')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
             // Mengambil data peminjaman yang memiliki status_verifikasi 'Selesai' dan id_peminjam sesuai dengan user yang login
             $peminjamanSelesai = Peminjaman::where('id_peminjam', $user->id)
+                ->where('tgl_rencana_kembali', '>', now())
                 ->where('status_verifikasi', 'Selesai')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
             // Mengambil data peminjaman yang memiliki status_verifikasi 'Ditolak' dan id_peminjam sesuai dengan user yang login
             $peminjamanDitolak = Peminjaman::where('id_peminjam', $user->id)
+                ->where('tgl_rencana_kembali', '>', now())
                 ->where('status_verifikasi', 'Ditolak')
                 ->orderBy('created_at', 'desc')
                 ->get();

@@ -201,7 +201,8 @@ class PeminjamanController extends Controller
 
     public function verifikasiPeminjaman()
     {
-        $peminjaman = Peminjaman::whereIn('status_verifikasi', ['Dikirim', 'ACC'])->get();
+        $peminjaman = Peminjaman::with('usersPeminjam')
+        ->whereIn('status_verifikasi', ['Dikirim', 'ACC'])->get();
         return view('peminjaman.verifikasiPeminjaman', compact('peminjaman'));
     }
 
@@ -291,7 +292,7 @@ class PeminjamanController extends Controller
                 $riwayat->save();
             }
 
-            return redirect()->route('verifikasiPeminjaman')->with('error', 'Peminjaman telah ditolak.');
+            return redirect()->route('riwayatPeminjaman')->with('error', 'Peminjaman telah ditolak.');
 
         } elseif ($request->has('finish')) {
             $status = 'Selesai';
@@ -553,6 +554,22 @@ class PeminjamanController extends Controller
 
                 return view('peminjaman.riwayatPeminjaman', compact('peminjamanSelesai'));
             }
+        } else {
+            return redirect()->route('login')->with('error', 'Silakan login untuk melihat riwayat peminjaman.');
+        }
+    }
+
+    public function riwayatPeminjamanSekcab()
+    {
+        $user = auth()->user();
+
+        if ($user->hasAnyRole(['Sekretaris Kwarcab'])) {
+            $userID = $user->id;
+            $peminjamanSelesai = Peminjaman::where('id_peminjam', $userID)
+            ->whereIn('status_verifikasi', ['Selesai', 'Ditolak'])
+            ->get();
+
+            return view('peminjaman.riwayatPeminjamanSekcab', compact('peminjamanSelesai'));
         } else {
             return redirect()->route('login')->with('error', 'Silakan login untuk melihat riwayat peminjaman.');
         }

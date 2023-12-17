@@ -121,8 +121,19 @@
 
                 @canany(['riwayatPeminjaman', 'verifikasiPeminjamanDetails'])
                     <li class="{{ Route::current()->getName() == 'riwayatPeminjaman' ? 'active' : '' }}">
-                        <a href="{{ route('riwayatPeminjaman') }}"><i class="fa fa-window-restore"></i> <span> Riwayat
+                        <a href="{{ route('riwayatPeminjaman') }}"><i class="fa fa-window-restore"></i> <span
+                                style="font-size: 14.5px;"> Seluruh
+                                Riwayat
                                 Peminjaman</span></a>
+                    </li>
+                @endcan
+
+                @can(['riwayatPeminjamanSekcab'])
+                    <li class="{{ Route::current()->getName() == 'riwayatPeminjamanSekcab' ? 'active' : '' }}">
+                        <a href="{{ route('riwayatPeminjamanSekcab') }}"><i class="fa fa-window-restore"></i> <span
+                                style="font-size: 14.5px;">
+                                Riwayat
+                                Peminjaman Sekcab</span></a>
                     </li>
                 @endcan
 
