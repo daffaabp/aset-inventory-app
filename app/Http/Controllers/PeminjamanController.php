@@ -253,47 +253,94 @@ class PeminjamanController extends Controller
     public function processVerification(Request $request, $id_peminjaman)
     {
         $peminjaman = Peminjaman::find($id_peminjaman);
-        // dd($request->all());
 
         if ($request->has('accept')) {
             $status = 'ACC';
             $peminjaman->tgl_acc = now()->format('Y-m-d H:i:s');
             $peminjaman->id_petugas = auth()->user()->id;
-
-        } elseif ($request->has('reject')) {
-            $status = 'Ditolak';
-            $peminjaman->tgl_ditolak = now()->format('Y-m-d H:i:s');
-            $peminjaman->id_petugas = auth()->user()->id;
             $peminjaman->status_verifikasi = $status;
             $peminjaman->save();
 
+                // Mengupdate status pada riwayat_peminjaman_tanah yang terkait
             $riwayatPeminjamanTanah = RiwayatPeminjamanTanah::where('id_peminjaman', $id_peminjaman)->get();
             $riwayatPeminjamanGedung = RiwayatPeminjamanGedung::where('id_peminjaman', $id_peminjaman)->get();
             $riwayatPeminjamanKendaraan = RiwayatPeminjamanKendaraan::where('id_peminjaman', $id_peminjaman)->get();
             $riwayatPeminjamanInventarisRuangan = RiwayatPeminjamanInventarisRuangan::where('id_peminjaman', $id_peminjaman)->get();
+            $status_aset = StatusAset::all();
 
             foreach ($riwayatPeminjamanTanah as $riwayat) {
                 $riwayat->status_verifikasi = $status;
                 $riwayat->save();
+
+                // Perbarui status_aset pada tabel riwayat_peminjaman_tanah
+                $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
+                $riwayat->statusAset()->associate($statusAsetDipinjam);
+                $riwayat->save();
+
+                // Perbarui status_aset pada tabel aset_tanah
+                $asetTanah = $riwayat->asetTanah;
+                $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
+
+                $asetTanah->id_status_aset = $statusAsetDipinjam->id_status_aset;
+                $asetTanah->save();
             }
 
             foreach ($riwayatPeminjamanGedung as $riwayat) {
                 $riwayat->status_verifikasi = $status;
                 $riwayat->save();
+
+                // Perbarui status_aset pada tabel riwayat_peminjaman_tanah
+                $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
+                $riwayat->statusAset()->associate($statusAsetDipinjam);
+                $riwayat->save();
+
+                // Perbarui status_aset pada tabel aset_tanah
+                $asetGedung = $riwayat->asetGedung;
+                $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
+
+                $asetGedung->id_status_aset = $statusAsetDipinjam->id_status_aset;
+                $asetGedung->save();
             }
 
             foreach ($riwayatPeminjamanKendaraan as $riwayat) {
                 $riwayat->status_verifikasi = $status;
                 $riwayat->save();
+
+                // Perbarui status_aset pada tabel riwayat_peminjaman_tanah
+                $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
+                $riwayat->statusAset()->associate($statusAsetDipinjam);
+                $riwayat->save();
+
+                // Perbarui status_aset pada tabel aset_tanah
+                $asetKendaraan = $riwayat->asetKendaraan;
+                $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
+
+                $asetKendaraan->id_status_aset = $statusAsetDipinjam->id_status_aset;
+                $asetKendaraan->save();
             }
 
             foreach ($riwayatPeminjamanInventarisRuangan as $riwayat) {
                 $riwayat->status_verifikasi = $status;
                 $riwayat->save();
+
+                // Perbarui status_aset pada tabel riwayat_peminjaman_tanah
+                $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
+                $riwayat->statusAset()->associate($statusAsetDipinjam);
+                $riwayat->save();
+
+                // Perbarui status_aset pada tabel aset_tanah
+                $asetInventarisRuangan = $riwayat->asetInventarisRuangan;
+                $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
+
+                $asetInventarisRuangan->id_status_aset = $statusAsetDipinjam->id_status_aset;
+                $asetInventarisRuangan->save();
             }
 
-            return redirect()->route('riwayatPeminjaman')->with('error', 'Peminjaman telah ditolak.');
+            return redirect()->route('verifikasiPeminjaman')->with('success', 'Peminjaman Telah di ACC');
 
+        } elseif ($request->has('reject')) {
+            $this->rejectPeminjaman($request, $id_peminjaman);
+            // return redirect()->route('riwayatPeminjaman');
         } elseif ($request->has('finish')) {
             $status = 'Selesai';
             $peminjaman->status_verifikasi = $status;
@@ -457,85 +504,48 @@ class PeminjamanController extends Controller
             return redirect()->route('riwayatPeminjaman')->with('success', 'Peminjaman Telah Selesai');
         }
 
+    }
+
+    public function rejectPeminjaman(Request $request, $id_peminjaman)
+    {
+        $request->validate([
+            'alasan_ditolak' => 'nullable|string|max:255',
+        ]);
+
+        $peminjaman = Peminjaman::find($id_peminjaman);
+        $peminjaman->alasan_ditolak = $request->input('alasan_ditolak');
+        $status = 'Ditolak';
+        $peminjaman->tgl_ditolak = now()->format('Y-m-d H:i:s');
+        $peminjaman->id_petugas = auth()->user()->id;
         $peminjaman->status_verifikasi = $status;
         $peminjaman->save();
 
-        // Mengupdate status pada riwayat_peminjaman_tanah yang terkait
         $riwayatPeminjamanTanah = RiwayatPeminjamanTanah::where('id_peminjaman', $id_peminjaman)->get();
         $riwayatPeminjamanGedung = RiwayatPeminjamanGedung::where('id_peminjaman', $id_peminjaman)->get();
         $riwayatPeminjamanKendaraan = RiwayatPeminjamanKendaraan::where('id_peminjaman', $id_peminjaman)->get();
         $riwayatPeminjamanInventarisRuangan = RiwayatPeminjamanInventarisRuangan::where('id_peminjaman', $id_peminjaman)->get();
-        $status_aset = StatusAset::all();
 
         foreach ($riwayatPeminjamanTanah as $riwayat) {
             $riwayat->status_verifikasi = $status;
             $riwayat->save();
-
-            // Perbarui status_aset pada tabel riwayat_peminjaman_tanah
-            $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
-            $riwayat->statusAset()->associate($statusAsetDipinjam);
-            $riwayat->save();
-
-            // Perbarui status_aset pada tabel aset_tanah
-            $asetTanah = $riwayat->asetTanah;
-            $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
-
-            $asetTanah->id_status_aset = $statusAsetDipinjam->id_status_aset;
-            $asetTanah->save();
         }
 
         foreach ($riwayatPeminjamanGedung as $riwayat) {
             $riwayat->status_verifikasi = $status;
             $riwayat->save();
-
-            // Perbarui status_aset pada tabel riwayat_peminjaman_tanah
-            $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
-            $riwayat->statusAset()->associate($statusAsetDipinjam);
-            $riwayat->save();
-
-            // Perbarui status_aset pada tabel aset_tanah
-            $asetGedung = $riwayat->asetGedung;
-            $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
-
-            $asetGedung->id_status_aset = $statusAsetDipinjam->id_status_aset;
-            $asetGedung->save();
         }
 
         foreach ($riwayatPeminjamanKendaraan as $riwayat) {
             $riwayat->status_verifikasi = $status;
             $riwayat->save();
-
-            // Perbarui status_aset pada tabel riwayat_peminjaman_tanah
-            $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
-            $riwayat->statusAset()->associate($statusAsetDipinjam);
-            $riwayat->save();
-
-            // Perbarui status_aset pada tabel aset_tanah
-            $asetKendaraan = $riwayat->asetKendaraan;
-            $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
-
-            $asetKendaraan->id_status_aset = $statusAsetDipinjam->id_status_aset;
-            $asetKendaraan->save();
         }
 
         foreach ($riwayatPeminjamanInventarisRuangan as $riwayat) {
             $riwayat->status_verifikasi = $status;
             $riwayat->save();
-
-            // Perbarui status_aset pada tabel riwayat_peminjaman_tanah
-            $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
-            $riwayat->statusAset()->associate($statusAsetDipinjam);
-            $riwayat->save();
-
-            // Perbarui status_aset pada tabel aset_tanah
-            $asetInventarisRuangan = $riwayat->asetInventarisRuangan;
-            $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
-
-            $asetInventarisRuangan->id_status_aset = $statusAsetDipinjam->id_status_aset;
-            $asetInventarisRuangan->save();
         }
 
-        return redirect()->route('verifikasiPeminjaman')->with('success', 'Peminjaman Telah di ACC');
+        return response()->json(['message' => 'Peminjaman ditolak.', 'status' => $status]);
     }
 
     public function riwayatPeminjaman()

@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('catatan_pengembalian')->nullable();
             $table->datetime('tgl_acc')->nullable();
             $table->datetime('tgl_ditolak')->nullable();
+            $table->text('alasan_ditolak')->nullable();
             $table->timestamps();
         });
     }
