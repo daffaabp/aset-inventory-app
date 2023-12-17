@@ -16,6 +16,8 @@ use App\Http\Requests\StoreAsetTanahRequest;
 use App\Http\Requests\AsetTanahImportRequest;
 use App\Http\Requests\UpdateAsetTanahRequest;
 use App\Http\Requests\ExportPdfAsetTanahRequest;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class AsetTanahController extends Controller
 {
@@ -172,17 +174,23 @@ class AsetTanahController extends Controller
 
     public function importExcel(AsetTanahImportRequest $request)
     {
-        $file = $request->file('file');
-
         try {
             DB::beginTransaction();
 
             // Validasi file
-            $file->store('public/import');
+            $file = $request->file('file');
 
             // Lakukan impor
             $import = new AsetTanahImport;
             $import->import($file);
+
+            if ($import->failures()->isNotEmpty()) {
+                $import->customValidation($import->failures());
+                DB::rollBack();
+                return back()
+                    ->withFailures($import->failures())
+                    ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
+            }
 
             // Periksa kegagalan impor
             if ($import->failures()->isNotEmpty()) {
@@ -196,13 +204,16 @@ class AsetTanahController extends Controller
             // Mendapatkan jumlah baris yang berhasil diimpor
             $importedRowCount = $import->getRowCount();
 
+            // Hapus file setelah berhasil mengimpor
+            Storage::delete($file->path());
+
             // Commit transaksi jika sukses
             DB::commit();
             return redirect()->route('tanah.index')
                 ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
 
         } catch (\Exception $e) {
-            // Tangani exception jika terjadi kesalahans
+            // Tangani exception jika terjadi kesalahan
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }

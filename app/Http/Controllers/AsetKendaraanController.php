@@ -195,12 +195,22 @@ class AsetKendaraanController extends Controller
             $import->import($file);
 
             if ($import->failures()->isNotEmpty()) {
+                $import->customValidation($import->failures());
                 DB::rollBack();
-
                 return back()
                     ->withFailures($import->failures())
                     ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
             }
+
+
+            if ($import->failures()->isNotEmpty()) {
+                $import->customValidation($import->failures());
+                DB::rollBack();
+                return back()
+                    ->withFailures($import->failures())
+                    ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
+            }
+
             $importedRowCount = $import->getRowCount();
 
             DB::commit();

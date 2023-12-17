@@ -161,6 +161,19 @@ class AsetKendaraanImport implements ToModel, WithHeadingRow, WithValidation, Sk
         ];
     }
 
+    public function customValidation($failures)
+    {
+        foreach ($failures as $failure) {
+            $attribute = $failure->attribute();
+            $value = $failure->values()[$attribute];
+
+            // Tambahkan validasi khusus di sini jika diperlukan
+            if ($attribute === 'id_status_aset' && empty($value)) {
+                $failure->errors[] = 'Status Aset tidak boleh kosong.';
+            }
+        }
+    }
+
     public function getRowCount()
     {
         return $this->rowCount;

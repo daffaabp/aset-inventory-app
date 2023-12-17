@@ -273,40 +273,43 @@ class AsetInventarisRuanganController extends Controller
     {
         $file = $request->file('file');
 
-        DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
-        $file->store('public/import');
+            $file->store('public/import');
 
-        $import = new AsetInventarisImport;
-        $import->import($file);
+            $import = new AsetInventarisImport;
+            $import->import($file);
 
-        $importedRowCount = $import->getRowCount();
+            if ($import->failures()->isNotEmpty()) {
+                $import->customValidation($import->failures());
+                DB::rollBack();
+                return back()
+                    ->withFailures($import->failures())
+                    ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
+            }
 
-        DB::commit();
+            if ($import->failures()->isNotEmpty()) {
+                DB::rollBack();
 
-        return redirect()->route('inventaris.index')
-            ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
+                return back()
+                    ->withFailures($import->failures())
+                    ->with('error', 'Gagal mengimpor data. Silakan periksa file Anda.');
+            }
+            $importedRowCount = $import->getRowCount();
+
+            DB::commit();
+
+            return redirect()->route('gedung.index')
+                ->with('success', "Data berhasil diimpor. Total aset yang berhasil di import: $importedRowCount");
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            alert()->error('Terjadi kesalahan: ' . $e->getMessage())->persistent(true, false);
+            return back();
+        }
     }
 
-    // public function importExcel(AsetInventarisImportRequest $request)
-    // {
-    //     try {
-    //         $file = $request->file('file');
-
-    //         // Import data dari file Excel
-    //         Excel::import(new AsetInventarisImport, $file);
-
-    //         // Ambil jumlah baris yang berhasil diimpor
-    //         $rowCount = (new AsetInventarisImport)->getRowCount();
-
-    //         return redirect()->route('inventaris.index')
-    //             ->with('success', "Berhasil mengimpor $rowCount baris data inventaris dari file Excel.");
-    //     } catch (\Exception $e) {
-    //         // Tangani kesalahan jika terjadi selama proses impor
-    //         return redirect()->route('inventaris.index')
-    //             ->with('error', 'Terjadi kesalahan saat mengimpor data inventaris. Silakan cek format file Excel atau hubungi administrator.');
-    //     }
-    // }
 
     public function exportExcel()
     {

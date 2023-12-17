@@ -13,7 +13,6 @@
         href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,400;1,500;1,700&display=swap"rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 
     {{-- <link rel="stylesheet" href="{{ URL::to('assets/plugins/datatables/datatables.min.css') }}"> --}}
     <link rel="stylesheet" href="{{ URL::to('assets/plugins/bootstrap/css/bootstrap.min.css') }}">
@@ -26,7 +25,8 @@
     <link rel="stylesheet" href="{{ URL::to('assets/plugins/twitter-bootstrap-wizard/form-wizard.css') }}">
     <link rel="stylesheet" href="{{ URL::to('assets/plugins/c3-chart/c3.min.css') }}">
     <link rel="stylesheet" href="{{ URL::to('assets/css/style.css') }}">
-    <link href="{{ asset('node_modules/select2/dist/css/select2.min.css') }}" rel="stylesheet">
+    {{-- <link rel="stylesheet" href="{{ URL::to('assets/css/select2.min.css') }}"> --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 </head>
 
@@ -72,7 +72,8 @@
     <script src="{{ URL::to('assets/plugins/datatables/datatables.min.js') }}"></script>
     <script src="{{ URL::to('assets/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ URL::to('assets/plugins/toastr/toastr.js') }}"></script>
-    <script src="{{ asset('node_modules/select2/dist/js/select2.full.min.js') }}"></script>
+    {{-- <script src="{{ URL::to('assets/js/select2.full.min.js') }}"></script>
+    <script src="{{ URL::to('assets/js/select2.min.js') }}"></script> --}}
     <script src="{{ URL::to('assets/plugins/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
     <script src="{{ URL::to('assets/plugins/twitter-bootstrap-wizard/prettify.js') }}"></script>
     <script src="{{ URL::to('assets/plugins/twitter-bootstrap-wizard/form-wizard.js') }}"></script>

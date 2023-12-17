@@ -71,9 +71,6 @@ class AsetTanahImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
 
         //lakukan query untuk mengecek data di asset tanah
 
-
-
-
         $tanggalInventarisir = Carbon::createFromFormat('d/m/Y', $row['tanggal_inventarisir'])->format('Y-m-d');
         $tanggalSertifikat = Carbon::createFromFormat('d/m/Y', $row['tanggal_sertifikat'])->format('Y-m-d');
 
@@ -142,6 +139,19 @@ class AsetTanahImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             'harga.min' => 'Harga tidak boleh negatif',
             'keterangan.string' => 'Keterangan harus bertipe string',
         ];
+    }
+
+    public function customValidation($failures)
+    {
+        foreach ($failures as $failure) {
+            $attribute = $failure->attribute();
+            $value = $failure->values()[$attribute];
+
+            // Tambahkan validasi khusus di sini jika diperlukan
+            if ($attribute === 'id_status_aset' && empty($value)) {
+                $failure->errors[] = 'Status Aset tidak boleh kosong.';
+            }
+        }
     }
 
     // Metode untuk mendapatkan jumlah baris yang berhasil diimpor
