@@ -122,6 +122,7 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'verifikasiPeminjamanDetails']);
         Permission::create(['name' => 'processVerification']);
         Permission::create(['name' => 'riwayatPeminjaman']);
+        Permission::create(['name' => 'rejectPeminjaman']);
 
         Role::create(['name' => 'Superadmin']);
         $roleSuperadmin = Role::findByName('Superadmin');
@@ -280,6 +281,7 @@ class DatabaseSeeder extends Seeder
         $rolePetugas->givePermissionTo('verifikasiPeminjamanDetails');
         $rolePetugas->givePermissionTo('processVerification');
         $rolePetugas->givePermissionTo('riwayatPeminjaman');
+        $rolePetugas->givePermissionTo('rejectPeminjaman');
 
         $petugas = User::create([
             'name' => 'Petugas',

@@ -25,6 +25,17 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
+
+                    @if (session('errors'))
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach (session('errors') as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('processVerification', $peminjaman->id_peminjaman) }}"
                         id="verificationForm">
                         @csrf
@@ -408,8 +419,7 @@
                 if (result.isConfirmed) {
                     Swal.fire({
                         title: 'Peminjaman Ditolak',
-                        text: 'Peminjaman telah ditolak dengan alasan: ' + result.value
-                            .alasan_ditolak,
+                        text: 'Peminjaman telah ditolak',
                         icon: 'error',
                     }).then(() => {
                         // Redirect ke halaman riwayat peminjaman setelah alert ditutup

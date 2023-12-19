@@ -63,7 +63,7 @@
                                                     <span class="badge badge-warning">Dikirim</span>
                                                 @endif
                                             </td>
-                                            <td>{{ \Carbon\Carbon::parse($row->tgl_pengajuan)->isoFormat('ll LT') }}
+                                            <td>{{ \Carbon\Carbon::parse($row->tgl_pengajuan)->isoFormat('lll') }}
                                             </td>
                                             <td>{{ \Carbon\Carbon::parse($row->tgl_rencana_pinjam)->isoFormat('LL') }}
                                             </td>

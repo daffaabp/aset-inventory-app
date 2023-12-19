@@ -34,6 +34,7 @@
                                         <th>Tanggal Pengajuan</th>
                                         <th>Tanggal Rencana Pinjam</th>
                                         <th>Tanggal Rencana Kembali</th>
+                                        <th>Alasan Ditolak</th>
                                         <th>Kegunaan</th>
                                     </tr>
                                 </thead>
@@ -59,9 +60,15 @@
                                                     <span class="badge badge-danger">Ditolak</span>
                                                 @endif
                                             </td>
-                                            <td>{{ $row->tgl_pengajuan }}</td>
-                                            <td>{{ $row->tgl_rencana_pinjam }}</td>
-                                            <td>{{ $row->tgl_rencana_kembali }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($row->tgl_pengajuan)->isoFormat('lll') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($row->tgl_rencana_pinjam)->isoFormat('LL') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($row->tgl_rencana_kembali)->isoFormat('LL') }}</td>
+                                            @if ($row->status_verifikasi === 'Ditolak')
+                                                <td>{{ $row->alasan_ditolak }}</td>
+                                            @else
+                                                <td>-</td>
+                                            @endif
+
                                             <td>{{ $row->kegunaan }}</td>
                                         </tr>
                                     @endforeach

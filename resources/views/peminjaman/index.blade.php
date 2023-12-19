@@ -253,11 +253,11 @@
                     <div class="modal-body">
                         @csrf
                         <input type="hidden" name="jenis" id="asetFormModel-jenis">
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="searchInput">Cari Aset</label>
                             <input type="text" class="form-control" id="searchInput"
                                 placeholder="Masukkan nama aset...">
-                        </div>
+                        </div> --}}
                         <div class="table-responsive" id="asetListModal">
 
                         </div>
@@ -543,37 +543,6 @@
 
             });
 
-            // Fungsi untuk menangani setiap perubahan pada input pencarian
-            $('#searchInput').on('input', function() {
-                // Mendapatkan nilai input pencarian
-                var searchValue = $(this).val();
-
-                // Mendapatkan jenis aset dari modal atau sumber data
-                var jenisAset = $('#asetFormModel-jenis').val();
-
-                // Memanggil fungsi pencarian Ajax dengan nilai pencarian
-                searchAset(jenisAset, searchValue);
-            });
-
-            // Fungsi untuk melakukan pencarian menggunakan Ajax
-            function searchAset(jenisAset, keyword) {
-                // Mengirim permintaan Ajax
-                $.ajax({
-                    type: 'GET',
-                    url: '/search-aset', // Ganti dengan URL atau rute yang sesuai di aplikasi Anda
-                    data: {
-                        jenis: jenisAset,
-                        keyword: keyword
-                    },
-                    success: function(data) {
-                        // Memperbarui isi tabel atau daftar dengan hasil pencarian
-                        $('#asetListModal').html(data);
-                    },
-                    error: function(error) {
-                        console.error('Error during search:', error);
-                    }
-                });
-            }
         });
 
         @if (Session::has('error'))

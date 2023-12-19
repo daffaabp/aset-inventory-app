@@ -306,12 +306,11 @@
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Tgl Pengajuan</th>
-                                                    <th>Tgl Rencana Pinjam</th>
-                                                    <th>Tgl Rencana Kembali</th>
                                                     <th>Kegunaan</th>
                                                     <th>Status Verifikasi</th>
                                                     <th>Tgl Ditolak</th>
                                                     <th>Petugas</th>
+                                                    <th>Alasan</th>
                                                     <th>Lihat</th>
                                                 </tr>
                                             </thead>
@@ -320,11 +319,6 @@
                                                     <tr>
                                                         <td>{{ $index + 1 }}</td>
                                                         <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_pengajuan)->isoFormat('llll') }}
-                                                        </td>
-                                                        <td>
-                                                            {{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_pinjam)->isoFormat('dddd, D MMMM Y') }}
-                                                        </td>
-                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_kembali)->isoFormat('dddd, D MMMM Y') }}
                                                         </td>
                                                         <td>{{ $peminjaman->kegunaan }}
                                                         </td>
@@ -336,6 +330,7 @@
                                                         <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_ditolak)->isoFormat('llll') }}
                                                         </td>
                                                         <td>{{ $peminjaman->usersPetugas->name }}</td>
+                                                        <td>{{ $peminjaman->alasan_ditolak }}</td>
                                                         <td>
                                                             <form
                                                                 action="{{ route('verifikasiPeminjamanDetails', $peminjaman->id_peminjaman) }}">

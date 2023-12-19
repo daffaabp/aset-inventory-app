@@ -162,6 +162,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/verifikasiPeminjaman', [PeminjamanController::class, 'verifikasiPeminjaman'])->name('verifikasiPeminjaman')->middleware('permission:verifikasiPeminjaman');
     Route::get('/verifikasiPeminjaman/{id}/details', [PeminjamanController::class, 'verifikasiPeminjamanDetails'])->name('verifikasiPeminjamanDetails')->middleware('permission:verifikasiPeminjamanDetails');
     Route::post('/verifikasi-peminjaman/{id_peminjaman}', [PeminjamanController::class, 'processVerification'])->name('processVerification')->middleware('permission:processVerification');
+    Route::post('/accept-peminjaman/{id_peminjaman}', [PeminjamanController::class, 'acceptPeminjaman'])->name('acceptPeminjaman');
     Route::get('/riwayatPeminjaman', [PeminjamanController::class, 'riwayatPeminjaman'])->name('riwayatPeminjaman')->middleware('permission:riwayatPeminjaman');
     Route::get('/riwayatPeminjamanSekcab', [PeminjamanController::class, 'riwayatPeminjamanSekcab'])->name('riwayatPeminjamanSekcab')->middleware('permission:riwayatPeminjamanSekcab');
     Route::post('/reject-peminjaman/{id}', [PeminjamanController::class, 'rejectPeminjaman'])->name('rejectPeminjaman')->middleware('permission:rejectPeminjaman');
