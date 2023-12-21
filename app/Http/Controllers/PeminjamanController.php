@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use id;
-use Exception;
-use App\Models\AsetTanah;
-use App\Models\AsetGedung;
-use App\Models\Peminjaman;
-use App\Models\StatusAset;
-use Illuminate\Http\Request;
-use App\Models\AsetKendaraan;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\AsetInventarisRuangan;
-use App\Models\RiwayatPeminjamanTanah;
-use App\Models\RiwayatPeminjamanGedung;
-use App\Models\RiwayatPeminjamanKendaraan;
 use App\Http\Requests\StorePeminjamanRequest;
-use Illuminate\Validation\ValidationException;
+use App\Models\AsetGedung;
+use App\Models\AsetInventarisRuangan;
+use App\Models\AsetKendaraan;
+use App\Models\AsetTanah;
+use App\Models\Peminjaman;
+use App\Models\RiwayatPeminjamanGedung;
 use App\Models\RiwayatPeminjamanInventarisRuangan;
+use App\Models\RiwayatPeminjamanKendaraan;
+use App\Models\RiwayatPeminjamanTanah;
+use App\Models\StatusAset;
+use id;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PeminjamanController extends Controller
 {
@@ -30,11 +28,9 @@ class PeminjamanController extends Controller
     public function store(StorePeminjamanRequest $request)
     {
         $validated = $request->validated();
-
         // echo '<pre>';
         // print_r($request->all());
         // die;
-
         $peminjaman = new Peminjaman;
         $peminjaman->id_peminjam = auth()->user()->id;
         $peminjaman->kegunaan = $validated['kegunaan'];
@@ -204,7 +200,7 @@ class PeminjamanController extends Controller
     public function verifikasiPeminjaman()
     {
         $peminjaman = Peminjaman::with('usersPeminjam')
-        ->whereIn('status_verifikasi', ['Dikirim', 'ACC'])->get();
+            ->whereIn('status_verifikasi', ['Dikirim', 'ACC'])->get();
         return view('peminjaman.verifikasiPeminjaman', compact('peminjaman'));
     }
 
@@ -254,7 +250,6 @@ class PeminjamanController extends Controller
 
     public function processVerification(Request $request, $id_peminjaman)
     {
-        // Mendapatkan data peminjaman
         $peminjaman = Peminjaman::find($id_peminjaman);
         $errors = [];
         if ($request->has('accept')) {
@@ -375,7 +370,6 @@ class PeminjamanController extends Controller
                 return redirect()->route('verifikasiPeminjaman')->with('success', 'Peminjaman Telah di ACC');
             } catch (\Exception $e) {
                 DB::rollBack();
-                // $errors[] = $e->getMessage();
                 return redirect()->back()->with('errors', $errors);
             }
 
@@ -543,7 +537,6 @@ class PeminjamanController extends Controller
 
             return redirect()->route('riwayatPeminjaman')->with('success', 'Peminjaman Telah Selesai');
         }
-
     }
 
     public function rejectPeminjaman(Request $request, $id_peminjaman)
@@ -612,12 +605,11 @@ class PeminjamanController extends Controller
     public function riwayatPeminjamanSekcab()
     {
         $user = auth()->user();
-
         if ($user->hasAnyRole(['Sekretaris Kwarcab'])) {
             $userID = $user->id;
             $peminjamanSelesai = Peminjaman::where('id_peminjam', $userID)
-            ->whereIn('status_verifikasi', ['Selesai', 'Ditolak'])
-            ->get();
+                ->whereIn('status_verifikasi', ['Selesai', 'Ditolak'])
+                ->get();
 
             return view('peminjaman.riwayatPeminjamanSekcab', compact('peminjamanSelesai'));
         } else {
@@ -627,9 +619,7 @@ class PeminjamanController extends Controller
 
     public function addAset(Request $request)
     {
-        // print_r($request->all());
         $jenis_aset = $request->post('jenis');
-
         if ($jenis_aset == 'tanah') {
             $aset = DB::table('aset_tanah')
                 ->leftjoin('status_aset', 'status_aset.id_status_aset', '=', 'aset_tanah.id_status_aset')
@@ -656,23 +646,29 @@ class PeminjamanController extends Controller
     public function getAset(Request $request)
     {
         $jenis_aset = $request->get('jenis');
+        $kode_asets = $request->get('kode_asets');
 
         if ($jenis_aset == 'tanah') {
-            $aset_table = $this->asetTanah();
+            $aset_table = $this->asetTanah($kode_asets);
         } elseif ($jenis_aset == 'gedung') {
-            $aset_table = $this->asetGedung();
+            $aset_table = $this->asetGedung($kode_asets);
         } elseif ($jenis_aset == 'kendaraan') {
-            $aset_table = $this->asetKendaraan();
+            $aset_table = $this->asetKendaraan($kode_asets);
         } elseif ($jenis_aset == 'inventaris_ruangan') {
-            $aset_table = $this->asetInventarisRuangan();
+            $aset_table = $this->asetInventarisRuangan($kode_asets);
         }
         return $aset_table;
     }
 
-    private function asetTanah()
+    private function asetTanah($kode_asets)
     {
+        $filter = "";
+        if ($kode_asets != null) {
+            $filter = ' AND kode_aset NOT IN (' . $kode_asets . ')';
+        }
+
         $aset = DB::select('SELECT id_aset_tanah, kode_aset, aset_tanah.nama, letak_tanah, aset_tanah.id_status_aset, status_aset.status_aset FROM aset_tanah
-        LEFT JOIN status_aset ON status_aset.id_status_aset = aset_tanah.id_status_aset  WHERE status_aset.status_aset = "Tersedia"');
+        LEFT JOIN status_aset ON status_aset.id_status_aset = aset_tanah.id_status_aset WHERE status_aset.status_aset = "Tersedia" ' . $filter);
 
         $aset_table = '<table class="table mb-0 table-bordered">';
         $aset_table .= '<tr>';
@@ -699,10 +695,15 @@ class PeminjamanController extends Controller
         return $aset_table;
     }
 
-    private function asetGedung()
+    private function asetGedung($kode_asets)
     {
+        $filter = "";
+        if ($kode_asets != null) {
+            $filter = ' AND kode_aset NOT IN (' . $kode_asets . ')';
+        }
+
         $aset = DB::select('SELECT id_aset_gedung, kode_aset, aset_gedung.nama, lokasi, aset_gedung.id_status_aset, status_aset.status_aset FROM aset_gedung
-        LEFT JOIN status_aset ON status_aset.id_status_aset = aset_gedung.id_status_aset WHERE status_aset.status_aset = "Tersedia"');
+        LEFT JOIN status_aset ON status_aset.id_status_aset = aset_gedung.id_status_aset WHERE status_aset.status_aset = "Tersedia"' . $filter);
 
         $aset_table = '<table class="table mb-0 table-bordered">';
         $aset_table .= '<tr>';
@@ -729,10 +730,14 @@ class PeminjamanController extends Controller
         return $aset_table;
     }
 
-    private function asetKendaraan()
+    private function asetKendaraan($kode_asets)
     {
-        $aset = DB::select('SELECT id_aset_kendaraan, kode_aset, aset_kendaraan.nama, merk, warna, no_polisi, aset_kendaraan.id_status_aset, status_aset.status_aset FROM aset_kendaraan
-        LEFT JOIN status_aset ON status_aset.id_status_aset = aset_kendaraan.id_status_aset WHERE status_aset.status_aset = "Tersedia"');
+        $filter = "";
+        if ($kode_asets != null) {
+            $filter = ' AND kode_aset NOT IN (' . $kode_asets . ')';
+        }
+
+        $aset = DB::select('SELECT id_aset_kendaraan, kode_aset, aset_kendaraan.nama, merk, warna, no_polisi, aset_kendaraan.id_status_aset, status_aset.status_aset FROM aset_kendaraan LEFT JOIN status_aset ON status_aset.id_status_aset = aset_kendaraan.id_status_aset WHERE status_aset.status_aset = "Tersedia"' . $filter);
 
         $aset_table = '<table class="table mb-0 table-bordered">';
         $aset_table .= '<tr>';
@@ -762,9 +767,14 @@ class PeminjamanController extends Controller
         return $aset_table;
     }
 
-    private function asetInventarisRuangan()
+    private function asetInventarisRuangan($kode_asets)
     {
-        $aset = DB::select('SELECT id_aset_inventaris_ruangan, kode_aset, aset_inventaris_ruangan.nama, merk, bahan, jumlah, aset_inventaris_ruangan.id_status_aset, status_aset.status_aset FROM aset_inventaris_ruangan LEFT JOIN status_aset ON status_aset.id_status_aset = aset_inventaris_ruangan.id_status_aset WHERE status_aset.status_aset = "Tersedia";');
+        $filter = "";
+        if ($kode_asets != null) {
+            $filter = ' AND kode_aset NOT IN (' . $kode_asets . ')';
+        }
+
+        $aset = DB::select('SELECT id_aset_inventaris_ruangan, kode_aset, aset_inventaris_ruangan.nama, merk, bahan, jumlah, aset_inventaris_ruangan.id_status_aset, status_aset.status_aset FROM aset_inventaris_ruangan LEFT JOIN status_aset ON status_aset.id_status_aset = aset_inventaris_ruangan.id_status_aset WHERE status_aset.status_aset = "Tersedia"' . $filter);
 
         $aset_table = '<table class="table mb-0 table-bordered">';
         $aset_table .= '<tr>';

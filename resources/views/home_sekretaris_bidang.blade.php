@@ -5,6 +5,18 @@
             max-height: 500px;
             overflow-y: auto;
         }
+
+        .sticky-header-footer {
+            position: sticky;
+            top: 0;
+            /* Untuk header, tetap di bagian atas */
+            bottom: 0;
+            /* Untuk footer, tetap di bagian bawah */
+            background-color: white;
+            /* Sesuaikan warna latar belakang dengan kebutuhan Anda */
+            z-index: 1000;
+            /* Pastikan lebih tinggi dari kontennya agar tumpang tindih saat di-scroll */
+        }
     </style>
 @endpush
 @section('content')
@@ -29,7 +41,7 @@
 
                 @if (session('notifikasi'))
                     <div class="alert alert-danger bg-danger">
-                        <ul>6
+                        <ul>
                             @foreach (session('notifikasi') as $notif)
                                 <li>{{ $notif['pesan'] }}</li>
                             @endforeach
@@ -125,7 +137,7 @@
                                     </table>
                                 @endif
 
-                                <div class="col-lg-12 text-end">
+                                <div class="col-lg-12 text-end sticky-header-footer">
                                     <ul class="pager wizard twitter-bs-wizard-pager-link">
                                         <li class="next">
                                             <a href="javascript: void(0);" class="btn btn-primary"
@@ -193,7 +205,7 @@
                                         </table>
                                     @endif
 
-                                    <div class="row">
+                                    <div class="row sticky-header-footer">
                                         <div class="col-lg-6">
                                             <ul class="pager wizard twitter-bs-wizard-pager-link">
                                                 <li class="previous disabled">
@@ -226,7 +238,7 @@
                                         <h6 style="text-align: center;">Belum Ada Peminjaman Yang Selesai</h6>
                                     @else
                                         <table class="table">
-                                            <thead>
+                                            <thead class="sticky-header-footer">
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Tgl Pengajuan</th>
@@ -270,7 +282,7 @@
                                         </table>
                                     @endif
 
-                                    <div class="row">
+                                    <div class="row sticky-header-footer">
                                         <div class="col-lg-6">
                                             <ul class="pager wizard twitter-bs-wizard-pager-link">
                                                 <li class="previous disabled">
@@ -345,7 +357,7 @@
                                         </table>
                                     @endif
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 sticky-header-footer">
                                         <ul class="pager wizard twitter-bs-wizard-pager-link">
                                             <li class="previous disabled">
                                                 <a href="javascript: void(0);" class="btn btn-primary"
@@ -357,7 +369,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
                     </div>

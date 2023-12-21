@@ -37,7 +37,7 @@
                     @endif
 
                     <form method="POST" action="{{ route('processVerification', $peminjaman->id_peminjaman) }}"
-                        id="verificationForm">
+                        id="finishForm">
                         @csrf
 
                         @if (auth()->user()->hasRole('Petugas'))

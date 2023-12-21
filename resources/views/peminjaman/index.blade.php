@@ -4,26 +4,20 @@
     <style>
         .modal-content {
             max-height: 80vh;
-            /* Atur tinggi maksimal modal */
             overflow-y: auto;
-            /* Gunakan overflow-y untuk menambahkan scroll jika konten terlalu tinggi */
         }
 
         .sticky-header-footer {
             position: sticky;
             top: 0;
-            /* Untuk header, tetap di bagian atas */
+
             bottom: 0;
-            /* Untuk footer, tetap di bagian bawah */
             background-color: white;
-            /* Sesuaikan warna latar belakang dengan kebutuhan Anda */
             z-index: 1000;
-            /* Pastikan lebih tinggi dari kontennya agar tumpang tindih saat di-scroll */
         }
 
         .table-container {
             max-height: 340px;
-            /* Sesuaikan dengan tinggi maksimal yang Anda inginkan */
             overflow-y: auto;
         }
     </style>
@@ -238,8 +232,6 @@
         </div>
     </div>
 
-
-
     <div class="modal fade" id="bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -253,11 +245,6 @@
                     <div class="modal-body">
                         @csrf
                         <input type="hidden" name="jenis" id="asetFormModel-jenis">
-                        {{-- <div class="form-group">
-                            <label for="searchInput">Cari Aset</label>
-                            <input type="text" class="form-control" id="searchInput"
-                                placeholder="Masukkan nama aset...">
-                        </div> --}}
                         <div class="table-responsive" id="asetListModal">
 
                         </div>
@@ -276,59 +263,54 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            // Membuat objek untuk melacak aset yang telah dipilih
             let asetTerpilih = {};
-            // Fungsi untuk membersihkan atau mereset data modal
+
             function clearModalData() {
                 asetTerpilih = {};
             }
 
-            // Tambahkan event listener untuk baris aset di modal
             $(document).on('click', '#asetListModal tr', function(event) {
-                // Cek apakah yang diklik adalah checkbox
                 if (event.target.type !== 'checkbox') {
-                    // Temukan checkbox di dalam baris yang diklik
                     let checkbox = $(this).find('input[type="checkbox"]');
 
-                    // Ubah status ceklist pada checkbox
                     checkbox.prop('checked', !checkbox.prop('checked'));
                 }
             });
 
             $(".btn-modal-load").on('click', function() {
+
                 let e = $(this);
+                let jenis = e.data('aset');
 
-                // Tambahkan pengecekan sebelum mengambil data dari server
-                if (asetTerpilih.hasOwnProperty(e.data('aset'))) {
-                    // Jika sudah ada data untuk jenis aset ini, tidak perlu mengambil dari server
-                    return;
-                }
+                let selectedAset = '';
 
-                // Panggil fungsi pembersihan sebelum membuka modal baru
+                let koma = "";
+                $('.selected-aset-' + jenis).each(function() {
+                    selectedAset += `${koma}"${$(this).text()}"`;
+                    koma = ",";
+                });
+
                 clearModalData();
 
                 $.ajax({
                     url: "{{ route('getAset') }}",
                     type: "GET",
                     data: {
-                        '_token': '{{ csrf_token() }}', // Tambahkan token CSRF di sini
-                        'jenis': e.data('aset')
+                        '_token': '{{ csrf_token() }}',
+                        'jenis': jenis,
+                        'kode_asets': selectedAset
                     },
                     success: function(data) {
-                        $("#asetFormModel-jenis").val(e.data('aset'));
+                        $("#asetFormModel-jenis").val(jenis);
 
-                        // Ganti teks judul modal dengan data-title
                         let title = e.data('title') || 'Default Modal Title';
                         $('#modalTitle').text(title);
 
-                        // Tambahkan class dan CSS ke elemen judul modal
                         let modalTitle = $('#scrollable-modal .modal-title');
                         modalTitle.removeClass().addClass('modal-title ' + e.data('class'));
 
-                        // Hapus semua aset yang telah dipilih sebelumnya dari modal
                         $('#asetListModal').html(data);
 
-                        // Sembunyikan atau hapus aset yang telah dipilih
                         for (let jenisAset in asetTerpilih) {
                             for (let asetId in asetTerpilih[jenisAset]) {
 
@@ -340,8 +322,6 @@
                 });
             });
 
-
-            // Fungsi untuk menangani perubahan ceklist
             function handleCeklist(row) {
                 let jenis = $("#asetFormModel-jenis").val();
                 let asetId = row.find('input[type="checkbox"]').val();
@@ -357,7 +337,6 @@
                 }
             }
 
-            // Panggil fungsi pembersihan saat tab berubah
             $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
                 clearModalData();
             });
@@ -365,7 +344,12 @@
 
             $("#asetFormModel").on('submit', function(e) {
                 e.preventDefault();
+                let tambahButton = $("#asetBtnModal");
+
+                tambahButton.prop('disabled', true);
+                tambahButton.html('Jangan Terlalu Rajin Klik ...');
                 let formData = $(this).serializeArray();
+
                 $.ajax({
                     url: "{{ route('addAset') }}",
                     type: "POST",
@@ -385,14 +369,13 @@
                                 if (!asetTerpilih['tanah'].hasOwnProperty(asetId)) {
                                     asetTerpilih['tanah'][asetId] = true;
 
-                                    // Hapus baris tabel
                                     $(`#asetListModal input[value="${asetId}"]`).closest(
                                             'tr')
                                         .remove();
 
                                     let tableRow = `
                                     <tr>
-                                        <td>${data[i].kode_aset}</td>
+                                        <td class="selected-aset-${jenis}">${data[i].kode_aset}</td>
                                         <td>${data[i].nama}</td>
                                         <td>${data[i].letak_tanah}</td>
                                         <td>${data[i].status_aset}</td>
@@ -406,13 +389,11 @@
                                         `;
                                     $('#asetTanahTerpilih').append(tableRow);
 
-                                    // Tambahkan data ke objek asetTerpilih
                                     if (!asetTerpilih.hasOwnProperty(jenis)) {
                                         asetTerpilih[jenis] = {};
                                     }
                                     asetTerpilih[jenis][data[i].id] = data[i].id;
 
-                                    // Hapus aset yang telah dipilih dari modal
                                     $(`#asetListModal input[value="${asetId}"]`).closest(
                                         'tr').remove()
                                 }
@@ -426,7 +407,7 @@
                                     asetTerpilih['gedung'][asetId] = true;
                                     let tableRow = `
                                     <tr>
-                                        <td>${data[i].kode_aset}</td>
+                                        <td class="selected-aset-${jenis}">${data[i].kode_aset}</td>
                                         <td>${data[i].nama}</td>
                                         <td>${data[i].lokasi}</td>
                                         <td>${data[i].status_aset}</td>
@@ -440,17 +421,14 @@
                                         `;
                                     $('#asetGedungTerpilih').append(tableRow);
 
-                                    // Tambahkan data ke objek asetTerpilih
                                     if (!asetTerpilih.hasOwnProperty(jenis)) {
                                         asetTerpilih[jenis] = {};
                                     }
                                     asetTerpilih[jenis][data[i].id] = data[i].id;
 
-                                    // Hapus aset yang telah dipilih dari modal
                                     $(`#asetListModal input[value="${asetId}"]`).closest(
                                         'tr').remove()
                                 }
-
 
                             } else if (jenis === 'kendaraan') {
                                 const asetId = data[i].id_aset_kendaraan;
@@ -461,7 +439,7 @@
                                     asetTerpilih['kendaraan'][asetId] = true;
                                     let tableRow = `
                                     <tr>
-                                        <td>${data[i].kode_aset}</td>
+                                        <td class="selected-aset-${jenis}">${data[i].kode_aset}</td>
                                         <td>${data[i].nama}</td>
                                         <td>${data[i].merk}</td>
                                         <td>${data[i].warna}</td>
@@ -477,22 +455,18 @@
                                         `;
                                     $('#asetKendaraanTerpilih').append(tableRow);
 
-                                    // Tambahkan data ke objek asetTerpilih
                                     if (!asetTerpilih.hasOwnProperty(jenis)) {
                                         asetTerpilih[jenis] = {};
                                     }
                                     asetTerpilih[jenis][data[i].id] = data[i].id;
 
-                                    // Hapus aset yang telah dipilih dari modal
                                     $(`#asetListModal input[value="${asetId}"]`).closest(
                                         'tr').remove()
                                 }
 
-
                             } else if (jenis === 'inventaris_ruangan') {
                                 const asetId = data[i].id_aset_inventaris_ruangan;
 
-                                //  cek jika aset terpilih dari tabel inventaris ruangan
                                 if (!asetTerpilih.hasOwnProperty('inventaris_ruangan')) {
                                     asetTerpilih['inventaris_ruangan'] = true;
                                 }
@@ -501,7 +475,7 @@
                                     asetTerpilih['inventaris_ruangan'][asetId] = true;
                                     let tableRow = `
                                     <tr>
-                                        <td>${data[i].kode_aset}</td>
+                                        <td class="selected-aset-${jenis}">${data[i].kode_aset}</td>
                                         <td>${data[i].nama}</td>
                                         <td>${data[i].merk}</td>
                                         <td>${data[i].bahan}</td>
@@ -517,32 +491,38 @@
                                         `;
                                     $('#asetInventarisRuanganTerpilih').append(tableRow);
 
-                                    // Tambahkan data ke objek asetTerpilih
                                     if (!asetTerpilih.hasOwnProperty(jenis)) {
                                         asetTerpilih[jenis] = {};
                                     }
                                     asetTerpilih[jenis][data[i].id] = data[i].id;
 
-                                    // Hapus aset yang telah dipilih dari modal
                                     $(`#asetListModal input[value="${asetId}"]`).closest(
                                         'tr').remove();
                                 }
                             }
                         }
+
+                        tambahButton.prop('disabled', false);
+                        tambahButton.html('Tambah');
                     },
+                    error: function(err) {
+                        console.error('Error:', err);
+
+                        tambahButton.prop('disabled', false);
+                        tambahButton.html('Tambah');
+                    }
                 });
             });
 
-            // Penanganan klik tombol hapus
             $(document).on('click', '.btn-hapus-aset', function() {
                 let jenisAset = $(this).data('jenis');
                 let asetId = $(this).data('id');
 
-                // Hapus baris dari tabel terpilih
                 $(`#asetTanahTerpilih input[value="${asetId}"]`).closest('tr').remove();
-
+                $(`#asetGedungTerpilih input[value="${asetId}"]`).closest('tr').remove();
+                $(`#asetKendaraanTerpilih input[value="${asetId}"]`).closest('tr').remove();
+                $(`#asetInventarisRuanganTerpilih input[value="${asetId}"]`).closest('tr').remove();
             });
-
         });
 
         @if (Session::has('error'))

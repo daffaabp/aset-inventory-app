@@ -123,7 +123,6 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::find($id);
-
         if ($user->hasRole('Superadmin')) {
             // Jika user adalah superadmin
             // Lalu, periksa apakah user yang sedang dihapus adalah user yang sedang masuk ke dalam aplikasi
@@ -136,5 +135,4 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('user.index')->with('success', 'User deleted successfully');
     }
-
 }

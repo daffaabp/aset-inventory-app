@@ -55,37 +55,37 @@
                                         <td>
 
                                             @if (!empty($user->getRoleNames()))
-                                                @foreach ($user->getRoleNames() as $v)
-                                                    {{-- <label class="badge badge-success">{{ $v }}</label> --}}
-                                                    @if ($v == 'Superadmin')
+                                                @foreach ($user->getRoleNames() as $row)
+                                                    @if ($row == 'Superadmin')
                                                         <div class="badge" style="background-color: red;">Superadmin</div>
-                                                    @elseif($v == 'Petugas')
+                                                    @elseif($row == 'Petugas')
                                                         <div class="badge" style="background-color: green;">Petugas</div>
-                                                    @elseif($v == 'Sekretaris Kwarcab')
+                                                    @elseif($row == 'Sekretaris Kwarcab')
                                                         <div class="badge" style="background-color: blue;">Sekretaris
                                                             Kwarcab</div>
-                                                    @elseif($v == 'Sekretaris Bidang')
+                                                    @elseif($row == 'Sekretaris Bidang')
                                                         <div class="badge" style="background-color: orange;">Sekretaris
                                                             Bidang</div>
                                                     @endif
                                                 @endforeach
                                             @endif
-
                                         </td>
                                         <td>
                                             <form action="{{ route('user.destroy', $user->id) }}" method="POST">
 
                                                 @can('user.edit')
-                                                    <a class="btn btn-primary me-2" style="color: white;"
+                                                    <a class="btn btn-warning me-2" style="color: white;"
                                                         href="{{ route('user.edit', $user->id) }}">Edit</a>
                                                 @endcan
 
                                                 @can('user.destroy')
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                    <button type="submit" class="btn btn-danger me-2">Hapus</button>
                                                 @endcan
 
+                                                <a class="btn btn-success me-2" style="color: white;" href="">Login
+                                                    As</a>
                                             </form>
                                         </td>
                                     </tr>

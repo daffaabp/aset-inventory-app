@@ -128,7 +128,7 @@
                     </li>
                 @endcan
 
-                @can(['riwayatPeminjamanSekcab'])
+                @can('riwayatPeminjamanSekcab')
                     <li class="{{ Route::current()->getName() == 'riwayatPeminjamanSekcab' ? 'active' : '' }}">
                         <a href="{{ route('riwayatPeminjamanSekcab') }}"><i class="fa fa-window-restore"></i> <span
                                 style="font-size: 14.5px;">

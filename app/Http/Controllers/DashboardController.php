@@ -56,10 +56,8 @@ class DashboardController extends Controller
         if ($user->hasRole('Superadmin')) {
             $totalAset = $this->countTotalAset();
 
-            // Get the selected year from the request, default to the current year
             $selectedYear = $request->input('year', date('Y'));
 
-           // Get completed peminjaman data by month for the selected year
             $completedPeminjaman = Peminjaman::where('status_verifikasi', 'Selesai')
             ->whereYear('tgl_pengajuan', $selectedYear)
             ->select(DB::raw('DATE_FORMAT(tgl_pengajuan, "%Y-%m") as month'), DB::raw('count(*) as total'))
@@ -69,7 +67,6 @@ class DashboardController extends Controller
 
             $chartData = $this->prepareChartData($completedPeminjaman, $selectedYear);
 
-            // Mendapatkan data untuk grafik donat
             $dataAsetTanah = AsetTanah::select('status_aset.status_aset', DB::raw('COUNT(*) as total'))
                 ->join('status_aset', 'aset_tanah.id_status_aset', '=', 'status_aset.id_status_aset')
                 ->groupBy('status_aset.status_aset')
@@ -106,10 +103,8 @@ class DashboardController extends Controller
         if ($user->hasRole('Petugas')) {
             $totalAset = $this->countTotalAset();
 
-            // Get the selected year from the request, default to the current year
             $selectedYear = $request->input('year', date('Y'));
 
-           // Get completed peminjaman data by month for the selected year
             $completedPeminjaman = Peminjaman::where('status_verifikasi', 'Selesai')
             ->whereYear('tgl_pengajuan', $selectedYear)
             ->select(DB::raw('DATE_FORMAT(tgl_pengajuan, "%Y-%m") as month'), DB::raw('count(*) as total'))
@@ -119,7 +114,6 @@ class DashboardController extends Controller
 
             $chartData = $this->prepareChartData($completedPeminjaman, $selectedYear);
 
-            // Mendapatkan data untuk grafik donat
             $dataAsetTanah = AsetTanah::select('status_aset.status_aset', DB::raw('COUNT(*) as total'))
                 ->join('status_aset', 'aset_tanah.id_status_aset', '=', 'status_aset.id_status_aset')
                 ->groupBy('status_aset.status_aset')
@@ -154,14 +148,12 @@ class DashboardController extends Controller
         }
 
         if ($user->hasRole('Sekretaris Bidang')) {
-            // Mengambil data peminjaman yang memiliki status_verifikasi 'Dikirim' dan id_peminjam sesuai dengan user yang login
             $peminjamanDikirim = Peminjaman::where('id_peminjam', $user->id)
                 ->where('status_verifikasi', 'Dikirim')
                 ->where('tgl_rencana_kembali', '>', now())
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            // Mengambil data peminjaman yang memiliki status_verifikasi 'ACC' dan id_peminjam sesuai dengan user yang login
             $peminjamanACC = Peminjaman::with('usersPetugas')
                 ->where('id_peminjam', $user->id)
                 ->where('tgl_rencana_kembali', '>', now())
@@ -169,14 +161,12 @@ class DashboardController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            // Mengambil data peminjaman yang memiliki status_verifikasi 'Selesai' dan id_peminjam sesuai dengan user yang login
             $peminjamanSelesai = Peminjaman::where('id_peminjam', $user->id)
                 ->where('tgl_rencana_kembali', '>', now())
                 ->where('status_verifikasi', 'Selesai')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            // Mengambil data peminjaman yang memiliki status_verifikasi 'Ditolak' dan id_peminjam sesuai dengan user yang login
             $peminjamanDitolak = Peminjaman::where('id_peminjam', $user->id)
                  ->where('tgl_rencana_kembali', '>', now())
                 ->where('status_verifikasi', 'Ditolak')
@@ -185,7 +175,6 @@ class DashboardController extends Controller
 
             $activeTab = 'diproses'; // Tab default
 
-            // Notifikasi peminjaman yang jatuh tempo hari ini yang sudah di-ACC
             $peminjamanJatuhTempo = Peminjaman::where('id_peminjam', $user->id)
                 ->where('status_verifikasi', 'ACC')
                 ->whereDate('tgl_rencana_kembali', now()->toDateString())
@@ -217,54 +206,49 @@ class DashboardController extends Controller
         }
 
         if ($user->hasRole('Sekretaris Kwarcab')) {
-            // Mengambil data peminjaman yang memiliki status_verifikasi 'Dikirim' dan id_peminjam sesuai dengan user yang login
             $peminjamanDikirim = Peminjaman::where('id_peminjam', $user->id)
-            ->where('status_verifikasi', 'Dikirim')
-            ->where('tgl_rencana_kembali', '>', now())
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-            // Mengambil data peminjaman yang memiliki status_verifikasi 'ACC' dan id_peminjam sesuai dengan user yang login
-            $peminjamanACC = Peminjaman::with('usersPetugas')
-                ->where('id_peminjam', $user->id)
+                ->where('status_verifikasi', 'Dikirim')
                 ->where('tgl_rencana_kembali', '>', now())
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $peminjamanACC = Peminjaman::with('id_peminjam', $user->id)
+                ->where('id_peminjam', $user->id)
                 ->where('status_verifikasi', 'ACC')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            // Mengambil data peminjaman yang memiliki status_verifikasi 'Selesai' dan id_peminjam sesuai dengan user yang login
             $peminjamanSelesai = Peminjaman::where('id_peminjam', $user->id)
                 ->where('tgl_rencana_kembali', '>', now())
                 ->where('status_verifikasi', 'Selesai')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            // Mengambil data peminjaman yang memiliki status_verifikasi 'Ditolak' dan id_peminjam sesuai dengan user yang login
             $peminjamanDitolak = Peminjaman::where('id_peminjam', $user->id)
                 ->where('tgl_rencana_kembali', '>', now())
                 ->where('status_verifikasi', 'Ditolak')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
-            $activeTab = 'diproses'; // Tab default
-
-            // Notifikasi peminjaman yang jatuh tempo hari ini yang sudah di-ACC
             $peminjamanJatuhTempo = Peminjaman::where('id_peminjam', $user->id)
                 ->where('status_verifikasi', 'ACC')
-                ->whereDate('tgl_rencana_kembali', now()->toDateString())
-                ->get()->toArray(); // Mengonversi hasil query menjadi array
+                ->whereDate('tgl_rencana_kembali', now())
+                ->get();
 
             $notifikasi = [];
 
             foreach ($peminjamanJatuhTempo as $peminjaman) {
-                $notifikasi[] = [
-                    'pesan' => 'Waktu pengembalian aset jatuh pada hari ini, silahkan kembalikan kepada petugas.',
-                    'peminjaman_id' => $peminjaman['id_peminjaman'],
-                ];
+                if (now()->isSameDay($peminjaman->tgl_rencana_kembali)) {
+                    $notifikasi[] = [
+                        'pesan' => 'Waktu pengembalian aset jatuh pada hari ini, silahkan kembalikan kepada petugas.',
+                        'peminjaman_id' => $peminjaman->id_peminjaman,
+                    ];
+                }
             }
 
-            // Simpan notifikasi pada session
             session(['notifikasi' => $notifikasi]);
+
+            $activeTab = 'diproses'; // Tab default
 
             if (!$peminjamanDikirim->isEmpty()) {
                 $activeTab = 'diproses';
