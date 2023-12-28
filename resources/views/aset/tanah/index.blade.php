@@ -111,8 +111,6 @@
                                     <th>Luas (m<sup>2</sup>)</th>
                                     <th>Letak Tanah</th>
                                     <th>Penggunaan</th>
-                                    <th>Harga</th>
-                                    <th>Keterangan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -280,14 +278,6 @@
                     {
                         data: 'penggunaan',
                         name: 'penggunaan'
-                    },
-                    {
-                        data: 'harga',
-                        name: 'harga'
-                    },
-                    {
-                        data: 'keterangan',
-                        name: 'keterangan'
                     },
                     {
                         data: 'action',

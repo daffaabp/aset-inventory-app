@@ -99,7 +99,7 @@
                                         <span>Personal Detail</span>
                                         <div class="mb-3">
                                             <button class="btn btn-primary" type="submit" data-bs-toggle="modal"><i
-                                                    class="far fa-edit me-1"></i>Edit</button>
+                                                    class="far fa-edit me-1"></i>Simpan</button>
                                         </div>
                                     </h5>
 

@@ -261,7 +261,7 @@ class PeminjamanController extends Controller
                     $asetTanah = AsetTanah::find($riwayatTanah->id_aset_tanah);
 
                     if ($asetTanah->id_status_aset == 2 || $asetTanah->id_status_aset == 3) {
-                        $errors[] = "Aset tanah dengan nama {$asetTanah->nama} sudah dipinjam.";
+                        $errors[] = "Aset tanah {$asetTanah->nama} sudah dipinjam.";
                     }
                 }
 
@@ -269,7 +269,7 @@ class PeminjamanController extends Controller
                     $asetGedung = AsetGedung::find($riwayatGedung->id_aset_gedung);
 
                     if ($asetGedung->id_status_aset == 2 || $asetGedung->id_status_aset == 3) {
-                        $errors[] = "Aset gedung dengan nama {$asetGedung->nama} tidak tersedia.";
+                        $errors[] = "Aset gedung {$asetGedung->nama} sudah dipinjam.";
                     }
                 }
 
@@ -277,7 +277,7 @@ class PeminjamanController extends Controller
                     $asetKendaraan = AsetKendaraan::find($riwayatKendaraan->id_aset_kendaraan);
 
                     if ($asetKendaraan->id_status_aset == 2 || $asetKendaraan->id_status_aset == 3) {
-                        $errors[] = "Aset kendaraan {$asetKendaraan->nama} {$asetKendaraan->merk} {$asetKendaraan->type} tidak tersedia.";
+                        $errors[] = "Aset kendaraan {$asetKendaraan->nama} {$asetKendaraan->merk} {$asetKendaraan->type} sudah dipinjam.";
                     }
                 }
 
@@ -285,7 +285,7 @@ class PeminjamanController extends Controller
                     $asetInventarisRuangan = AsetInventarisRuangan::find($riwayatInventarisRuangan->id_aset_inventaris_ruangan);
 
                     if ($asetInventarisRuangan->id_status_aset == 2 || $asetInventarisRuangan->id_status_aset == 3) {
-                        $errors[] = "Aset inventaris ruangan dengan nama {$asetInventarisRuangan->nama} tidak tersedia.";
+                        $errors[] = "Aset inventaris ruangan {$asetInventarisRuangan->nama} sudah dipinjam.";
                     }
                 }
 
@@ -300,6 +300,7 @@ class PeminjamanController extends Controller
                 $peminjaman->status_verifikasi = $status;
                 $peminjaman->save();
 
+                // Mengupdate status pada riwayat_peminjaman_tanah yang terkait
                 $riwayatPeminjamanTanah = RiwayatPeminjamanTanah::where('id_peminjaman', $id_peminjaman)->get();
                 $riwayatPeminjamanGedung = RiwayatPeminjamanGedung::where('id_peminjaman', $id_peminjaman)->get();
                 $riwayatPeminjamanKendaraan = RiwayatPeminjamanKendaraan::where('id_peminjaman', $id_peminjaman)->get();
@@ -310,10 +311,12 @@ class PeminjamanController extends Controller
                     $riwayat->status_verifikasi = $status;
                     $riwayat->save();
 
+                    // Perbarui status_aset pada tabel riwayat_peminjaman_tanah
                     $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
                     $riwayat->statusAset()->associate($statusAsetDipinjam);
                     $riwayat->save();
 
+                    // Perbarui status_aset pada tabel aset_tanah
                     $asetTanah = $riwayat->asetTanah;
                     $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
 
@@ -325,10 +328,12 @@ class PeminjamanController extends Controller
                     $riwayat->status_verifikasi = $status;
                     $riwayat->save();
 
+                    // Perbarui status_aset pada tabel riwayat_peminjaman_tanah
                     $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
                     $riwayat->statusAset()->associate($statusAsetDipinjam);
                     $riwayat->save();
 
+                    // Perbarui status_aset pada tabel aset_tanah
                     $asetGedung = $riwayat->asetGedung;
                     $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
 
@@ -340,10 +345,12 @@ class PeminjamanController extends Controller
                     $riwayat->status_verifikasi = $status;
                     $riwayat->save();
 
+                    // Perbarui status_aset pada tabel riwayat_peminjaman_tanah
                     $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
                     $riwayat->statusAset()->associate($statusAsetDipinjam);
                     $riwayat->save();
 
+                    // Perbarui status_aset pada tabel aset_tanah
                     $asetKendaraan = $riwayat->asetKendaraan;
                     $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
 
@@ -355,10 +362,12 @@ class PeminjamanController extends Controller
                     $riwayat->status_verifikasi = $status;
                     $riwayat->save();
 
+                    // Perbarui status_aset pada tabel riwayat_peminjaman_tanah
                     $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
                     $riwayat->statusAset()->associate($statusAsetDipinjam);
                     $riwayat->save();
 
+                    // Perbarui status_aset pada tabel aset_tanah
                     $asetInventarisRuangan = $riwayat->asetInventarisRuangan;
                     $statusAsetDipinjam = StatusAset::where('status_aset', 'Dipinjam')->first();
 
@@ -367,10 +376,10 @@ class PeminjamanController extends Controller
                 }
 
                 DB::commit();
-                return redirect()->route('verifikasiPeminjaman')->with('success', 'Peminjaman Telah di ACC');
+                return response()->json(['message' => 'Peminjaman ACC berhasil']);
             } catch (\Exception $e) {
                 DB::rollBack();
-                return redirect()->back()->with('errors', $errors);
+                return response()->json(['error' => $errors], 422);
             }
 
         } elseif ($request->has('reject')) {
@@ -536,6 +545,7 @@ class PeminjamanController extends Controller
             }
 
             return redirect()->route('riwayatPeminjaman')->with('success', 'Peminjaman Telah Selesai');
+
         }
     }
 
@@ -737,14 +747,14 @@ class PeminjamanController extends Controller
             $filter = ' AND kode_aset NOT IN (' . $kode_asets . ')';
         }
 
-        $aset = DB::select('SELECT id_aset_kendaraan, kode_aset, aset_kendaraan.nama, merk, warna, no_polisi, aset_kendaraan.id_status_aset, status_aset.status_aset FROM aset_kendaraan LEFT JOIN status_aset ON status_aset.id_status_aset = aset_kendaraan.id_status_aset WHERE status_aset.status_aset = "Tersedia"' . $filter);
+        $aset = DB::select('SELECT id_aset_kendaraan, kode_aset, aset_kendaraan.nama, merk, type, no_polisi, aset_kendaraan.id_status_aset, status_aset.status_aset FROM aset_kendaraan LEFT JOIN status_aset ON status_aset.id_status_aset = aset_kendaraan.id_status_aset WHERE status_aset.status_aset = "Tersedia"' . $filter);
 
         $aset_table = '<table class="table mb-0 table-bordered">';
         $aset_table .= '<tr>';
         $aset_table .= '<td>Kode Aset</td>';
         $aset_table .= '<td>Nama Kendaraan</td>';
         $aset_table .= '<td>Merk</td>';
-        $aset_table .= '<td>Warna</td>';
+        $aset_table .= '<td>Type</td>';
         $aset_table .= '<td>No Polisi</td>';
         $aset_table .= '<td>Status</td>';
         $aset_table .= '<td>Pilih</td>';
@@ -756,7 +766,7 @@ class PeminjamanController extends Controller
             $aset_table .= '<td>' . $row->kode_aset . '</td>';
             $aset_table .= '<td>' . $row->nama . '</td>';
             $aset_table .= '<td>' . $row->merk . '</td>';
-            $aset_table .= '<td>' . $row->warna . '</td>';
+            $aset_table .= '<td>' . $row->type . '</td>';
             $aset_table .= '<td>' . $row->no_polisi . '</td>';
             $aset_table .= '<td>' . $row->status_aset . '</td>';
             $aset_table .= '<td><input class="form-check-input" name="terpilih[]" type="checkbox" value="' . $row->id_aset_kendaraan . '"></td>';

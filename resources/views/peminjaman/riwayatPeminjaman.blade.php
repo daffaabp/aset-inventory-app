@@ -34,7 +34,6 @@
                                         <th>Tanggal Pengajuan</th>
                                         <th>Tanggal Rencana Pinjam</th>
                                         <th>Tanggal Rencana Kembali</th>
-                                        <th>Alasan Ditolak</th>
                                         <th>Kegunaan</th>
                                     </tr>
                                 </thead>
@@ -63,12 +62,6 @@
                                             <td>{{ \Carbon\Carbon::parse($row->tgl_pengajuan)->isoFormat('lll') }}</td>
                                             <td>{{ \Carbon\Carbon::parse($row->tgl_rencana_pinjam)->isoFormat('LL') }}</td>
                                             <td>{{ \Carbon\Carbon::parse($row->tgl_rencana_kembali)->isoFormat('LL') }}</td>
-                                            @if ($row->status_verifikasi === 'Ditolak')
-                                                <td>{{ $row->alasan_ditolak }}</td>
-                                            @else
-                                                <td>-</td>
-                                            @endif
-
                                             <td>{{ $row->kegunaan }}</td>
                                         </tr>
                                     @endforeach
@@ -80,6 +73,31 @@
             </div>
         </div>
     </div>
+
+
+    {{-- <div id="cetak-perBulan" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Cetak Laporan Per Bulan
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('cetak_laporanPerBulan') }}" method="GET" enctype="multipart/form-data"
+                        class="px-3" id="cetak-perBulan">
+                        @csrf
+
+
+                        <div class="mb-2 text-right">
+                            <button class="btn btn-success" type="submit">Cetak Laporan</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div> --}}
 @endsection
 
 {{-- @push('js')

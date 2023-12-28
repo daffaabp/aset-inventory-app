@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use DataTables;
-use Carbon\Carbon;
-use App\Models\AsetTanah;
-use App\Models\StatusAset;
-use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\AsetTanahExport;
-use App\Imports\AsetTanahImport;
-use Illuminate\Support\Facades\DB;
-use App\Models\RiwayatPeminjamanTanah;
-use App\Http\Requests\StoreAsetTanahRequest;
 use App\Http\Requests\AsetTanahImportRequest;
-use App\Http\Requests\UpdateAsetTanahRequest;
 use App\Http\Requests\ExportPdfAsetTanahRequest;
-use Illuminate\Http\UploadedFile;
+use App\Http\Requests\StoreAsetTanahRequest;
+use App\Http\Requests\UpdateAsetTanahRequest;
+use App\Imports\AsetTanahImport;
+use App\Models\AsetTanah;
+use App\Models\RiwayatPeminjamanTanah;
+use App\Models\StatusAset;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use DataTables;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class AsetTanahController extends Controller
@@ -107,7 +106,6 @@ class AsetTanahController extends Controller
 
     public function store(StoreAsetTanahRequest $request)
     {
-        // Validasi telah dihandle oleh middleware
         $validated = $request->validated();
         // echo '<pre>';
         // print_r($validated);

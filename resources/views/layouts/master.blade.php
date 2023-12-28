@@ -6,7 +6,7 @@
     {{-- <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0"> --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- <title>Admin Dashboard</title> --}}
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Sistem Peminjaman Aset Kwarcab</title>
     <link rel="shortcut icon" href="{{ URL::to('assets/img/logo_sip_aset.png') }}">
     <link href="{{ asset('node_modules/@fortawesome/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
     <link

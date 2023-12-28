@@ -174,7 +174,7 @@
                                                             <th scope="col">Kode Aset</th>
                                                             <th scope="col">Nama Kendaraan</th>
                                                             <th scope="col">Merk</th>
-                                                            <th scope="col">Warna</th>
+                                                            <th scope="col">Type</th>
                                                             <th scope="col">No Polisi</th>
                                                             <th scope="col">Status</th>
                                                             <th scope="col">Hapus</th>
@@ -442,7 +442,7 @@
                                         <td class="selected-aset-${jenis}">${data[i].kode_aset}</td>
                                         <td>${data[i].nama}</td>
                                         <td>${data[i].merk}</td>
-                                        <td>${data[i].warna}</td>
+                                        <td>${data[i].type}</td>
                                         <td>${data[i].no_polisi}</td>
                                         <td>${data[i].status_aset}</td>
                                         <td>

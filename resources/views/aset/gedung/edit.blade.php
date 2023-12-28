@@ -17,7 +17,8 @@
             <div class="card">
                 <div class="card-body">
                     <form method="POST"
-                        action="{{ route('gedung.update', $aset_gedung->id_aset_gedung) }}"enctype="multipart/form-data">
+                        action="{{ route('gedung.update', $aset_gedung->id_aset_gedung) }}"enctype="multipart/form-data"
+                        id="number-format">
                         @csrf
                         @method('PATCH')
 
@@ -213,7 +214,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Harga</label>
-                                            <input type="number"
+                                            <input type="text" id="dengan-rupiah"
                                                 class="form-control @error('harga') is-invalid @enderror" name="harga"
                                                 autocomplete="off" value="{{ old('harga', $aset_gedung->harga) }}">
                                             @error('harga')
@@ -249,3 +250,38 @@
         </div>
     </div>
 @endsection
+
+@push('js')
+    <script>
+        function convertToNumber(rupiah) {
+            return parseInt(rupiah.replace(/[^\d]/g, ''), 10) || 0;
+        }
+
+        function formatRupiah(angka, prefix) {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? prefix + rupiah : '');
+        }
+
+        var inputHarga = document.getElementById('dengan-rupiah');
+
+        inputHarga.addEventListener('input', function(e) {
+            this.value = formatRupiah(this.value, 'Rp. ');
+        });
+
+        var form = document.getElementById('number-format');
+        form.addEventListener('submit', function(e) {
+            inputHarga.value = convertToNumber(inputHarga.value);
+        });
+    </script>
+@endpush

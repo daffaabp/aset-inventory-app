@@ -243,7 +243,7 @@
                                                     <th>No</th>
                                                     <th>Tgl Pengajuan</th>
                                                     <th>Tgl Rencana Pinjam</th>
-                                                    <th>Tgl Rencana Kembali</th>
+                                                    <th>Tgl Kembali</th>
                                                     <th>Kegunaan</th>
                                                     <th>Status Verifikasi</th>
                                                     <th>Lihat</th>
@@ -258,7 +258,7 @@
                                                         <td>
                                                             {{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_pinjam)->isoFormat('dddd, D MMMM Y') }}
                                                         </td>
-                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_rencana_kembali)->isoFormat('dddd, D MMMM Y') }}
+                                                        <td>{{ \Carbon\Carbon::parse($peminjaman->tgl_pengembalian)->isoFormat('dddd, D MMMM Y') }}
                                                         </td>
                                                         <td>{{ $peminjaman->kegunaan }}
                                                         </td>

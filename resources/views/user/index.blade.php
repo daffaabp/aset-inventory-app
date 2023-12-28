@@ -83,9 +83,6 @@
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger me-2">Hapus</button>
                                                 @endcan
-
-                                                <a class="btn btn-success me-2" style="color: white;" href="">Login
-                                                    As</a>
                                             </form>
                                         </td>
                                     </tr>

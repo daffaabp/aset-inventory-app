@@ -26,16 +26,6 @@
             <div class="card">
                 <div class="card-body">
 
-                    @if (session('errors'))
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach (session('errors') as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
                     <form method="POST" action="{{ route('processVerification', $peminjaman->id_peminjaman) }}"
                         id="finishForm">
                         @csrf
@@ -44,7 +34,7 @@
                             <div class="d-flex justify-content-center align-items-center" style="margin-bottom: 7px;">
                                 @if ($peminjaman->status_verifikasi === 'Dikirim')
                                     <div class="peminjaman-submit" style="margin-right: 10px">
-                                        <button type="submit" name="accept" class="btn btn-success">ACC
+                                        <button type="button" class="btn btn-success" id="acceptButton">ACC
                                             PEMINJAMAN</button>
                                     </div>
 
@@ -61,6 +51,7 @@
                                 @endif
                             </div>
                         @endif
+
                         <br>
 
                         <div class="row">
@@ -91,6 +82,15 @@
                                     <input type="text" class="form-control" value="{{ $peminjaman->kegunaan }}" readonly>
                                 </div>
                             </div>
+
+                            @if ($peminjaman->status_verifikasi === 'Ditolak')
+                                <div class="col-12">
+                                    <div class="form-group local-forms">
+                                        <label>Alasan Ditolak <span class="login-danger">*</span></label>
+                                        <textarea class="form-control" rows="3" readonly>{{ $peminjaman->alasan_ditolak }}</textarea>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
 
                         {{-- Accordion Tab Aset Tanah --}}
@@ -122,7 +122,6 @@
                                             class="nav-link">
                                             Aset Inventaris Ruangan
                                         </a>
-
                                     </li>
                                 </ul>
 
@@ -389,7 +388,7 @@
                     placeholder: 'Masukkan alasan penolakan...',
                 },
                 showCancelButton: true,
-                confirmButtonText: 'Submit',
+                confirmButtonText: 'Tolak',
                 showLoaderOnConfirm: true,
                 preConfirm: async (alasanDitolak) => {
                     try {
@@ -429,4 +428,172 @@
             });
         });
     </script>
+
+    <script type="text/javascript">
+        document.getElementById('acceptButton').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Yakin ACC Peminjaman?',
+                text: "Apakah anda yakin akan ACC Peminjaman ini?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, ACC!',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika dikonfirmasi, submit formulir menggunakan fetch API
+                    fetch('{{ route('processVerification', $peminjaman->id_peminjaman) }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            },
+                            body: JSON.stringify({
+                                accept: true,
+                            }),
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.hasOwnProperty('message')) {
+                                // Success case
+                                Swal.fire({
+                                    title: 'Peminjaman ACC',
+                                    text: 'Peminjaman telah di ACC.',
+                                    icon: 'success',
+                                }).then(() => {
+                                    // Redirect ke halaman riwayat peminjaman
+                                    window.location.href =
+                                        '{{ route('verifikasiPeminjaman') }}';
+                                });
+                            } else if (data.hasOwnProperty('error')) {
+                                // Error case
+                                Swal.fire({
+                                    title: 'Peminjaman Gagal ACC',
+                                    text: data.error,
+                                    icon: 'error',
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                title: 'Peminjaman Gagal ACC',
+                                text: 'Terjadi kesalahan: ' + error,
+                                icon: 'error',
+                            });
+                        });
+                }
+            });
+        });
+    </script>
+
+    {{-- <script type="text/javascript">
+        document.getElementById('finishButton').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Yakin Selesaikan Peminjaman?',
+                text: "Apakah anda yakin akan Selesaikan Peminjaman ini",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Selesaikan!',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Menggunakan AJAX untuk mengirim permintaan ke server
+                    $.ajax({
+                        url: '{{ route('processVerification', $peminjaman->id_peminjaman) }}',
+                        method: 'POST',
+                        data: {
+                            finish: true,
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire(
+                                    'Berhasil di selesaikan!',
+                                    'Peminjaman kamu berhasil diselesaikan.',
+                                    'success'
+                                ).then(() => {
+                                    // Redirect ke halaman riwayat peminjaman
+                                    window.location.href =
+                                        '{{ route('riwayatPeminjaman') }}';
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Gagal!',
+                                    'Terjadi kesalahan saat menyelesaikan peminjaman. ' +
+                                    response.message,
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function(xhr) {
+                            Swal.fire(
+                                'Gagal!',
+                                'Terjadi kesalahan saat menyelesaikan peminjaman.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+    </script> --}}
+
+    {{-- <script type="text/javascript">
+        document.getElementById('finishButton').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Yakin Selesaikan Peminjaman?',
+                text: "Apakah anda yakin akan Selesaikan Peminjaman ini",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Selesaikan!',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Menggunakan AJAX untuk mengirim permintaan ke server
+                    $.ajax({
+                        url: '{{ route('processVerification', $peminjaman->id_peminjaman) }}',
+                        method: 'POST',
+                        data: {
+                            finish: true,
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire(
+                                    'Berhasil di selesaikan!',
+                                    'Peminjaman kamu berhasil diselesaikan.',
+                                    'success'
+                                ).then(() => {
+                                    // Redirect ke halaman riwayat peminjaman
+                                    window.location.href =
+                                        '{{ route('riwayatPeminjaman') }}';
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Gagal!',
+                                    'Terjadi kesalahan saat menyelesaikan peminjaman. ' +
+                                    response.message,
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function(xhr) {
+                            Swal.fire(
+                                'Gagal!',
+                                'Terjadi kesalahan saat menyelesaikan peminjaman.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+    </script> --}}
 @endpush
