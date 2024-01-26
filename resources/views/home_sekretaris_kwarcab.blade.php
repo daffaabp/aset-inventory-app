@@ -218,7 +218,6 @@
                                                     <a href="javascript: void(0);" class="btn btn-primary"
                                                         onclick="nextTab('selesai')">
                                                         Next <i class="fa fa-arrow-right" aria-hidden="true"></i>
-
                                                     </a>
                                                 </li>
                                             </ul>

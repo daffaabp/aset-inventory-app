@@ -17,7 +17,7 @@
             <div class="card card-table">
                 <div class="card-body">
 
-                    <div class="page-header">
+                    {{-- <div class="page-header">
                         <div class="row align-items-center">
                             <div class="col-auto text-end float-end ms-auto download-grp">
                                 <a href="{{ route('status_aset.create') }}" class="btn btn-outline-primary me-2"><i
@@ -25,7 +25,7 @@
                                     Tambah Status Aset</a>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="table-responsive">
                         <table
